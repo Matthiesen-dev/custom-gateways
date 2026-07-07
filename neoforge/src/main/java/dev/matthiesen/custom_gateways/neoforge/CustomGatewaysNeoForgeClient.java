@@ -9,11 +9,15 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod(value = CustomGatewaysCommon.MOD_ID, dist = Dist.CLIENT)
 public class CustomGatewaysNeoForgeClient {
+    private final CustomGatewaysCommonClient INSTANCE;
+
     public CustomGatewaysNeoForgeClient(IEventBus modBus) {
         modBus.addListener(this::clientSetup);
+        this.INSTANCE = CustomGatewaysCommonClient.INSTANCE;
     }
 
     public void clientSetup(FMLClientSetupEvent event) {
-        CustomGatewaysCommonClient.initialize();
+        INSTANCE.createInfoLog("Loading for NeoForge Mod Loader (Client)");
+        INSTANCE.initialize();
     }
 }

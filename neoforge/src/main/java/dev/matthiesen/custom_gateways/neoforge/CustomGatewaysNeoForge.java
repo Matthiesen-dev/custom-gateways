@@ -5,9 +5,10 @@ import net.neoforged.fml.common.Mod;
 
 @Mod(CustomGatewaysCommon.MOD_ID)
 public class CustomGatewaysNeoForge {
+
     public CustomGatewaysNeoForge() {
-        var instance = CustomGatewaysCommon.INSTANCE;
-        instance.createInfoLog("Loading for NeoForge Mod Loader");
-        instance.initialize();
+        var INSTANCE = CustomGatewaysCommon.INSTANCE;
+        INSTANCE.createInfoLog("Loading for NeoForge Mod Loader");
+        INSTANCE.initialize();
     }
 }

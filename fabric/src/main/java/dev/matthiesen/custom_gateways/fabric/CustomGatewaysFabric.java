@@ -6,8 +6,8 @@ import net.fabricmc.api.ModInitializer;
 public class CustomGatewaysFabric implements ModInitializer {
     @Override
     public void onInitialize() {
-        var instance = CustomGatewaysCommon.INSTANCE;
-        instance.createInfoLog("Loading for Fabric Mod Loader");
-        instance.initialize();
+        var INSTANCE = CustomGatewaysCommon.INSTANCE;
+        INSTANCE.createInfoLog("Loading for Fabric Mod Loader");
+        INSTANCE.initialize();
     }
 }

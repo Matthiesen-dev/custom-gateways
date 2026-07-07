@@ -6,6 +6,9 @@ import net.fabricmc.api.ClientModInitializer;
 public class CustomGatewaysFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        CustomGatewaysCommonClient.initialize();
+        var INSTANCE = CustomGatewaysCommonClient.INSTANCE;
+        INSTANCE.createInfoLog("Loading for Fabric Mod Loader (Client)");
+        INSTANCE.initialize();
+        INSTANCE.registerRenderers();
     }
 }

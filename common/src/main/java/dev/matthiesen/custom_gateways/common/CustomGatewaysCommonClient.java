@@ -1,7 +1,19 @@
 package dev.matthiesen.custom_gateways.common;
 
-public class CustomGatewaysCommonClient {
-    public static void initialize() {
-        CustomGatewaysCommon.INSTANCE.createInfoLog("Loading client-side for " + CustomGatewaysCommon.MOD_NAME);
+import dev.matthiesen.common.matthiesen_lib.abstracts.AbstractCommonClientMod;
+
+public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
+    public static final CustomGatewaysCommonClient INSTANCE = new CustomGatewaysCommonClient();
+
+    private CustomGatewaysCommonClient() {
+        super(CustomGatewaysCommon.INSTANCE);
+    }
+
+    @Override
+    public void initialize() {
+    }
+
+    public void registerRenderers() {
+
     }
 }
