@@ -2,13 +2,36 @@ package dev.matthiesen.custom_gateways.common.registry;
 
 import dev.matthiesen.common.matthiesen_lib.registry.AbstractCreativeModeTabRegistry;
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 
-public class CreativeModeTabRegistry extends AbstractCreativeModeTabRegistry {
+import java.util.function.Supplier;
+
+public final class CreativeModeTabRegistry extends AbstractCreativeModeTabRegistry {
     private static final CreativeModeTabRegistry INSTANCE = new CreativeModeTabRegistry();
 
-    protected CreativeModeTabRegistry() {
+    private static final ResourceLocation PORTAL_FRAME_TAB_ID = CustomGatewaysCommon.modResource("portal_frame_tab");
+    private static final ResourceLocation PORTAL_FRAMES_SECTION_ID = CustomGatewaysCommon.modResource("portal_frames_section");
+
+    private CreativeModeTabRegistry() {
         super(CustomGatewaysCommon.MOD_ID);
     }
 
     public static void init() {}
+
+    public static final Supplier<CreativeModeTab> PORTAL_FRAMES_TAB;
+
+    static {
+        PORTAL_FRAMES_TAB = INSTANCE.registerSectionedCreativeTab(
+                PORTAL_FRAME_TAB_ID,
+                Component.literal("Portal Frames"),
+                ItemRegistry.getCreativeModeTabIcon(),
+                sectionBuilder -> {
+                    sectionBuilder.registerSection(PORTAL_FRAMES_SECTION_ID, Component.literal("Portal Frames"), 100);
+
+                    sectionBuilder.addItemToSection(PORTAL_FRAMES_SECTION_ID, ItemRegistry.PORTAL_FRAME.get().getDefaultInstance());
+                }
+        );
+    }
 }
