@@ -19,10 +19,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "dev.matthiesen.template_cobblemon_sidemod.fabric.ExampleModFabric"
+      "dev.matthiesen.custom_gateways.fabric.CustomGatewaysFabric"
     ],
     "client": [
-      "dev.matthiesen.template_cobblemon_sidemod.fabric.ExampleModFabricClient"
+      "dev.matthiesen.custom_gateways.fabric.CustomGatewaysFabricClient"
     ]
   },
   "depends": {

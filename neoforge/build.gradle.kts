@@ -26,13 +26,13 @@ dependencies {
     minecraft(libs.minecraft.net)
     mappings(loom.officialMojangMappings())
     neoForge(libs.neoforge)
-
-    libs.bundles.neoforgeModImplementation.get().forEach { dependency ->
-        modImplementation(dependency.copy()) { isTransitive = false }
-    }
+    modImplementation(libs.bundles.neoforgeModImplementation)
+    modImplementation(libs.bundles.neoforgeModImplementationNoTransitive) { isTransitive = false }
     forgeRuntimeLibrary(libs.kotlinforforge) {
         exclude("net.neoforged.fancymodloader", "loader")
     }
+    modCompileOnly(libs.bundles.neoforgeCompileOnly)
+    modRuntimeOnly(libs.bundles.neoforgeRuntimeOnly)
 
     implementation(project(":common", configuration = "namedElements"))
     "developmentNeoForge"(project(":common", configuration = "namedElements")) {

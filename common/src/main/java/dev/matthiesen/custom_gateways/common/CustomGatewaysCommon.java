@@ -1,18 +1,18 @@
-package dev.matthiesen.template_cobblemon_sidemod.common;
+package dev.matthiesen.custom_gateways.common;
 
 import dev.matthiesen.common.matthiesen_lib_api.MatthiesenLibApi;
 import dev.matthiesen.common.matthiesen_lib_api.abstracts.AbstractCommonMod;
 import dev.matthiesen.libs.faststats.Token;
 import org.jetbrains.annotations.Nullable;
 
-public class ExampleModCommon extends AbstractCommonMod {
-    public static final String MOD_ID = "template_cobblemon_sidemod";
-    public static final String MOD_NAME = "Template Side-Mod";
-    public static @Token final String METRICS_TOKEN = "";
+public class CustomGatewaysCommon extends AbstractCommonMod {
+    public static final String MOD_ID = "custom_gateways";
+    public static final String MOD_NAME = "Custom Gateways";
+    public static @Token final String METRICS_TOKEN = "f74eb1c8c94245013751f76d084cb249";
 
-    public static final ExampleModCommon INSTANCE = new ExampleModCommon();
+    public static final CustomGatewaysCommon INSTANCE = new CustomGatewaysCommon();
 
-    public ExampleModCommon() {
+    public CustomGatewaysCommon() {
         super(MOD_ID, MOD_NAME);
     }
 
