@@ -20,14 +20,17 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
 
     @Override
     public void initialize() {
+        CustomGatewaysCommonClient.INSTANCE.createInfoLog("Initialized Common Client");
     }
 
     public void registerRenderers() {
+        CustomGatewaysCommonClient.INSTANCE.createInfoLog("Registering Renderers");
+
         ItemRegistry.PORTAL_FRAME.get().renderProviderHolder.setValue(makeRendererProvider(new PortalFrameItemRenderer()));
 
-        INSTANCE.registerEntityRenderers(registry -> {
-            registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> new PortalFrameBlockRenderer());
-        });
+        INSTANCE.registerEntityRenderers(registry ->
+                registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> new PortalFrameBlockRenderer())
+        );
     }
 
     private static <T extends PortalFrameItem> GeoRenderProvider makeRendererProvider(GeoItemRenderer<T> renderer) {
