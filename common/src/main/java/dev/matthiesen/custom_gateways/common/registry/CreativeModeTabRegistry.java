@@ -12,7 +12,8 @@ public final class CreativeModeTabRegistry extends AbstractCreativeModeTabRegist
     private static final CreativeModeTabRegistry INSTANCE = new CreativeModeTabRegistry();
 
     private static final ResourceLocation PORTAL_FRAME_TAB_ID = CustomGatewaysCommon.modResource("portal_frame_tab");
-    private static final ResourceLocation PORTAL_FRAMES_SECTION_ID = CustomGatewaysCommon.modResource("portal_frames_section");
+    public static final ResourceLocation PORTAL_FRAMES_SECTION_ID = CustomGatewaysCommon.modResource("portal_frames_section");
+    public static final ResourceLocation PORTAL_TOOLS_SECTION_ID = CustomGatewaysCommon.modResource("portal_tools");
 
     private CreativeModeTabRegistry() {
         super(CustomGatewaysCommon.MOD_ID);
@@ -29,8 +30,10 @@ public final class CreativeModeTabRegistry extends AbstractCreativeModeTabRegist
                 ItemRegistry.getCreativeModeTabIcon(),
                 sectionBuilder -> {
                     sectionBuilder.registerSection(PORTAL_FRAMES_SECTION_ID, Component.literal("Portal Frames"), 100);
+                    sectionBuilder.registerSection(PORTAL_TOOLS_SECTION_ID, Component.literal("Portal Tools"), 50);
 
-                    sectionBuilder.addItemToSection(PORTAL_FRAMES_SECTION_ID, ItemRegistry.PORTAL_FRAME.get().getDefaultInstance());
+                    ItemRegistry.registerPortalFramesToCreativeModeTab(sectionBuilder, PORTAL_FRAMES_SECTION_ID);
+                    ItemRegistry.registerPortalToolsToCreativeModeTab(sectionBuilder, PORTAL_TOOLS_SECTION_ID);
                 }
         );
     }
