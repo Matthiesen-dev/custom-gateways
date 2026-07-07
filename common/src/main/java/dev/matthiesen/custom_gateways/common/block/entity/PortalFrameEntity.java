@@ -1,5 +1,6 @@
 package dev.matthiesen.custom_gateways.common.block.entity;
 
+import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -7,6 +8,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +24,20 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
     private int X = 0;
     private int Y = 0;
     private int Z = 0;
+
+    public void setLinkedCoords(Level level, int x, int y, int z) {
+        DIMENSION = level.dimension().location().toString();
+        this.X = x;
+        this.Y = y;
+        this.Z = z;
+    }
+
+    public void setLinkedCoords(ResourceLocation level, int x, int y, int z) {
+        DIMENSION = level.toString();
+        this.X = x;
+        this.Y = y;
+        this.Z = z;
+    }
 
     private static final RawAnimation IDLE_ANIM = RawAnimation.begin()
             .thenLoop("animation.portal_frame.idle");
@@ -78,4 +95,25 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
         this.saveAdditional(tag, provider);
         return tag;
     }
+
+    public static <T extends BlockEntity> void tick(Level level, BlockPos blockPos, BlockState blockState, T t) {
+        if (!(t instanceof PortalFrameEntity portalFrameEntity)) return;
+        if (blockState.getValue(PortalFrameBlock.IS_SLAVE)) return;
+        // TODO: Add ticking logic for the portal frame entity if needed
+    }
+
+    public PortalFrameEntity getMasterEntity(Level level, BlockPos pos) {
+        if (!level.getBlockState(pos).getValue(PortalFrameBlock.IS_SLAVE)) {
+            return this;
+        }
+        BlockPos masterPos = pos.below();
+        BlockEntity blockEntity = level.getBlockEntity(masterPos);
+        if (blockEntity instanceof PortalFrameEntity masterEntity) {
+            return masterEntity;
+        }
+        return null;
+    }
+
+
 }
+
