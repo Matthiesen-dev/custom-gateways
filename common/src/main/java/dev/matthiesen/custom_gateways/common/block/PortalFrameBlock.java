@@ -46,7 +46,24 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
     }
 
     private VoxelShape createShape() {
-        return null;
+        VoxelShape shape = Shapes.empty();
+        shape = Shapes.join(shape, Shapes.box(0.0625, 0, 0.0625, 0.9375, 0.0625, 0.9375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.1875, 0.0625, 0.1875, 0.8125, 0.125, 0.8125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.8125, 0.0625, 0.4375, 0.9375, 0.375, 0.5625), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.0625, 0.0625, 0.4375, 0.1875, 0.375, 0.5625), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.84375, 0.0625, 0.1875, 0.90625, 0.4375, 0.25), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.09375, 0.0625, 0.1875, 0.15625, 0.4375, 0.25), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.09375, 0.0625, 0.75, 0.15625, 0.4375, 0.8125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.84375, 0.0625, 0.75, 0.90625, 0.4375, 0.8125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.09375, 0.4375, 0.46875, 0.15625, 0.5, 0.53125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.84375, 0.4375, 0.46875, 0.90625, 0.5, 0.53125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.1875, 0.125, 0.5, 0.8125, 1.4375, 0.5), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.09375, 0.59375, 0.46875, 0.15625, 1.4375, 0.53125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.84375, 0.59375, 0.46875, 0.90625, 1.4375, 0.53125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.84375, 1.46875, 0.46875, 0.90625, 1.53125, 0.53125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.09375, 1.46875, 0.46875, 0.15625, 1.53125, 0.53125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.1875, 1.46875, 0.46875, 0.8125, 1.53125, 0.53125), BooleanOp.OR);
+        return shape.optimize();
     }
 
     @Override

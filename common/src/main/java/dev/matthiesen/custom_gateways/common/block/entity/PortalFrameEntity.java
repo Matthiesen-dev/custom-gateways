@@ -44,6 +44,9 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
     private static final RawAnimation LINKED_ANIM = RawAnimation.begin()
             .thenLoop("animation.portal_frame.linked");
 
+    private static final RawAnimation LINK_ANIM = RawAnimation.begin()
+            .thenPlay("animation.portal_frame.link");
+
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     public PortalFrameEntity(BlockPos pos, BlockState state) {
@@ -53,7 +56,8 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "idle", 0, state ->
-                state.setAndContinue(this.IS_LINKED ? LINKED_ANIM : IDLE_ANIM)));
+                state.setAndContinue(this.IS_LINKED ? LINKED_ANIM : IDLE_ANIM))
+                .triggerableAnim("link", LINK_ANIM));
     }
 
     @Override
