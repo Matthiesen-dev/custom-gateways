@@ -3,10 +3,13 @@ package dev.matthiesen.custom_gateways.common.block;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.MapCodec;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
+import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
+import dev.matthiesen.custom_gateways.common.item.PortalLinkingCard;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -68,21 +71,28 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
 
     @Override
     protected @NotNull InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
-        // If slave redirect to master block if master log a message to chat for now
-        if (!blockState.getValue(IS_SLAVE)) {
-            player.sendSystemMessage(Component.literal("Master block clicked at " + blockPos.toShortString()));
-            return InteractionResult.SUCCESS;
+        // If slave redirect to master block
+        if (blockState.getValue(IS_SLAVE)) {
+            BlockPos masterPos = blockPos.below();
+            BlockState masterState = level.getBlockState(masterPos);
+
+            if (!(masterState.getBlock() instanceof PortalFrameBlock)) {
+                player.sendSystemMessage(Component.literal("Master block not found at " + masterPos.toShortString()));
+                return InteractionResult.FAIL;
+            }
+
+            return masterState.useWithoutItem(level, player, blockHitResult.withPosition(masterPos));
         }
 
-        BlockPos masterPos = blockPos.below();
-        BlockState masterState = level.getBlockState(masterPos);
-
-        if (!(masterState.getBlock() instanceof PortalFrameBlock)) {
-            player.sendSystemMessage(Component.literal("Master block not found at " + masterPos.toShortString()));
-            return InteractionResult.FAIL;
+        // Check if player is holding a linking card
+        ItemStack heldItem = player.getMainHandItem();
+        if (heldItem.getItem() instanceof PortalLinkingCard) {
+            return PortalLinkingCard.useOnPortalFrame(level, player, blockPos);
         }
 
-        return masterState.useWithoutItem(level, player, blockHitResult.withPosition(masterPos));
+        // Default message if no linking card
+        player.sendSystemMessage(Component.literal("Master block clicked at " + blockPos.toShortString()));
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -123,6 +133,15 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
                 BlockState slaveState = level.getBlockState(slavePos);
                 if (slaveState.getBlock() instanceof PortalFrameBlock) {
                     level.removeBlock(slavePos, false);
+                }
+
+                // Clean up portal links if this is the master block being removed
+                if (!level.isClientSide && level instanceof ServerLevel) {
+                    PortalRegistry registry = PortalRegistry.getInstance();
+
+                    PortalRegistry.PortalLocation portalLocation =
+                        new PortalRegistry.PortalLocation(level.dimension().location(), blockPos);
+                    registry.removePortal(portalLocation);
                 }
             }
         }
