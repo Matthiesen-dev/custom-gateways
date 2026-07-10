@@ -1,20 +1,21 @@
-# template-cobblemon-sidemod
+# Custom Gateways
 
 <div>
   <img src="https://mods.matthiesen.dev/badges/matthiesenLibAPI.svg" alt="Matthiesen Lib API">
-  <img src="https://mods.matthiesen.dev/badges/cobblemon.svg" alt="Cobblemon">
+  <img src="https://mods.matthiesen.dev/badges/matthiesenLib.svg" alt="Matthiesen Lib">
+  <img src="https://mods.matthiesen.dev/badges/geckolib.svg" alt="GeckoLib">
 </div>
 
-Template for a Cobblemon side mod. This template includes the necessary setup for a mod that depends on the Matthiesen Lib API and Cobblemon, 
-but does not include any specific functionality. You can use this as a starting point for creating your own Cobblemon side mod.
+TODO
 
 ## Requirements
 - [Matthiesen Lib API](https://modrinth.com/mod/matthiesen-lib-api)
-- [Cobblemon](https://modrinth.com/mod/cobblemon)
+- [Matthiesen Lib](https://modrinth.com/mod/matthiesen-lib)
+- [GeckoLib](https://modrinth.com/mod/geckolib)
 
 ## Docs
 
-Documentation for this mod can be found at [mods.matthiesen.dev](https://mods.matthiesen.dev/TODO/)
+Documentation for this mod can be found at [mods.matthiesen.dev](https://mods.matthiesen.dev/custom-gateways/)
 
 ## Version Compatibility
 

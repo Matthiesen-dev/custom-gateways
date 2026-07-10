@@ -12,7 +12,7 @@ kotlin-for-forge = "5.10.0"
 cobblemon = "1.7.3+1.21.1"
 junit = "5.1.0"
 publish = "0.35.0"
-matthiesen_lib = "1.11.0"
+matthiesen_lib = "1.11.2"
 sponge-mixin = "0.8.5"
 geckolib = "4.8.3"
 jade_fabric = "15.10.5+fabric"
@@ -58,14 +58,14 @@ jade-neoforge = { group = "maven.modrinth", name = "jade", version.ref = "jade_n
 commonCompileOnly = ["sponge-mixin"]
 commonModCompileOnly = ["jade-fabric"]
 commonImplementation = ["geckolib-common"]
-commonModImplementation = ["cobblemon-common", "matthiesen-lib-api-common", "matthiesen-lib-common"]
+commonModImplementation = ["matthiesen-lib-api-common", "matthiesen-lib-common"]
 
 fabricCompileOnly = ["jade-fabric"]
 fabricRuntimeOnly = ["jade-fabric"]
 fabricModImplementation = ["fabric-loader", "fabric-api", "fabric-language-kotlin", "geckolib-fabric"]
-fabricModImplementationNoTransitive = ["cobblemon-fabric", "matthiesen-lib-api-fabric", "matthiesen-lib-fabric"]
+fabricModImplementationNoTransitive = ["matthiesen-lib-api-fabric", "matthiesen-lib-fabric"]
 
 neoforgeCompileOnly = ["jade-neoforge"]
 neoforgeRuntimeOnly = ["jade-neoforge"]
 neoforgeModImplementation = ["geckolib-neoforge"]
-neoforgeModImplementationNoTransitive = ["cobblemon-neoforge", "matthiesen-lib-api-neoforge", "matthiesen-lib-neoforge"]
+neoforgeModImplementationNoTransitive = ["matthiesen-lib-api-neoforge", "matthiesen-lib-neoforge"]
