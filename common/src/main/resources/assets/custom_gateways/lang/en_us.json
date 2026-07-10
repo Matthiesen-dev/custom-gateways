@@ -14,10 +14,14 @@
   "tooltip.custom_gateways.portal_linking_card.linked.position": "§7Position: §e%s, %s, %s",
   "tooltip.custom_gateways.portal_linking_card.linked.action": "§7Right-click a §6Portal Frame §7to link.",
 
+  "tooltip.custom_gateways.portal_frame.linked": "Linked to §b%s §ein dimension §b%s",
+
   "interaction.custom_gateways.portal_linking_card.set_source": "§6Linking Card: §eSource portal set at §b%s §ein dimension §b%s",
-  "interaction.custom_gateways.portal_linking_card.link_portal": "§6Portals linked! §aSource: §b%s §adest: §b%s",
+  "interaction.custom_gateways.portal_linking_card.link_portal": "§6Portals linked! §aSource: §b%s §aDest: §b%s",
   "interaction.custom_gateways.portal_linking_card.error.self_link": "§cCannot link a portal to itself!",
 
   "interaction.custom_gateways.portal_frame.error.master_block": "Master block not found at %s",
-  "interaction.custom_gateways.portal_frame.telported": "§6Teleported to §e%s"
+  "interaction.custom_gateways.portal_frame.telported": "§6Teleported to §e%s",
+
+  "config.jade.plugin_custom_gateways.portal_frame": "Portal Frame"
 }

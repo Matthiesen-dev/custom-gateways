@@ -1,7 +1,9 @@
 package dev.matthiesen.custom_gateways.common.client.jade;
 
 import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
+import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.*;
@@ -27,16 +29,28 @@ public enum PortalFrameJadeProvider implements IBlockComponentProvider, IServerD
 
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
+        if (blockAccessor.getServerData().contains("LinkedDimension") && blockAccessor.getServerData().contains("LinkedPosition")) {
+            iTooltip.add(
+                    Component.translatable(
+                            "tooltip.custom_gateways.portal_frame.linked",
+                            blockAccessor.getServerData().getString("LinkedPosition"),
+                            blockAccessor.getServerData().getString("LinkedDimension")
+                    )
+            );
+        }
+    }
 
+    @Override
+    public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
+        PortalFrameEntity portalFrameEntity = (PortalFrameEntity) blockAccessor.getBlockEntity();
+        PortalFrameEntity masterPortalFrameEntity = portalFrameEntity.getMasterEntity(blockAccessor.getLevel(), blockAccessor.getPosition());
+        if (masterPortalFrameEntity == null) return;
+        compoundTag.putString("LinkedDimension", masterPortalFrameEntity.getLinkedDimension().toString());
+        compoundTag.putString("LinkedPosition", masterPortalFrameEntity.getLinkedPosition().toShortString());
     }
 
     @Override
     public ResourceLocation getUid() {
         return CustomGatewaysJadePlugin.PORTAL_FRAME;
-    }
-
-    @Override
-    public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-
     }
 }
