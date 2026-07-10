@@ -37,8 +37,8 @@ public final class PortalLinkingCard extends Item {
 
         if (portalData.isEmpty()) {
             // No source stored — card is empty
-            tooltipComponents.add(Component.literal("§7Status: §cNo source portal set"));
-            tooltipComponents.add(Component.literal("§7Right-click a §6Portal Frame §7to set a source."));
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.empty.status"));
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.empty.action"));
         } else {
             // Source portal is stored
             String dimension = portalData.getString(DIMENSION_TAG);
@@ -49,10 +49,10 @@ public final class PortalLinkingCard extends Item {
             // Shorten the dimension name (e.g. "minecraft:overworld" → "overworld")
             String dimShort = dimension.contains(":") ? dimension.split(":")[1] : dimension;
 
-            tooltipComponents.add(Component.literal("§7Status: §aSource portal set"));
-            tooltipComponents.add(Component.literal("§7Dimension: §b" + dimShort));
-            tooltipComponents.add(Component.literal("§7Position: §e" + x + ", " + y + ", " + z));
-            tooltipComponents.add(Component.literal("§7Right-click a §6Portal Frame §7to link."));
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.linked.status"));
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.linked.dimension", dimShort));
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.linked.position", x, y, z));
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.linked.action"));
         }
     }
 
@@ -87,8 +87,10 @@ public final class PortalLinkingCard extends Item {
             heldItem.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
 
             player.displayClientMessage(
-                Component.literal("§6Linking Card: §eSource portal set at §b" +
-                    portalPos.toShortString() + " §ein dimension §b" + currentDimension.getPath()),
+                Component.translatable(
+                        "interaction.custom_gateways.portal_linking_card.set_source",
+                        portalPos.toShortString(),
+                        currentDimension.getPath()),
                 true
             );
             return InteractionResult.SUCCESS;
@@ -103,7 +105,7 @@ public final class PortalLinkingCard extends Item {
 
             // Check if we're linking to the same portal
             if (sourcePos.equals(portalPos) && sourceDimension.equals(currentDimension)) {
-                player.displayClientMessage(Component.literal("§cCannot link a portal to itself!"), true);
+                player.displayClientMessage(Component.literal("interaction.custom_gateways.portal_linking_card.error.self_link"), true);
                 return InteractionResult.FAIL;
             }
 
@@ -130,8 +132,7 @@ public final class PortalLinkingCard extends Item {
             }
 
             player.displayClientMessage(
-                Component.literal("§6Portals linked! §aSource: §b" + sourcePos.toShortString() +
-                    " §adest: §b" + portalPos.toShortString()),
+                Component.translatable("interaction.custom_gateways.portal_linking_card.link_portal", sourcePos.toShortString(), portalPos.toShortString()),
                 false
             );
 

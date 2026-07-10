@@ -77,7 +77,7 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
             BlockState masterState = level.getBlockState(masterPos);
 
             if (!(masterState.getBlock() instanceof PortalFrameBlock)) {
-                player.sendSystemMessage(Component.literal("Master block not found at " + masterPos.toShortString()));
+                player.sendSystemMessage(Component.translatable("interaction.custom_gateways.portal_frame.error.master_block", masterPos.toShortString()));
                 return InteractionResult.FAIL;
             }
 
@@ -91,6 +91,7 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
         }
 
         // Default message if no linking card
+        // TODO Remove default message
         player.sendSystemMessage(Component.literal("Master block clicked at " + blockPos.toShortString()));
         return InteractionResult.SUCCESS;
     }
