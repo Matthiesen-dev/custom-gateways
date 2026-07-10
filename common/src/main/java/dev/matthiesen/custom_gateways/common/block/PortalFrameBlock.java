@@ -103,6 +103,30 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
+    public Block getParentBlock(Level level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+        if (state.getBlock() instanceof PortalFrameBlock) {
+            if (state.getValue(IS_SLAVE)) {
+                return level.getBlockState(pos.below()).getBlock();
+            } else {
+                return state.getBlock();
+            }
+        }
+        return null;
+    }
+
+    public BlockState getParentBlockState(Level level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+        if (state.getBlock() instanceof PortalFrameBlock) {
+            if (state.getValue(IS_SLAVE)) {
+                return level.getBlockState(pos.below());
+            } else {
+                return state;
+            }
+        }
+        return null;
+    }
+
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return BlockEntityRegistry.PORTAL_FRAME_BE.get().create(blockPos, blockState);

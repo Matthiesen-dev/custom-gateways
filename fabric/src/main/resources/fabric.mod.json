@@ -23,6 +23,9 @@
     ],
     "client": [
       "dev.matthiesen.custom_gateways.fabric.CustomGatewaysFabricClient"
+    ],
+    "jade": [
+      "dev.matthiesen.custom_gateways.common.client.jade.CustomGatewaysJadePlugin"
     ]
   },
   "depends": {
@@ -30,5 +33,8 @@
     "matthiesen_lib_api": ">=1.11.2 <2.0.0",
     "matthiesen_lib": ">=1.11.2 <2.0.0",
     "geckolib": ">=4.8.3"
+  },
+  "suggests": {
+    "jade": ">=15.10.5"
   }
 }
