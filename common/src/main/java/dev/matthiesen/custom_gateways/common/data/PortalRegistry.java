@@ -1,17 +1,19 @@
 package dev.matthiesen.custom_gateways.common.data;
 
-import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Global registry for all portal links in the world.
@@ -19,14 +21,18 @@ import java.util.*;
  * Manages bidirectional portal links automatically.
  */
 public final class PortalRegistry extends SavedData {
-    private static final String NAME = "custom_gateways_portal_registry";
+    public static final String NAME = "custom_gateways_portal_registry";
+    public static final SavedData.Factory<PortalRegistry> FACTORY =
+        new SavedData.Factory<>(PortalRegistry::new, PortalRegistry::load, null);
 
     // Maps portal location (dimension + coords) to its linked portal
     private final Map<PortalLocation, PortalLocation> portalLinks = new HashMap<>();
 
-    private static final PortalRegistry INSTANCE = new PortalRegistry();
+    public PortalRegistry() {
+    }
 
-    private PortalRegistry() {
+    public static PortalRegistry get(ServerLevel level) {
+        return level.getDataStorage().computeIfAbsent(FACTORY, NAME);
     }
 
     /**
@@ -34,14 +40,13 @@ public final class PortalRegistry extends SavedData {
      */
     public void linkPortals(PortalLocation source, PortalLocation destination) {
         // Remove any existing links for these portals first
-        portalLinks.remove(source);
-        portalLinks.remove(destination);
+        removePortal(source);
+        removePortal(destination);
 
         // Create bidirectional link
         portalLinks.put(source, destination);
         portalLinks.put(destination, source);
-
-        this.setDirty();
+        setDirty();
     }
 
     /**
@@ -53,31 +58,19 @@ public final class PortalRegistry extends SavedData {
     }
 
     /**
-     * Checks if a portal is linked
-     */
-    public boolean isLinked(PortalLocation portalLocation) {
-        return portalLinks.containsKey(portalLocation);
-    }
-
-    /**
      * Removes a portal and its associated links
      */
     public void removePortal(PortalLocation portalLocation) {
-        PortalLocation linked = portalLinks.get(portalLocation);
+        PortalLocation linked = portalLinks.remove(portalLocation);
 
-        // Remove the portal itself
-        portalLinks.remove(portalLocation);
-
-        // Remove the bidirectional link if it exists
         if (linked != null) {
             portalLinks.remove(linked);
+            setDirty();
         }
-
-        this.setDirty();
     }
 
     @Override
-    public @org.jetbrains.annotations.NotNull CompoundTag save(CompoundTag compoundTag, net.minecraft.core.HolderLookup.Provider provider) {
+    public @NotNull CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
         ListTag listTag = new ListTag();
 
         for (Map.Entry<PortalLocation, PortalLocation> entry : portalLinks.entrySet()) {
@@ -87,7 +80,6 @@ public final class PortalRegistry extends SavedData {
             PortalLocation source = entry.getKey();
             PortalLocation destination = entry.getValue();
 
-            // Use string comparison to ensure consistent ordering
             String sourceStr = source.toString();
             String destStr = destination.toString();
 
@@ -102,33 +94,19 @@ public final class PortalRegistry extends SavedData {
         return compoundTag;
     }
 
-    public static PortalRegistry create() { return new PortalRegistry(); }
-
-    public static PortalRegistry load(CompoundTag compoundTag, net.minecraft.core.HolderLookup.Provider provider) {
-        PortalRegistry registry = INSTANCE;
+    public static PortalRegistry load(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        PortalRegistry registry = new PortalRegistry();
         ListTag listTag = compoundTag.getList("portals", Tag.TAG_COMPOUND);
 
         for (int i = 0; i < listTag.size(); i++) {
             CompoundTag tag = listTag.getCompound(i);
             PortalLocation source = PortalLocation.deserialize(tag.getCompound("source"));
             PortalLocation destination = PortalLocation.deserialize(tag.getCompound("destination"));
-
-            registry.linkPortals(source, destination);
+            registry.portalLinks.put(source, destination);
+            registry.portalLinks.put(destination, source);
         }
 
         return registry;
-    }
-
-    public static SavedData.Factory<PortalRegistry> FACTORY = new Factory<>(
-            PortalRegistry::create,
-            PortalRegistry::load,
-            null
-    );
-
-    public static PortalRegistry getInstance() {
-        MinecraftServer server = CustomGatewaysCommon.INSTANCE.getMinecraftServer();
-        ServerLevel level = server.overworld();
-        return level.getDataStorage().computeIfAbsent(PortalRegistry.FACTORY, NAME);
     }
 
     /**
@@ -190,6 +168,3 @@ public final class PortalRegistry extends SavedData {
         }
     }
 }
-
-
-

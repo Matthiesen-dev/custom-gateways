@@ -136,12 +136,21 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
                 }
 
                 // Clean up portal links if this is the master block being removed
-                if (!level.isClientSide && level instanceof ServerLevel) {
-                    PortalRegistry registry = PortalRegistry.getInstance();
+                if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
+                    PortalRegistry registry = PortalRegistry.get(serverLevel);
 
                     PortalRegistry.PortalLocation portalLocation =
                         new PortalRegistry.PortalLocation(level.dimension().location(), blockPos);
+
+                    PortalRegistry.PortalLocation linkedLocation = registry.getLinkedPortal(portalLocation);
                     registry.removePortal(portalLocation);
+
+                    if (linkedLocation != null) {
+                        BlockEntity linkedEntity = serverLevel.getBlockEntity(linkedLocation.getBlockPos());
+                        if (linkedEntity instanceof PortalFrameEntity linkedPortalEntity) {
+                            linkedPortalEntity.clearLinkedTarget();
+                        }
+                    }
                 }
             }
         }

@@ -18,6 +18,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -42,6 +43,7 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
         this.Y = y;
         this.Z = z;
         this.IS_LINKED = true;
+        syncToClient();
     }
 
     public void setLinkedCoords(ResourceLocation level, int x, int y, int z) {
@@ -50,6 +52,53 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
         this.Y = y;
         this.Z = z;
         this.IS_LINKED = true;
+        syncToClient();
+    }
+
+    public void setLinkedTarget(ResourceLocation dimension, BlockPos targetPos, boolean triggerLinkAnimation) {
+        boolean changed = !this.IS_LINKED
+            || !this.DIMENSION.equals(dimension.toString())
+            || this.X != targetPos.getX()
+            || this.Y != targetPos.getY()
+            || this.Z != targetPos.getZ();
+
+        this.IS_LINKED = true;
+        this.DIMENSION = dimension.toString();
+        this.X = targetPos.getX();
+        this.Y = targetPos.getY();
+        this.Z = targetPos.getZ();
+
+        if (changed) {
+            syncToClient();
+        }
+
+        if (triggerLinkAnimation) {
+            this.triggerAnim("idle", "link");
+        }
+    }
+
+    public void clearLinkedTarget() {
+        if (!this.IS_LINKED) {
+            return;
+        }
+
+        this.IS_LINKED = false;
+        this.DIMENSION = "minecraft:overworld";
+        this.X = 0;
+        this.Y = 0;
+        this.Z = 0;
+        syncToClient();
+    }
+
+    private void syncToClient() {
+        this.setChanged();
+
+        if (this.level == null || this.level.isClientSide) {
+            return;
+        }
+
+        BlockState state = this.getBlockState();
+        this.level.sendBlockUpdated(this.worldPosition, state, state, Block.UPDATE_CLIENTS);
     }
 
     // Getters for portal state
@@ -139,7 +188,7 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
     }
 
     public static <T extends BlockEntity> void tick(Level level, BlockPos blockPos, BlockState blockState, T t) {
-        if (!(t instanceof PortalFrameEntity)) return;
+        if (!(t instanceof PortalFrameEntity portalFrameEntity)) return;
         if (blockState.getValue(PortalFrameBlock.IS_SLAVE)) return;
         if (level.isClientSide) return;
 
@@ -151,10 +200,16 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
             new PortalRegistry.PortalLocation(level.dimension().location(), blockPos);
 
         // Get the portal registry to check for linked portals
-        PortalRegistry registry = PortalRegistry.getInstance();
+        PortalRegistry registry = PortalRegistry.get(serverLevel);
 
         PortalRegistry.PortalLocation linkedPortal = registry.getLinkedPortal(currentPortal);
-        if (linkedPortal == null) return; // No linked portal
+        if (linkedPortal == null) {
+            portalFrameEntity.clearLinkedTarget();
+            return;
+        }
+
+        // Keep BE state in sync so linked idle animation is selected.
+        portalFrameEntity.setLinkedTarget(linkedPortal.dimension, linkedPortal.getBlockPos(), false);
 
         // Create bounding box for the portal (center area of the frame)
         AABB portalBounds = new AABB(

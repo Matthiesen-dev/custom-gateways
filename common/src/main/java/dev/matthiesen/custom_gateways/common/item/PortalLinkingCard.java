@@ -1,5 +1,6 @@
 package dev.matthiesen.custom_gateways.common.item;
 
+import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -13,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.List;
 public final class PortalLinkingCard extends Item {
@@ -110,9 +112,14 @@ public final class PortalLinkingCard extends Item {
             PortalRegistry.PortalLocation destination = new PortalRegistry.PortalLocation(currentDimension, portalPos);
 
             // Get the portal registry from server level data
-            PortalRegistry registry = PortalRegistry.getInstance();
+            net.minecraft.server.level.ServerLevel serverLevel = (net.minecraft.server.level.ServerLevel) level;
+            PortalRegistry registry = PortalRegistry.get(serverLevel);
 
             registry.linkPortals(source, destination);
+
+            // Update both block entities immediately so linked state + animation are visible now.
+            triggerLinkStateUpdate(level, sourcePos, destination);
+            triggerLinkStateUpdate(level, portalPos, source);
 
             // Clear the stored portal data from the card
             tag.remove(PORTAL_DATA_TAG);
@@ -158,6 +165,13 @@ public final class PortalLinkingCard extends Item {
             return new PortalRegistry.PortalLocation(dimension, x, y, z);
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    private static void triggerLinkStateUpdate(Level level, BlockPos portalPos, PortalRegistry.PortalLocation target) {
+        BlockEntity blockEntity = level.getBlockEntity(portalPos);
+        if (blockEntity instanceof PortalFrameEntity portalFrameEntity) {
+            portalFrameEntity.setLinkedTarget(target.dimension, target.getBlockPos(), true);
         }
     }
 }
