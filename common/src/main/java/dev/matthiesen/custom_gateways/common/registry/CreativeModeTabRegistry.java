@@ -40,8 +40,7 @@ public final class CreativeModeTabRegistry extends AbstractCreativeModeTabRegist
                             50
                     );
 
-                    ItemRegistry.registerPortalFramesToCreativeModeTab(sectionBuilder, PORTAL_FRAMES_SECTION_ID);
-                    ItemRegistry.registerPortalToolsToCreativeModeTab(sectionBuilder, PORTAL_TOOLS_SECTION_ID);
+                    ItemRegistry.registerCreativeModeTabItems(sectionBuilder);
                 }
         );
     }

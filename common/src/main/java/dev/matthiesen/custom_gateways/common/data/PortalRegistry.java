@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Global registry for all portal links in the world.
@@ -110,61 +109,45 @@ public final class PortalRegistry extends SavedData {
     }
 
     /**
-     * Represents a portal's location including its dimension
-     */
-    public static class PortalLocation {
-        public final ResourceLocation dimension;
-        public final int x;
-        public final int y;
-        public final int z;
-
-        public PortalLocation(ResourceLocation dimension, int x, int y, int z) {
-            this.dimension = dimension;
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
+         * Represents a portal's location including its dimension
+         */
+        public record PortalLocation(ResourceLocation dimension, int x, int y, int z) {
 
         public PortalLocation(ResourceLocation dimension, BlockPos pos) {
-            this(dimension, pos.getX(), pos.getY(), pos.getZ());
-        }
+                this(dimension, pos.getX(), pos.getY(), pos.getZ());
+            }
 
-        public BlockPos getBlockPos() {
-            return new BlockPos(x, y, z);
-        }
+            public BlockPos getBlockPos() {
+                return new BlockPos(x, y, z);
+            }
 
-        public CompoundTag serialize() {
-            CompoundTag tag = new CompoundTag();
-            tag.putString("dimension", dimension.toString());
-            tag.putInt("x", x);
-            tag.putInt("y", y);
-            tag.putInt("z", z);
-            return tag;
-        }
+            public CompoundTag serialize() {
+                CompoundTag tag = new CompoundTag();
+                tag.putString("dimension", dimension.toString());
+                tag.putInt("x", x);
+                tag.putInt("y", y);
+                tag.putInt("z", z);
+                return tag;
+            }
 
-        public static PortalLocation deserialize(CompoundTag tag) {
-            ResourceLocation dimension = ResourceLocation.parse(tag.getString("dimension"));
-            int x = tag.getInt("x");
-            int y = tag.getInt("y");
-            int z = tag.getInt("z");
-            return new PortalLocation(dimension, x, y, z);
-        }
+            public static PortalLocation deserialize(CompoundTag tag) {
+                ResourceLocation dimension = ResourceLocation.parse(tag.getString("dimension"));
+                int x = tag.getInt("x");
+                int y = tag.getInt("y");
+                int z = tag.getInt("z");
+                return new PortalLocation(dimension, x, y, z);
+            }
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof PortalLocation that)) return false;
-            return x == that.x && y == that.y && z == that.z && dimension.equals(that.dimension);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(dimension, x, y, z);
-        }
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (!(o instanceof PortalLocation(ResourceLocation dimension1, int x1, int y1, int z1))) return false;
+                return x == x1 && y == y1 && z == z1 && dimension.equals(dimension1);
+            }
 
         @Override
-        public String toString() {
-            return dimension + ":" + x + "," + y + "," + z;
+            public @NotNull String toString() {
+                return dimension + ":" + x + "," + y + "," + z;
+            }
         }
-    }
 }

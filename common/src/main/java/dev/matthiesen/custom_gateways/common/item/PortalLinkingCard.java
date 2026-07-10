@@ -172,7 +172,7 @@ public final class PortalLinkingCard extends Item {
     private static void triggerLinkStateUpdate(Level level, BlockPos portalPos, PortalRegistry.PortalLocation target) {
         BlockEntity blockEntity = level.getBlockEntity(portalPos);
         if (blockEntity instanceof PortalFrameEntity portalFrameEntity) {
-            portalFrameEntity.setLinkedTarget(target.dimension, target.getBlockPos(), true);
+            portalFrameEntity.setLinkedTarget(target.dimension(), target.getBlockPos(), true);
         }
     }
 }

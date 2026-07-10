@@ -209,7 +209,7 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
         }
 
         // Keep BE state in sync so linked idle animation is selected.
-        portalFrameEntity.setLinkedTarget(linkedPortal.dimension, linkedPortal.getBlockPos(), false);
+        portalFrameEntity.setLinkedTarget(linkedPortal.dimension(), linkedPortal.getBlockPos(), false);
 
         // Create bounding box for the portal (center area of the frame)
         AABB portalBounds = new AABB(
@@ -230,7 +230,7 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
             }
 
             // Get the target level using a proper ResourceKey
-            ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, linkedPortal.dimension);
+            ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, linkedPortal.dimension());
             ServerLevel targetLevel = serverLevel.getServer().getLevel(dimensionKey);
             if (targetLevel == null) continue;
 
