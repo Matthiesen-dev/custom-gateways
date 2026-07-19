@@ -15,6 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +68,7 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
         shape = Shapes.join(shape, Shapes.box(0.84375, 1.46875, 0.46875, 0.90625, 1.53125, 0.53125), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(0.09375, 1.46875, 0.46875, 0.15625, 1.53125, 0.53125), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(0.1875, 1.46875, 0.46875, 0.8125, 1.53125, 0.53125), BooleanOp.OR);
-        return shape.optimize();
+        return shape;
     }
 
     @Override
@@ -209,6 +211,16 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
     @Override
     public @NotNull BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    @Override
+    public @NotNull VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        return shapes.getOrDefault(state.getValue(FACING), baseShape);
+    }
+
+    @Override
+    protected @NotNull VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        return Shapes.empty();
     }
 
     private static VoxelShape calculateRotation(Direction direction, VoxelShape base) {
