@@ -17,6 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.List;
+
 public final class PortalLinkingCard extends Item {
     public static final String PORTAL_DATA_TAG = "portal_data";
     public static final String DIMENSION_TAG = "dimension";
@@ -93,7 +94,6 @@ public final class PortalLinkingCard extends Item {
                         currentDimension.getPath()),
                 true
             );
-            return InteractionResult.SUCCESS;
         } else {
             // Second click - link this portal to the stored source
             ResourceLocation sourceDimension = ResourceLocation.parse(portalData.getString(DIMENSION_TAG));
@@ -136,8 +136,8 @@ public final class PortalLinkingCard extends Item {
                 false
             );
 
-            return InteractionResult.SUCCESS;
         }
+        return InteractionResult.SUCCESS;
     }
 
     /**
