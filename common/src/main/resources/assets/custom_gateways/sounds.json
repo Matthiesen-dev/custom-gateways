@@ -1,22 +1,42 @@
 {
   "gateway.teleport.success": {
     "subtitle": "sound.custom_gateways.gateway.teleport.success",
-    "sounds": []
+    "sounds": [
+      {
+        "name": "custom_gateways:gateway/success"
+      }
+    ]
   },
   "gateway.teleport.failure": {
     "subtitle": "sound.custom_gateways.gateway.teleport.failure",
-    "sounds": []
+    "sounds": [
+      {
+        "name": "custom_gateways:gateway/failure"
+      }
+    ]
   },
   "linking_card.set_source": {
     "subtitle": "sound.custom_gateways.linking_card.set_source",
-    "sounds": []
+    "sounds": [
+      {
+        "name": "custom_gateways:linking_card/set_source"
+      }
+    ]
   },
   "linking_card.link_portal": {
     "subtitle": "sound.custom_gateways.linking_card.link_portal",
-    "sounds": []
+    "sounds": [
+      {
+        "name": "custom_gateways:linking_card/linking"
+      }
+    ]
   },
   "linking_card.unlink_portal": {
     "subtitle": "sound.custom_gateways.linking_card.unlink_portal",
-    "sounds": []
+    "sounds": [
+      {
+        "name": "custom_gateways:linking_card/linking"
+      }
+    ]
   }
 }
