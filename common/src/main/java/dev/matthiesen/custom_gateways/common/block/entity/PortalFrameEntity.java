@@ -9,14 +9,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -28,32 +29,21 @@ import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public final class PortalFrameEntity extends BlockEntity implements GeoBlockEntity {
+    private static final long TELEPORT_WARMUP_TICKS = 60L; // 3 seconds at 20 TPS
+    private static final long WARMUP_STALE_TICKS = 5L;
+    private static final Map<UUID, PlayerWarmup> PLAYER_WARMUPS = new HashMap<>();
+
     private boolean IS_LINKED = false;
     private String DIMENSION = "minecraft:overworld";
     private int X = 0;
     private int Y = 0;
     private int Z = 0;
-
-    public void setLinkedCoords(Level level, int x, int y, int z) {
-        DIMENSION = level.dimension().location().toString();
-        this.X = x;
-        this.Y = y;
-        this.Z = z;
-        this.IS_LINKED = true;
-        syncToClient();
-    }
-
-    public void setLinkedCoords(ResourceLocation level, int x, int y, int z) {
-        DIMENSION = level.toString();
-        this.X = x;
-        this.Y = y;
-        this.Z = z;
-        this.IS_LINKED = true;
-        syncToClient();
-    }
 
     public void setLinkedTarget(ResourceLocation dimension, BlockPos targetPos, boolean triggerLinkAnimation) {
         boolean changed = !this.IS_LINKED
@@ -108,18 +98,6 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
 
     public ResourceLocation getLinkedDimension() {
         return ResourceLocation.parse(DIMENSION);
-    }
-
-    public int getLinkedX() {
-        return X;
-    }
-
-    public int getLinkedY() {
-        return Y;
-    }
-
-    public int getLinkedZ() {
-        return Z;
     }
 
     public BlockPos getLinkedPosition() {
@@ -223,20 +201,50 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
 
         // Get all entities in the portal area
         List<Entity> entities = level.getEntities(null, portalBounds);
+        long gameTime = serverLevel.getGameTime();
+
+        cleanupStaleWarmups(gameTime);
+
+        // Resolve target level once for all entities in this portal.
+        ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, linkedPortal.dimension());
+        ServerLevel targetLevel = serverLevel.getServer().getLevel(dimensionKey);
+        if (targetLevel == null) return;
 
         for (Entity entity : entities) {
-            if (entity instanceof Player player && PlayerCooldownTracker.isOnCooldown(player)) {
+            if (entity instanceof ServerPlayer player && PlayerCooldownTracker.isOnCooldown(player)) {
+                PLAYER_WARMUPS.remove(player.getUUID());
                 continue; // Player is on cooldown
             }
 
-            // Get the target level using a proper ResourceKey
-            ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, linkedPortal.dimension());
-            ServerLevel targetLevel = serverLevel.getServer().getLevel(dimensionKey);
-            if (targetLevel == null) continue;
+            if (entity instanceof ServerPlayer player) {
+                PlayerWarmup warmup = PLAYER_WARMUPS.get(player.getUUID());
+                if (warmup == null || !warmup.portalLocation.equals(currentPortal)) {
+                    warmup = new PlayerWarmup(currentPortal, gameTime, gameTime);
+                    PLAYER_WARMUPS.put(player.getUUID(), warmup);
+                } else {
+                    warmup.lastSeenTick = gameTime;
+                }
+
+                long elapsedTicks = gameTime - warmup.startedTick;
+                long remainingTicks = TELEPORT_WARMUP_TICKS - elapsedTicks;
+
+                if (remainingTicks > 0L) {
+                    double remainingSeconds = remainingTicks / 20.0D;
+                    player.sendSystemMessage(Component.literal(String.format("Teleporting in %.1fs", remainingSeconds)), true);
+                    continue;
+                }
+
+                PLAYER_WARMUPS.remove(player.getUUID());
+            }
 
             // Teleport the entity
             PortalTeleporter.teleportEntity(entity, targetLevel, linkedPortal.getBlockPos());
         }
+    }
+
+    private static void cleanupStaleWarmups(long gameTime) {
+        PLAYER_WARMUPS.entrySet().removeIf(entry ->
+                gameTime - entry.getValue().lastSeenTick > WARMUP_STALE_TICKS);
     }
 
     public PortalFrameEntity getMasterEntity(Level level, BlockPos pos) {
@@ -251,6 +259,16 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
         return null;
     }
 
+    private static final class PlayerWarmup {
+        private final PortalRegistry.PortalLocation portalLocation;
+        private final long startedTick;
+        private long lastSeenTick;
 
+        private PlayerWarmup(PortalRegistry.PortalLocation portalLocation, long startedTick, long lastSeenTick) {
+            this.portalLocation = portalLocation;
+            this.startedTick = startedTick;
+            this.lastSeenTick = lastSeenTick;
+        }
+    }
 }
 
