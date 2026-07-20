@@ -27,6 +27,8 @@
   "interaction.custom_gateways.portal_linking_card.unlink.double_crouch_hint": "§7Crouch-use again within §b3s §7to unlink this portal.",
   "interaction.custom_gateways.portal_linking_card.unlink.error.not_linked": "§cThis portal is not currently linked.",
   "interaction.custom_gateways.portal_linking_card.unlink.success": "§6Portal link removed! §aPortal: §b%s §aUnlinked from: §b%s",
+  "interaction.custom_gateways.portal_linking_card.clear.empty": "§7Linking Card has no stored source to clear.",
+  "interaction.custom_gateways.portal_linking_card.clear.success": "§6Linking Card source cleared.",
 
   "interaction.custom_gateways.portal_frame.error.master_block": "Master block not found at %s",
   "interaction.custom_gateways.portal_frame.telported": "§6Teleported to §e%s",

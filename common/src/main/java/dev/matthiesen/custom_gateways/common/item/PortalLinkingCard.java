@@ -1,7 +1,9 @@
 package dev.matthiesen.custom_gateways.common.item;
 
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
+import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
+import dev.matthiesen.custom_gateways.common.registry.SoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -10,14 +12,22 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +45,53 @@ public final class PortalLinkingCard extends Item {
 
     public PortalLinkingCard() {
         super(new Properties().stacksTo(1));
+    }
+
+    @Override
+    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack heldItem = player.getItemInHand(hand);
+
+        if (!player.isCrouching()) {
+            return InteractionResultHolder.pass(heldItem);
+        }
+
+        // Never consume crouch-use on the client; let server process authoritative targeting.
+        if (level.isClientSide) {
+            return InteractionResultHolder.pass(heldItem);
+        }
+
+        // Only allow clearing when crouch-using in open air, not while targeting a block.
+        BlockHitResult blockHitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.NONE);
+        if (blockHitResult.getType() == HitResult.Type.BLOCK) {
+            BlockPos hitPos = blockHitResult.getBlockPos();
+            BlockState hitState = level.getBlockState(hitPos);
+
+            // Handle portal frame crouch-interactions here so unlinking does not depend on block routing order.
+            if (hitState.getBlock() instanceof PortalFrameBlock) {
+                InteractionResult interaction = useOnPortalFrame(level, player, hitPos);
+                if (interaction == InteractionResult.FAIL) {
+                    return InteractionResultHolder.fail(heldItem);
+                }
+                if (interaction.consumesAction()) {
+                    return InteractionResultHolder.success(heldItem);
+                }
+            }
+            return InteractionResultHolder.pass(heldItem);
+        }
+
+
+        CompoundTag tag = heldItem.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        CompoundTag portalData = tag.getCompound(PORTAL_DATA_TAG);
+
+        if (portalData.isEmpty()) {
+            player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.clear.empty"), true);
+            return InteractionResultHolder.success(heldItem);
+        }
+
+        clearStoredPortalData(heldItem, tag);
+        level.playSound(null, player.blockPosition(), SoundRegistry.LINKING_CARD_UNLINK_PORTAL.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+        player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.clear.success"), true);
+        return InteractionResultHolder.success(heldItem);
     }
 
     @Override
@@ -108,6 +165,8 @@ public final class PortalLinkingCard extends Item {
                 clearStoredPortalData(heldItem, tag);
             }
 
+            level.playSound(null, portalPos, SoundRegistry.LINKING_CARD_UNLINK_PORTAL.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+
             player.displayClientMessage(
                 Component.translatable(
                     "interaction.custom_gateways.portal_linking_card.unlink.success",
@@ -130,6 +189,8 @@ public final class PortalLinkingCard extends Item {
 
             tag.put(PORTAL_DATA_TAG, newPortalData);
             heldItem.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+
+            level.playSound(null, portalPos, SoundRegistry.LINKING_CARD_SET_SOURCE.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
 
             player.displayClientMessage(
                 Component.translatable(
@@ -170,6 +231,8 @@ public final class PortalLinkingCard extends Item {
             triggerLinkStateUpdate(level, portalPos, source);
 
             clearStoredPortalData(heldItem, tag);
+
+            level.playSound(null, portalPos, SoundRegistry.LINKING_CARD_LINK_PORTAL.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
 
             player.displayClientMessage(
                 Component.translatable("interaction.custom_gateways.portal_linking_card.link_portal", sourcePos.toShortString(), portalPos.toShortString()),

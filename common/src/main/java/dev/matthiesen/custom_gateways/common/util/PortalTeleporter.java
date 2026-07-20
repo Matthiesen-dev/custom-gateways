@@ -1,9 +1,11 @@
 package dev.matthiesen.custom_gateways.common.util;
 
+import dev.matthiesen.custom_gateways.common.registry.SoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.portal.DimensionTransition;
@@ -25,6 +27,12 @@ public final class PortalTeleporter {
 
         // Find a safe landing spot
         BlockPos safeLandingSpot = PortalValidation.findSafeLandingSpot(targetLevel, targetPos);
+        if (safeLandingSpot == null) {
+            // No safe landing spot found — play failure sound at the destination portal and abort.
+            // TODO: also trigger this for portal blocked/broken state (future feature)
+            targetLevel.playSound(null, targetPos, SoundRegistry.GATEWAY_TELEPORT_FAILURE.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+            return;
+        }
         Vec3 targetVec = Vec3.atCenterOf(safeLandingSpot);
 
         ServerLevel currentLevel = (ServerLevel) entity.level();
@@ -46,6 +54,9 @@ public final class PortalTeleporter {
         // Apply cooldown
         PlayerCooldownTracker.setCooldown(player);
 
+        // Play teleport success sound at the destination
+        targetLevel.playSound(null, safeLandingSpot, SoundRegistry.GATEWAY_TELEPORT_SUCCESS.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+
         // Send feedback message
         player.displayClientMessage(
             Component.translatable("interaction.custom_gateways.portal_frame.telported", safeLocationString(targetLevel.dimension().location(), safeLandingSpot)),
@@ -58,6 +69,10 @@ public final class PortalTeleporter {
      */
     private static void teleportNonPlayer(Entity entity, ServerLevel targetLevel, BlockPos targetPos) {
         BlockPos safeLandingSpot = PortalValidation.findSafeLandingSpot(targetLevel, targetPos);
+        // Fall back to the raw target position if no safe spot is found
+        if (safeLandingSpot == null) {
+            safeLandingSpot = targetPos;
+        }
 
         ServerLevel currentLevel = (ServerLevel) entity.level();
         if (currentLevel == targetLevel) {

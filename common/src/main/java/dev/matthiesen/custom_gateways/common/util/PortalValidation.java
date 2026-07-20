@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Validates and finds safe teleportation destinations
@@ -39,10 +40,11 @@ public final class PortalValidation {
     }
 
     /**
-     * Finds a safe landing spot near the target position
-     * Searches in a small radius and returns the first safe spot found
+     * Finds a safe landing spot near the target position.
+     * Searches in a small radius and returns the first safe spot found,
+     * or {@code null} if no safe spot exists within the search radius.
      */
-    public static BlockPos findSafeLandingSpot(Level level, BlockPos targetPos) {
+    public static @Nullable BlockPos findSafeLandingSpot(Level level, BlockPos targetPos) {
         // First check if the target position is safe
         if (isSafeLandingSpot(level, targetPos)) {
             return targetPos;
@@ -66,8 +68,8 @@ public final class PortalValidation {
             }
         }
 
-        // If no safe spot found, return the target anyway (player might take damage but won't be stuck)
-        return targetPos;
+        // If no safe spot found, return null — caller must handle this case
+        return null;
     }
 }
 
