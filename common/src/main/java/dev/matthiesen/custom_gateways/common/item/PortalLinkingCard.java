@@ -1,9 +1,9 @@
 package dev.matthiesen.custom_gateways.common.item;
 
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
-import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import dev.matthiesen.custom_gateways.common.registry.SoundRegistry;
+import dev.matthiesen.custom_gateways.common.util.PortalLinkTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -66,9 +66,9 @@ public final class PortalLinkingCard extends Item {
             BlockPos hitPos = blockHitResult.getBlockPos();
             BlockState hitState = level.getBlockState(hitPos);
 
-            // Handle portal frame crouch-interactions here so unlinking does not depend on block routing order.
-            if (hitState.getBlock() instanceof PortalFrameBlock) {
-                InteractionResult interaction = useOnPortalFrame(level, player, hitPos);
+            // Handle endpoint crouch-interactions here so unlinking does not depend on block routing order.
+            if (isPortalEndpoint(hitState)) {
+                InteractionResult interaction = useOnPortalEndpoint(level, player, hitPos);
                 if (interaction == InteractionResult.FAIL) {
                     return InteractionResultHolder.fail(heldItem);
                 }
@@ -124,9 +124,9 @@ public final class PortalLinkingCard extends Item {
     }
 
     /**
-     * Called when the card is used on a portal frame block
+     * Called when the card is used on a valid portal endpoint block
      */
-    public static InteractionResult useOnPortalFrame(Level level, Player player, BlockPos portalPos) {
+    public static InteractionResult useOnPortalEndpoint(Level level, Player player, BlockPos portalPos) {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }
@@ -142,6 +142,11 @@ public final class PortalLinkingCard extends Item {
         ResourceLocation currentDimension = level.dimension().location();
         ServerLevel serverLevel = (ServerLevel) level;
         PortalRegistry registry = PortalRegistry.get(serverLevel);
+
+        BlockState currentState = level.getBlockState(portalPos);
+        if (!isPortalEndpoint(currentState)) {
+            return InteractionResult.FAIL;
+        }
 
         PortalRegistry.PortalLocation currentPortal = new PortalRegistry.PortalLocation(currentDimension, portalPos);
         if (player.isCrouching()) {
@@ -180,6 +185,11 @@ public final class PortalLinkingCard extends Item {
 
         // Check if we already have a source portal stored
         if (portalData.isEmpty()) {
+            if (!isPortalLinkSource(currentState)) {
+                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.error.source_must_be_frame"), true);
+                return InteractionResult.FAIL;
+            }
+
             // First click - store this portal as the source
             CompoundTag newPortalData = new CompoundTag();
             newPortalData.putString(DIMENSION_TAG, currentDimension.toString());
@@ -200,6 +210,11 @@ public final class PortalLinkingCard extends Item {
                 true
             );
         } else {
+            if (!isPortalLinkDestination(currentState)) {
+                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.error.invalid_destination"), true);
+                return InteractionResult.FAIL;
+            }
+
             // Second click - link this portal to the stored source
             ResourceLocation sourceDimension = ResourceLocation.parse(portalData.getString(DIMENSION_TAG));
             int sourceX = portalData.getInt(X_TAG);
@@ -207,6 +222,13 @@ public final class PortalLinkingCard extends Item {
             int sourceZ = portalData.getInt(Z_TAG);
 
             BlockPos sourcePos = new BlockPos(sourceX, sourceY, sourceZ);
+            Level sourceLevel = resolveLevel(serverLevel, sourceDimension);
+            BlockState sourceState = sourceLevel.getBlockState(sourcePos);
+            if (!isPortalLinkSource(sourceState)) {
+                clearStoredPortalData(heldItem, tag);
+                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.error.stored_source_invalid"), true);
+                return InteractionResult.FAIL;
+            }
 
             // Check if we're linking to the same portal
             if (sourcePos.equals(portalPos) && sourceDimension.equals(currentDimension)) {
@@ -270,6 +292,18 @@ public final class PortalLinkingCard extends Item {
         ResourceLocation sourceDimension = ResourceLocation.parse(portalData.getString(DIMENSION_TAG));
         BlockPos sourcePos = new BlockPos(portalData.getInt(X_TAG), portalData.getInt(Y_TAG), portalData.getInt(Z_TAG));
         return new PortalRegistry.PortalLocation(sourceDimension, sourcePos);
+    }
+
+    private static boolean isPortalEndpoint(BlockState state) {
+        return isPortalLinkSource(state) || isPortalLinkDestination(state);
+    }
+
+    private static boolean isPortalLinkSource(BlockState state) {
+        return state.is(PortalLinkTags.PORTAL_LINK_SOURCES);
+    }
+
+    private static boolean isPortalLinkDestination(BlockState state) {
+        return state.is(PortalLinkTags.PORTAL_LINK_DESTINATIONS);
     }
 
     private static Level resolveLevel(ServerLevel currentLevel, ResourceLocation dimension) {

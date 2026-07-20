@@ -1,5 +1,6 @@
 {
   "block.custom_gateways.portal_frame": "Portal Frame",
+  "block.custom_gateways.portal_pad": "Portal Pad",
 
   "item.custom_gateways.portal_linking_card": "Portal Linking Card",
 
@@ -12,8 +13,10 @@
   "tooltip.custom_gateways.portal_linking_card.linked.status": "§7Status: §aSource portal set",
   "tooltip.custom_gateways.portal_linking_card.linked.dimension": "§7Dimension: §b%s",
   "tooltip.custom_gateways.portal_linking_card.linked.position": "§7Position: §e%s, %s, %s",
-  "tooltip.custom_gateways.portal_linking_card.linked.action": "§7Right-click a §6Portal Frame §7to link.",
-  "tooltip.custom_gateways.portal_linking_card.unlink_action": "§7Crouch-use twice (within 3s) on a linked §6Portal Frame §7to unlink.",
+  "tooltip.custom_gateways.portal_linking_card.linked.action": "§7Right-click a §6Portal Frame §7or §6Portal Pad §7to link.",
+  "tooltip.custom_gateways.portal_linking_card.unlink_action": "§7Crouch-use twice (within 3s) on a linked §6Portal Frame §7or §6Portal Pad §7to unlink.",
+
+  "tooltip.custom_gateways.portal_pad.destination_only": "§6Destination only: §7cannot be used as a teleport source.",
 
   "tooltip.custom_gateways.portal_frame.linked": "Portal is Linked",
   "tooltip.custom_gateways.portal_frame.linked.position": "Position: %s",
@@ -24,6 +27,9 @@
   "interaction.custom_gateways.portal_linking_card.link_portal": "§6Portals linked! §aSource: §b%s §aDest: §b%s",
   "interaction.custom_gateways.portal_linking_card.error.self_link": "§cCannot link a portal to itself!",
   "interaction.custom_gateways.portal_linking_card.error.already_linked": "§cOne of these portals is already linked. Unlink it before relinking.",
+  "interaction.custom_gateways.portal_linking_card.error.source_must_be_frame": "§cSource must be a §6Portal Frame§c. Portal Pads are destination-only.",
+  "interaction.custom_gateways.portal_linking_card.error.invalid_destination": "§cThis block cannot be used as a link destination.",
+  "interaction.custom_gateways.portal_linking_card.error.stored_source_invalid": "§cStored source is no longer a valid source endpoint. Source cleared.",
   "interaction.custom_gateways.portal_linking_card.unlink.double_crouch_hint": "§7Crouch-use again within §b3s §7to unlink this portal.",
   "interaction.custom_gateways.portal_linking_card.unlink.error.not_linked": "§cThis portal is not currently linked.",
   "interaction.custom_gateways.portal_linking_card.unlink.success": "§6Portal link removed! §aPortal: §b%s §aUnlinked from: §b%s",
@@ -34,6 +40,7 @@
   "interaction.custom_gateways.portal_frame.telported": "§6Teleported to §e%s",
 
   "config.jade.plugin_custom_gateways.portal_frame": "Portal Frame",
+  "config.jade.plugin_custom_gateways.portal_pad": "Portal Pad",
 
   "sound.custom_gateways.gateway.teleport.success": "Gateway Teleport Success",
   "sound.custom_gateways.gateway.teleport.failure": "Gateway Teleport Failure",

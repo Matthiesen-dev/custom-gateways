@@ -100,6 +100,10 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
         return IS_LINKED;
     }
 
+    public boolean isSlave() {
+        return getBlockState().getValue(PortalFrameBlock.IS_SLAVE);
+    }
+
     public ResourceLocation getLinkedDimension() {
         return ResourceLocation.parse(DIMENSION);
     }

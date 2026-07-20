@@ -3,6 +3,7 @@ package dev.matthiesen.custom_gateways.common.registry;
 import dev.matthiesen.common.matthiesen_lib.registry.AbstractBlockEntityRegistry;
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
+import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,10 +23,13 @@ public final class BlockEntityRegistry extends AbstractBlockEntityRegistry {
     public static void init() {}
 
     public static final Supplier<BlockEntityType<PortalFrameEntity>> PORTAL_FRAME_BE;
+    public static final Supplier<BlockEntityType<PortalPadEntity>> PORTAL_PAD_BE;
 
     static {
         PORTAL_FRAME_BE = registerBlockEntity("portal_frame", () ->
                 buildType(PortalFrameEntity::new, BlockRegistry.PORTAL_FRAME));
+        PORTAL_PAD_BE = registerBlockEntity("portal_pad", () ->
+                buildType(PortalPadEntity::new, BlockRegistry.PORTAL_PAD));
     }
 
     @SuppressWarnings("SameParameterValue")

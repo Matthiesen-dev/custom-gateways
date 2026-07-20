@@ -3,9 +3,10 @@ package dev.matthiesen.custom_gateways.common;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.matthiesen.common.matthiesen_lib.abstracts.AbstractCommonClientMod;
 import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
-import dev.matthiesen.custom_gateways.common.client.renderer.block.PortalFrameBlockRenderer;
-import dev.matthiesen.custom_gateways.common.client.renderer.item.PortalFrameItemRenderer;
-import dev.matthiesen.custom_gateways.common.item.PortalFrameItem;
+import dev.matthiesen.custom_gateways.common.client.geckolib.PortalFrameBlockRenderer;
+import dev.matthiesen.custom_gateways.common.client.geckolib.PortalPadBlockRenderer;
+import dev.matthiesen.custom_gateways.common.client.geckolib.PortalFrameItemRenderer;
+import dev.matthiesen.custom_gateways.common.client.geckolib.PortalPadItemRenderer;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import dev.matthiesen.custom_gateways.common.registry.BlockRegistry;
 import dev.matthiesen.custom_gateways.common.registry.ItemRegistry;
@@ -16,11 +17,13 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 
@@ -39,10 +42,14 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
     public void registerRenderers() {
         CustomGatewaysCommonClient.INSTANCE.createInfoLog("Registering Renderers");
 
-        ItemRegistry.PORTAL_FRAME.get().renderProviderHolder.setValue(makeRendererProvider(new PortalFrameItemRenderer()));
+        ItemRegistry.PORTAL_FRAME.get().renderProviderHolder.setValue(makeRendererProvider(new PortalFrameItemRenderer().getRenderer()));
+        ItemRegistry.PORTAL_PAD.get().renderProviderHolder.setValue(makeRendererProvider(new PortalPadItemRenderer().getRenderer()));
 
         INSTANCE.registerEntityRenderers(registry ->
-                registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> new PortalFrameBlockRenderer())
+                {
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> new PortalFrameBlockRenderer().getRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_PAD_BE.get(), context -> new PortalPadBlockRenderer().getRenderer());
+                }
         );
 
         INSTANCE.registerBlockOutlineListener(context -> {
@@ -83,10 +90,14 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
             }
         }
 
+        if (hitState.is(BlockRegistry.PORTAL_PAD.get())) {
+            return hitPos;
+        }
+
         return null;
     }
 
-    private static <T extends PortalFrameItem> GeoRenderProvider makeRendererProvider(GeoItemRenderer<T> renderer) {
+    private static <T extends Item & GeoItem> GeoRenderProvider makeRendererProvider(GeoItemRenderer<T> renderer) {
         return new GeoRenderProvider() {
             private BlockEntityWithoutLevelRenderer itemRenderer;
 

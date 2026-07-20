@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -64,7 +65,9 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
     private final VoxelShape collisionShape;
 
     public PortalFrameBlock() {
-        super(Properties.of().noOcclusion());
+        super(BlockBehaviour.Properties.of().noOcclusion()
+                .strength(4f)
+                .requiresCorrectToolForDrops());
         this.registerDefaultState(this.stateDefinition.any().setValue(IS_SLAVE, false).setValue(FACING, Direction.NORTH));
         this.baseShape = createShape();
         this.collisionShape = createCollisionShape();
@@ -125,7 +128,7 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
         // Check if player is holding a linking card
         ItemStack heldItem = player.getMainHandItem();
         if (heldItem.getItem() instanceof PortalLinkingCard) {
-            return PortalLinkingCard.useOnPortalFrame(level, player, blockPos);
+            return PortalLinkingCard.useOnPortalEndpoint(level, player, blockPos);
         }
 
         return InteractionResult.SUCCESS;
@@ -214,6 +217,8 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
                 }
             }
         }
+
+        super.onRemove(blockState, level, blockPos, blockState2, bl);
     }
 
     @Override
