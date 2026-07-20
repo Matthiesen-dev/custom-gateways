@@ -49,7 +49,7 @@ public final class PortalTeleporter {
         // Send feedback message
         player.displayClientMessage(
             Component.translatable("interaction.custom_gateways.portal_frame.telported", safeLocationString(targetLevel.dimension().location(), safeLandingSpot)),
-            false
+            true
         );
     }
 

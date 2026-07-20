@@ -105,7 +105,7 @@ public final class PortalLinkingCard extends Item {
 
             // Check if we're linking to the same portal
             if (sourcePos.equals(portalPos) && sourceDimension.equals(currentDimension)) {
-                player.displayClientMessage(Component.literal("interaction.custom_gateways.portal_linking_card.error.self_link"), true);
+                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.error.self_link"), true);
                 return InteractionResult.FAIL;
             }
 
@@ -138,35 +138,6 @@ public final class PortalLinkingCard extends Item {
 
         }
         return InteractionResult.SUCCESS;
-    }
-
-    /**
-     * Gets the stored portal location from the card, or null if none stored
-     */
-    public static PortalRegistry.PortalLocation getStoredPortal(ItemStack card) {
-        if (!(card.getItem() instanceof PortalLinkingCard)) {
-            return null;
-        }
-
-        CompoundTag tag = card.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-        if (!tag.contains(PORTAL_DATA_TAG)) {
-            return null;
-        }
-
-        CompoundTag portalData = tag.getCompound(PORTAL_DATA_TAG);
-        if (portalData.isEmpty()) {
-            return null;
-        }
-
-        try {
-            ResourceLocation dimension = ResourceLocation.parse(portalData.getString(DIMENSION_TAG));
-            int x = portalData.getInt(X_TAG);
-            int y = portalData.getInt(Y_TAG);
-            int z = portalData.getInt(Z_TAG);
-            return new PortalRegistry.PortalLocation(dimension, x, y, z);
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     private static void triggerLinkStateUpdate(Level level, BlockPos portalPos, PortalRegistry.PortalLocation target) {
