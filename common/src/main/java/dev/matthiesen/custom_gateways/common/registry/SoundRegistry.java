@@ -15,11 +15,11 @@ public final class SoundRegistry extends AbstractSoundRegistry {
 
     public static void init() {}
 
-    public static Supplier<SoundEvent> GATEWAY_TELEPORT_SUCCESS;
-    public static Supplier<SoundEvent> GATEWAY_TELEPORT_FAILURE;
-    public static Supplier<SoundEvent> LINKING_CARD_SET_SOURCE;
-    public static Supplier<SoundEvent> LINKING_CARD_LINK_PORTAL;
-    public static Supplier<SoundEvent> LINKING_CARD_UNLINK_PORTAL;
+    public static final Supplier<SoundEvent> GATEWAY_TELEPORT_SUCCESS;
+    public static final Supplier<SoundEvent> GATEWAY_TELEPORT_FAILURE;
+    public static final Supplier<SoundEvent> LINKING_CARD_SET_SOURCE;
+    public static final Supplier<SoundEvent> LINKING_CARD_LINK_PORTAL;
+    public static final Supplier<SoundEvent> LINKING_CARD_UNLINK_PORTAL;
 
     static {
         GATEWAY_TELEPORT_SUCCESS = INSTANCE.register("gateway_teleport_success", () ->

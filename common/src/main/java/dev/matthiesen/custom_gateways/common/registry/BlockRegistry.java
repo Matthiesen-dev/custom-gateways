@@ -13,7 +13,11 @@ public final class BlockRegistry extends AbstractBlockRegistry {
         super(CustomGatewaysCommon.MOD_ID);
     }
 
-    public static Supplier<PortalFrameBlock> PORTAL_FRAME = INSTANCE.register("portal_frame", PortalFrameBlock::new);
-
     public static void init() {}
+
+    public static final Supplier<PortalFrameBlock> PORTAL_FRAME;
+
+    static {
+        PORTAL_FRAME = INSTANCE.register("portal_frame", PortalFrameBlock::new);
+    }
 }

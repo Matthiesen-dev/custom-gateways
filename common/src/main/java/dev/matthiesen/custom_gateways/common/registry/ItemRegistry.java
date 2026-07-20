@@ -16,8 +16,15 @@ public final class ItemRegistry extends AbstractItemRegistry {
         super(CustomGatewaysCommon.MOD_ID);
     }
 
-    public static final Supplier<PortalFrameItem> PORTAL_FRAME = INSTANCE.register("portal_frame", PortalFrameItem::new);
-    public static final Supplier<PortalLinkingCard> PORTAL_LINKING_CARD = INSTANCE.register("portal_linking_card", PortalLinkingCard::new);
+    public static void init() {}
+
+    public static final Supplier<PortalFrameItem> PORTAL_FRAME;
+    public static final Supplier<PortalLinkingCard> PORTAL_LINKING_CARD;
+
+    static {
+        PORTAL_FRAME = INSTANCE.register("portal_frame", PortalFrameItem::new);
+        PORTAL_LINKING_CARD = INSTANCE.register("portal_linking_card", PortalLinkingCard::new);
+    }
 
     public static Supplier<ItemStack> getCreativeModeTabIcon() {
         return () -> new ItemStack(PORTAL_FRAME.get());
@@ -27,6 +34,4 @@ public final class ItemRegistry extends AbstractItemRegistry {
         builder.addItemToSection(CreativeModeTabRegistry.PORTAL_FRAMES_SECTION_ID, new ItemStack(PORTAL_FRAME.get()));
         builder.addItemToSection(CreativeModeTabRegistry.PORTAL_TOOLS_SECTION_ID, new ItemStack(PORTAL_LINKING_CARD.get()));
     }
-
-    public static void init() {}
 }

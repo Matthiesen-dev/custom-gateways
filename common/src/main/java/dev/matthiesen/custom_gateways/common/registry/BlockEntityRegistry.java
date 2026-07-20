@@ -19,14 +19,16 @@ public final class BlockEntityRegistry extends AbstractBlockEntityRegistry {
         super(CustomGatewaysCommon.MOD_ID);
     }
 
+    public static void init() {}
+
     public static final Supplier<BlockEntityType<PortalFrameEntity>> PORTAL_FRAME_BE;
 
     static {
-        PORTAL_FRAME_BE = registerBlockEntity("portal_frame", () -> buildType(PortalFrameEntity::new, BlockRegistry.PORTAL_FRAME));
+        PORTAL_FRAME_BE = registerBlockEntity("portal_frame", () ->
+                buildType(PortalFrameEntity::new, BlockRegistry.PORTAL_FRAME));
     }
 
-    public static void init() {}
-
+    @SuppressWarnings("SameParameterValue")
     private static <T extends BlockEntity> BlockEntityType<T> buildType(
             BiFunction<BlockPos, BlockState, T> entityFactory,
             Supplier<? extends Block> supplier

@@ -11,15 +11,15 @@ import java.util.function.Supplier;
 public final class CreativeModeTabRegistry extends AbstractCreativeModeTabRegistry {
     private static final CreativeModeTabRegistry INSTANCE = new CreativeModeTabRegistry();
 
-    private static final ResourceLocation PORTAL_FRAME_TAB_ID = CustomGatewaysCommon.modResource("portal_frame_tab");
-    public static final ResourceLocation PORTAL_FRAMES_SECTION_ID = CustomGatewaysCommon.modResource("portal_frames_section");
-    public static final ResourceLocation PORTAL_TOOLS_SECTION_ID = CustomGatewaysCommon.modResource("portal_tools_section");
-
     private CreativeModeTabRegistry() {
         super(CustomGatewaysCommon.MOD_ID);
     }
 
     public static void init() {}
+
+    public static final ResourceLocation PORTAL_FRAME_TAB_ID = CustomGatewaysCommon.modResource("portal_frame_tab");
+    public static final ResourceLocation PORTAL_FRAMES_SECTION_ID = CustomGatewaysCommon.modResource("portal_frames_section");
+    public static final ResourceLocation PORTAL_TOOLS_SECTION_ID = CustomGatewaysCommon.modResource("portal_tools_section");
 
     public static final Supplier<CreativeModeTab> PORTAL_FRAMES_TAB;
 
