@@ -1,0 +1,47 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.portal_pad",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "portal_pad",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{
+							"origin": [-10, 0, -10],
+							"size": [20, 1, 20],
+							"uv": {
+								"north": {"uv": [20, 32], "uv_size": [20, 1]},
+								"east": {"uv": [20, 33], "uv_size": [20, 1]},
+								"south": {"uv": [20, 34], "uv_size": [20, 1]},
+								"west": {"uv": [20, 35], "uv_size": [20, 1]},
+								"up": {"uv": [0, 0], "uv_size": [20, 20]},
+								"down": {"uv": [0, 40], "uv_size": [20, -20]}
+							}
+						},
+						{
+							"origin": [-8, 1, -8],
+							"size": [16, 1, 16],
+							"uv": {
+								"north": {"uv": [36, 0], "uv_size": [16, 1]},
+								"east": {"uv": [36, 1], "uv_size": [16, 1]},
+								"south": {"uv": [36, 2], "uv_size": [16, 1]},
+								"west": {"uv": [36, 3], "uv_size": [16, 1]},
+								"up": {"uv": [20, 0], "uv_size": [16, 16]},
+								"down": {"uv": [20, 32], "uv_size": [16, -16]}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}
