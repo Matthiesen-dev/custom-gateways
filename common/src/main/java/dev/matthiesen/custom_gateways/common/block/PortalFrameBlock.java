@@ -128,9 +128,6 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
             return PortalLinkingCard.useOnPortalFrame(level, player, blockPos);
         }
 
-        // Default message if no linking card
-        // TODO Remove default message
-        player.sendSystemMessage(Component.literal("Master block clicked at " + blockPos.toShortString()));
         return InteractionResult.SUCCESS;
     }
 
