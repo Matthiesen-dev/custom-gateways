@@ -8,8 +8,11 @@ import dev.matthiesen.custom_gateways.common.item.PortalLinkingCard;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -28,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -39,35 +43,67 @@ import java.util.Map;
 
 public final class PortalFrameBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final BooleanProperty IS_SLAVE = BooleanProperty.create("is_slave");
+    private static final double PARTICLE_MAX_DISTANCE = 28.0D;
+    private static final int MAX_PARTICLES_PER_TICK = 4;
+    private static final double TARGET_Y_OFFSET = 1.0D;
+    private static final double OPENING_HALF_WIDTH = 0.42D;
+    private static final double OPENING_MIN_Y = 0.15D;
+    private static final double OPENING_MAX_Y = 1.95D;
+    private static final double EDGE_MIN_LATERAL = 0.50D;
+    private static final double EDGE_MAX_LATERAL = 0.68D;
+    private static final double TOP_MIN_Y = 1.95D;
+    private static final double TOP_MAX_Y = 2.22D;
+    private static final double BOTTOM_MIN_Y = 0.02D;
+    private static final double BOTTOM_MAX_Y = 0.22D;
+    private static final double EDGE_DEPTH_VARIANCE = 0.18D;
+    private static final double CENTER_DEPTH_VARIANCE = 0.10D;
+    private static final float EDGE_SPAWN_CHANCE = 0.65F;
 
     private final Map<Direction, VoxelShape> shapes = Maps.newEnumMap(Direction.class);
     private final VoxelShape baseShape;
+    private final VoxelShape collisionShape;
 
     public PortalFrameBlock() {
         super(Properties.of().noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(IS_SLAVE, false).setValue(FACING, Direction.NORTH));
         this.baseShape = createShape();
+        this.collisionShape = createCollisionShape();
         initializeShapes();
     }
 
     private VoxelShape createShape() {
         VoxelShape shape = Shapes.empty();
-        shape = Shapes.join(shape, Shapes.box(0.0625, 0, 0.0625, 0.9375, 0.0625, 0.9375), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.1875, 0.0625, 0.1875, 0.8125, 0.125, 0.8125), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.8125, 0.0625, 0.4375, 0.9375, 0.375, 0.5625), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.0625, 0.0625, 0.4375, 0.1875, 0.375, 0.5625), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.84375, 0.0625, 0.1875, 0.90625, 0.4375, 0.25), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.09375, 0.0625, 0.1875, 0.15625, 0.4375, 0.25), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.09375, 0.0625, 0.75, 0.15625, 0.4375, 0.8125), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.84375, 0.0625, 0.75, 0.90625, 0.4375, 0.8125), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.09375, 0.4375, 0.46875, 0.15625, 0.5, 0.53125), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.84375, 0.4375, 0.46875, 0.90625, 0.5, 0.53125), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.1875, 0.125, 0.5, 0.8125, 1.4375, 0.5), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.09375, 0.59375, 0.46875, 0.15625, 1.4375, 0.53125), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.84375, 0.59375, 0.46875, 0.90625, 1.4375, 0.53125), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.84375, 1.46875, 0.46875, 0.90625, 1.53125, 0.53125), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.09375, 1.46875, 0.46875, 0.15625, 1.53125, 0.53125), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.1875, 1.46875, 0.46875, 0.8125, 1.53125, 0.53125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.19562500000000005, 0, -0.19562500000000005, 1.1956250000000002, 0.099375, 1.1956250000000002), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.003124999999999989, 0.099375, 0.003124999999999989, 0.996875, 0.19875, 0.996875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.996875, 0.099375, 0.400625, 1.1956250000000002, 0.5962500000000001, 0.599375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.19562500000000005, 0.099375, 0.400625, 0.003124999999999989, 0.5962500000000001, 0.599375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(1.0465625, 0.099375, 0.003124999999999989, 1.1459375, 0.695625, 0.10249999999999998), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.14593750000000005, 0.099375, 0.003124999999999989, -0.04656250000000006, 0.695625, 0.10249999999999998), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.14593750000000005, 0.099375, 0.8975, -0.04656250000000006, 0.695625, 0.996875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(1.0465625, 0.099375, 0.8975, 1.1459375, 0.695625, 0.996875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.14593750000000005, 0.695625, 0.4503125, -0.04656250000000006, 0.795, 0.5496875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(1.0465625, 0.695625, 0.4503125, 1.1459375, 0.795, 0.5496875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.003124999999999989, 0.19875, 0.5, 0.996875, 2.285625, 0.5), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.14593750000000005, 0.9440625, 0.4503125, -0.04656250000000006, 2.285625, 0.5496875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(1.0465625, 0.9440625, 0.4503125, 1.1459375, 2.285625, 0.5496875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(1.0465625, 2.3353125, 0.4503125, 1.1459375, 2.4346875000000003, 0.5496875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.14593750000000005, 2.3353125, 0.4503125, -0.04656250000000006, 2.4346875000000003, 0.5496875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.003124999999999989, 2.3353125, 0.4503125, 0.996875, 2.4346875000000003, 0.5496875), BooleanOp.OR);
+        return shape;
+    }
+
+    private VoxelShape createCollisionShape() {
+        VoxelShape shape = Shapes.empty();
+        shape = Shapes.join(shape, Shapes.box(-0.19562500000000005, 0, -0.19562500000000005, 1.1956250000000002, 0.099375, 1.1956250000000002), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.003124999999999989, 0.099375, 0.003124999999999989, 0.996875, 0.19875, 0.996875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.996875, 0.099375, 0.400625, 1.1956250000000002, 0.5962500000000001, 0.599375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.19562500000000005, 0.099375, 0.400625, 0.003124999999999989, 0.5962500000000001, 0.599375), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(1.0465625, 0.099375, 0.003124999999999989, 1.1459375, 0.695625, 0.10249999999999998), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.14593750000000005, 0.099375, 0.003124999999999989, -0.04656250000000006, 0.695625, 0.10249999999999998), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.14593750000000005, 0.099375, 0.8975, -0.04656250000000006, 0.695625, 0.996875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(1.0465625, 0.099375, 0.8975, 1.1459375, 0.695625, 0.996875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.14593750000000005, 0.695625, 0.4503125, -0.04656250000000006, 0.795, 0.5496875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(1.0465625, 0.695625, 0.4503125, 1.1459375, 0.795, 0.5496875), BooleanOp.OR);
         return shape;
     }
 
@@ -220,7 +256,105 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
 
     @Override
     protected @NotNull VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return Shapes.empty();
+        if (blockState.getValue(IS_SLAVE)) {
+            return Shapes.empty();
+        }
+        return collisionShape;
+    }
+
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        if (state.getValue(IS_SLAVE)) return;
+
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (!(blockEntity instanceof PortalFrameEntity portalFrameEntity) || !portalFrameEntity.isLinked()) {
+            return;
+        }
+
+        double targetX = pos.getX() + 0.5D;
+        double targetY = pos.getY() + TARGET_Y_OFFSET;
+        double targetZ = pos.getZ() + 0.5D;
+
+        double maxDistanceSqr = PARTICLE_MAX_DISTANCE * PARTICLE_MAX_DISTANCE;
+        boolean hasNearbyPlayer = false;
+        for (Player player : level.players()) {
+            if (player.distanceToSqr(targetX, targetY, targetZ) <= maxDistanceSqr) {
+                hasNearbyPlayer = true;
+                break;
+            }
+        }
+        if (!hasNearbyPlayer) {
+            return;
+        }
+
+        Direction facing = state.getValue(FACING);
+        Vec3 normal = new Vec3(facing.getStepX(), 0.0D, facing.getStepZ());
+        Vec3 lateralAxis = new Vec3(facing.getClockWise().getStepX(), 0.0D, facing.getClockWise().getStepZ());
+
+        int particleCount = 1 + random.nextInt(MAX_PARTICLES_PER_TICK);
+        for (int i = 0; i < particleCount; i++) {
+            double lateral;
+            double height;
+            double depth;
+
+            if (random.nextFloat() < EDGE_SPAWN_CHANCE) {
+                depth = randomBetween(random, -EDGE_DEPTH_VARIANCE, EDGE_DEPTH_VARIANCE);
+
+                if (random.nextBoolean()) {
+                    // Side pillars around the gateway opening.
+                    double side = random.nextBoolean() ? 1.0D : -1.0D;
+                    lateral = side * randomBetween(random, EDGE_MIN_LATERAL, EDGE_MAX_LATERAL);
+                    height = randomBetween(random, OPENING_MIN_Y, TOP_MAX_Y);
+                } else {
+                    // Top/bottom frame bars to make the effect surround the gateway.
+                    lateral = randomBetween(random, -EDGE_MAX_LATERAL, EDGE_MAX_LATERAL);
+                    if (random.nextBoolean()) {
+                        height = randomBetween(random, TOP_MIN_Y, TOP_MAX_Y);
+                    } else {
+                        height = randomBetween(random, BOTTOM_MIN_Y, BOTTOM_MAX_Y);
+                    }
+                }
+            } else {
+                lateral = randomBetween(random, -OPENING_HALF_WIDTH, OPENING_HALF_WIDTH);
+                height = randomBetween(random, OPENING_MIN_Y, OPENING_MAX_Y);
+                depth = randomBetween(random, -CENTER_DEPTH_VARIANCE, CENTER_DEPTH_VARIANCE);
+            }
+
+            double spawnX = targetX + lateralAxis.x * lateral + normal.x * depth;
+            double spawnY = pos.getY() + height;
+            double spawnZ = targetZ + lateralAxis.z * lateral + normal.z * depth;
+
+            double dx = targetX - spawnX;
+            double dy = targetY - spawnY;
+            double dz = targetZ - spawnZ;
+            double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            if (distance < 1.0E-4D) {
+                continue;
+            }
+
+            double speed = randomBetween(random, 0.015D, 0.035D);
+            double jitter = 0.004D;
+            double velocityX = dx / distance * speed + randomBetween(random, -jitter, jitter);
+            double velocityY = dy / distance * speed + randomBetween(random, -jitter, jitter);
+            double velocityZ = dz / distance * speed + randomBetween(random, -jitter, jitter);
+
+            level.addParticle(pickGatewayParticle(random), spawnX, spawnY, spawnZ, velocityX, velocityY, velocityZ);
+        }
+    }
+
+    private static ParticleOptions pickGatewayParticle(RandomSource random) {
+        float roll = random.nextFloat();
+        if (roll < 0.4F) {
+            return ParticleTypes.ENCHANT;
+        }
+        if (roll < 0.8F) {
+            return ParticleTypes.PORTAL;
+        }
+        return ParticleTypes.END_ROD;
+    }
+
+    private static double randomBetween(RandomSource random, double min, double max) {
+        return min + (max - min) * random.nextDouble();
     }
 
     private static VoxelShape calculateRotation(Direction direction, VoxelShape base) {
