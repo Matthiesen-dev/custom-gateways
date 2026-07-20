@@ -1,6 +1,7 @@
 package dev.matthiesen.custom_gateways.common.util;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,7 +19,10 @@ public final class PortalValidation {
         BlockPos belowPos = pos.below();
         BlockState belowState = level.getBlockState(belowPos);
 
-        if (!belowState.isSolid() && belowState.getBlock() != Blocks.SCAFFOLDING) {
+        boolean hasSupportBelow = belowState.isFaceSturdy(level, belowPos, Direction.UP)
+                || belowState.getBlock() == Blocks.SCAFFOLDING;
+
+        if (!hasSupportBelow) {
             return false;
         }
 
@@ -27,15 +31,11 @@ public final class PortalValidation {
         BlockState aboveHeadState = level.getBlockState(pos.above());
 
         // These blocks must not be solid so the player can occupy them
-        if (headState.isSolid()) {
+        if (!headState.getCollisionShape(level, pos).isEmpty()) {
             return false;
         }
 
-        if (aboveHeadState.isSolid()) {
-            return false;
-        }
-
-        return true;
+        return aboveHeadState.getCollisionShape(level, pos.above()).isEmpty();
     }
 
     /**
@@ -68,24 +68,6 @@ public final class PortalValidation {
 
         // If no safe spot found, return the target anyway (player might take damage but won't be stuck)
         return targetPos;
-    }
-
-    /**
-     * Gets the ground level Y coordinate for a position
-     */
-    public static int findGroundLevel(Level level, BlockPos pos) {
-        BlockPos searchPos = pos;
-
-        // Search downwards for a solid block
-        for (int y = pos.getY(); y >= level.getMinBuildHeight(); y--) {
-            BlockState state = level.getBlockState(searchPos);
-            if (state.isSolid() || state.getBlock() == Blocks.SCAFFOLDING) {
-                return y + 1; // Return position above solid block
-            }
-            searchPos = searchPos.below();
-        }
-
-        return level.getMinBuildHeight(); // Fallback to minimum height
     }
 }
 

@@ -273,14 +273,7 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
         double targetZ = pos.getZ() + 0.5D;
 
         double maxDistanceSqr = PARTICLE_MAX_DISTANCE * PARTICLE_MAX_DISTANCE;
-        boolean hasNearbyPlayer = false;
-        for (Player player : level.players()) {
-            if (player.distanceToSqr(targetX, targetY, targetZ) <= maxDistanceSqr) {
-                hasNearbyPlayer = true;
-                break;
-            }
-        }
-        if (!hasNearbyPlayer) {
+        if (!portalFrameEntity.hasNearbyPlayerCached(level, targetX, targetY, targetZ, maxDistanceSqr)) {
             return;
         }
 

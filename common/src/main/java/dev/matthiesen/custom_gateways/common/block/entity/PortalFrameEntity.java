@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -37,6 +38,7 @@ import java.util.UUID;
 public final class PortalFrameEntity extends BlockEntity implements GeoBlockEntity {
     private static final long TELEPORT_WARMUP_TICKS = 60L; // 3 seconds at 20 TPS
     private static final long WARMUP_STALE_TICKS = 5L;
+    private static final long NEARBY_PLAYER_CHECK_INTERVAL_TICKS = 20L;
     private static final Map<UUID, PlayerWarmup> PLAYER_WARMUPS = new HashMap<>();
 
     private boolean IS_LINKED = false;
@@ -44,6 +46,8 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
     private int X = 0;
     private int Y = 0;
     private int Z = 0;
+    private long lastNearbyPlayerCheckTick = Long.MIN_VALUE;
+    private boolean hasNearbyPlayerCache = false;
 
     public void setLinkedTarget(ResourceLocation dimension, BlockPos targetPos, boolean triggerLinkAnimation) {
         boolean changed = !this.IS_LINKED
@@ -102,6 +106,23 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
 
     public BlockPos getLinkedPosition() {
         return new BlockPos(X, Y, Z);
+    }
+
+    public boolean hasNearbyPlayerCached(Level level, double targetX, double targetY, double targetZ, double maxDistanceSqr) {
+        long gameTime = level.getGameTime();
+        if (gameTime < this.lastNearbyPlayerCheckTick
+            || gameTime - this.lastNearbyPlayerCheckTick >= NEARBY_PLAYER_CHECK_INTERVAL_TICKS) {
+            this.hasNearbyPlayerCache = false;
+            for (Player player : level.players()) {
+                if (player.distanceToSqr(targetX, targetY, targetZ) <= maxDistanceSqr) {
+                    this.hasNearbyPlayerCache = true;
+                    break;
+                }
+            }
+            this.lastNearbyPlayerCheckTick = gameTime;
+        }
+
+        return this.hasNearbyPlayerCache;
     }
 
     private static final RawAnimation IDLE_ANIM = RawAnimation.begin()
