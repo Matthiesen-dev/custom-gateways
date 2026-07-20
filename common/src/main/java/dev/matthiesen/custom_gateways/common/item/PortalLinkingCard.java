@@ -4,9 +4,12 @@ import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -16,7 +19,10 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public final class PortalLinkingCard extends Item {
     public static final String PORTAL_DATA_TAG = "portal_data";
@@ -24,6 +30,8 @@ public final class PortalLinkingCard extends Item {
     public static final String X_TAG = "x";
     public static final String Y_TAG = "y";
     public static final String Z_TAG = "z";
+    private static final long DOUBLE_CROUCH_WINDOW_TICKS = 60L; // 3 seconds at 20 TPS
+    private static final Map<UUID, Long> LAST_CROUCH_USE_TICKS = new HashMap<>();
 
     public PortalLinkingCard() {
         super(new Properties().stacksTo(1));
@@ -54,6 +62,7 @@ public final class PortalLinkingCard extends Item {
             tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.linked.dimension", dimShort));
             tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.linked.position", x, y, z));
             tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.linked.action"));
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.unlink_action"));
         }
     }
 
@@ -74,6 +83,41 @@ public final class PortalLinkingCard extends Item {
         CompoundTag tag = heldItem.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         CompoundTag portalData = tag.getCompound(PORTAL_DATA_TAG);
         ResourceLocation currentDimension = level.dimension().location();
+        ServerLevel serverLevel = (ServerLevel) level;
+        PortalRegistry registry = PortalRegistry.get(serverLevel);
+
+        PortalRegistry.PortalLocation currentPortal = new PortalRegistry.PortalLocation(currentDimension, portalPos);
+        if (player.isCrouching()) {
+            if (!isDoubleCrouchUse(serverLevel, player)) {
+                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.unlink.double_crouch_hint"), true);
+                return InteractionResult.SUCCESS;
+            }
+
+            PortalRegistry.PortalLocation linkedPortal = registry.getLinkedPortal(currentPortal);
+            if (linkedPortal == null) {
+                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.unlink.error.not_linked"), true);
+                return InteractionResult.FAIL;
+            }
+
+            registry.removePortal(currentPortal);
+            clearLinkState(level, portalPos);
+            clearLinkState(resolveLevel(serverLevel, linkedPortal.dimension()), linkedPortal.getBlockPos());
+
+            PortalRegistry.PortalLocation storedSource = getStoredSourceLocation(portalData);
+            if (storedSource != null && (storedSource.equals(currentPortal) || storedSource.equals(linkedPortal))) {
+                clearStoredPortalData(heldItem, tag);
+            }
+
+            player.displayClientMessage(
+                Component.translatable(
+                    "interaction.custom_gateways.portal_linking_card.unlink.success",
+                    portalPos.toShortString(),
+                    linkedPortal.getBlockPos().toShortString()
+                ),
+                false
+            );
+            return InteractionResult.SUCCESS;
+        }
 
         // Check if we already have a source portal stored
         if (portalData.isEmpty()) {
@@ -113,9 +157,11 @@ public final class PortalLinkingCard extends Item {
             PortalRegistry.PortalLocation source = new PortalRegistry.PortalLocation(sourceDimension, sourcePos);
             PortalRegistry.PortalLocation destination = new PortalRegistry.PortalLocation(currentDimension, portalPos);
 
-            // Get the portal registry from server level data
-            net.minecraft.server.level.ServerLevel serverLevel = (net.minecraft.server.level.ServerLevel) level;
-            PortalRegistry registry = PortalRegistry.get(serverLevel);
+            // Explicit unlink is required before relinking either endpoint.
+            if (registry.getLinkedPortal(source) != null || registry.getLinkedPortal(destination) != null) {
+                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.error.already_linked"), true);
+                return InteractionResult.FAIL;
+            }
 
             registry.linkPortals(source, destination);
 
@@ -123,13 +169,7 @@ public final class PortalLinkingCard extends Item {
             triggerLinkStateUpdate(level, sourcePos, destination);
             triggerLinkStateUpdate(level, portalPos, source);
 
-            // Clear the stored portal data from the card
-            tag.remove(PORTAL_DATA_TAG);
-            if (tag.isEmpty()) {
-                heldItem.remove(DataComponents.CUSTOM_DATA);
-            } else {
-                heldItem.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
-            }
+            clearStoredPortalData(heldItem, tag);
 
             player.displayClientMessage(
                 Component.translatable("interaction.custom_gateways.portal_linking_card.link_portal", sourcePos.toShortString(), portalPos.toShortString()),
@@ -140,10 +180,52 @@ public final class PortalLinkingCard extends Item {
         return InteractionResult.SUCCESS;
     }
 
+    private static boolean isDoubleCrouchUse(ServerLevel level, Player player) {
+        UUID playerId = player.getUUID();
+        long now = level.getGameTime();
+        Long lastUse = LAST_CROUCH_USE_TICKS.get(playerId);
+
+        if (lastUse != null && now - lastUse <= DOUBLE_CROUCH_WINDOW_TICKS) {
+            LAST_CROUCH_USE_TICKS.remove(playerId);
+            return true;
+        }
+
+        LAST_CROUCH_USE_TICKS.put(playerId, now);
+        return false;
+    }
+
+    private static void clearStoredPortalData(ItemStack heldItem, CompoundTag tag) {
+        tag.remove(PORTAL_DATA_TAG);
+        heldItem.set(DataComponents.CUSTOM_DATA, tag.isEmpty() ? CustomData.EMPTY : CustomData.of(tag));
+    }
+
+    private static PortalRegistry.PortalLocation getStoredSourceLocation(CompoundTag portalData) {
+        if (portalData.isEmpty()) {
+            return null;
+        }
+
+        ResourceLocation sourceDimension = ResourceLocation.parse(portalData.getString(DIMENSION_TAG));
+        BlockPos sourcePos = new BlockPos(portalData.getInt(X_TAG), portalData.getInt(Y_TAG), portalData.getInt(Z_TAG));
+        return new PortalRegistry.PortalLocation(sourceDimension, sourcePos);
+    }
+
+    private static Level resolveLevel(ServerLevel currentLevel, ResourceLocation dimension) {
+        ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, dimension);
+        ServerLevel resolved = currentLevel.getServer().getLevel(dimensionKey);
+        return resolved != null ? resolved : currentLevel;
+    }
+
     private static void triggerLinkStateUpdate(Level level, BlockPos portalPos, PortalRegistry.PortalLocation target) {
         BlockEntity blockEntity = level.getBlockEntity(portalPos);
         if (blockEntity instanceof PortalFrameEntity portalFrameEntity) {
             portalFrameEntity.setLinkedTarget(target.dimension(), target.getBlockPos(), true);
+        }
+    }
+
+    private static void clearLinkState(Level level, BlockPos portalPos) {
+        BlockEntity blockEntity = level.getBlockEntity(portalPos);
+        if (blockEntity instanceof PortalFrameEntity portalFrameEntity) {
+            portalFrameEntity.clearLinkedTarget();
         }
     }
 }
