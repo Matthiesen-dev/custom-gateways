@@ -31,5 +31,11 @@
   "interaction.custom_gateways.portal_frame.error.master_block": "Master block not found at %s",
   "interaction.custom_gateways.portal_frame.telported": "§6Teleported to §e%s",
 
-  "config.jade.plugin_custom_gateways.portal_frame": "Portal Frame"
+  "config.jade.plugin_custom_gateways.portal_frame": "Portal Frame",
+
+  "sound.custom_gateways.gateway.teleport.success": "Gateway Teleport Success",
+  "sound.custom_gateways.gateway.teleport.failure": "Gateway Teleport Failure",
+  "sound.custom_gateways.linking_card.set_source": "Linking Card: Set Source",
+  "sound.custom_gateways.linking_card.link_portal": "Linking Card: Link Portal",
+  "sound.custom_gateways.linking_card.unlink_portal": "Linking Card: Unlink Portal"
 }

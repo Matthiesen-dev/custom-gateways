@@ -1,0 +1,22 @@
+{
+  "gateway.teleport.success": {
+    "subtitle": "sound.custom_gateways.gateway.teleport.success",
+    "sounds": []
+  },
+  "gateway.teleport.failure": {
+    "subtitle": "sound.custom_gateways.gateway.teleport.failure",
+    "sounds": []
+  },
+  "linking_card.set_source": {
+    "subtitle": "sound.custom_gateways.linking_card.set_source",
+    "sounds": []
+  },
+  "linking_card.link_portal": {
+    "subtitle": "sound.custom_gateways.linking_card.link_portal",
+    "sounds": []
+  },
+  "linking_card.unlink_portal": {
+    "subtitle": "sound.custom_gateways.linking_card.unlink_portal",
+    "sounds": []
+  }
+}
