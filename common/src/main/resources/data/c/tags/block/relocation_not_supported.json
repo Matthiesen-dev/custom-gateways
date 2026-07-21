@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#custom_gateways:portals"
+    "#custom_gateways:all_portals"
   ]
 }
