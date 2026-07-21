@@ -31,7 +31,8 @@ public final class PortalRegistry extends SavedData {
     }
 
     public static PortalRegistry get(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(FACTORY, NAME);
+        // Persist links in a single shared storage so every dimension sees the same registry.
+        return level.getServer().overworld().getDataStorage().computeIfAbsent(FACTORY, NAME);
     }
 
     /**

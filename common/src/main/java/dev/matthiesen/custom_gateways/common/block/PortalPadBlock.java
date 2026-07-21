@@ -26,6 +26,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -165,6 +167,17 @@ public final class PortalPadBlock extends HorizontalDirectionalBlock implements 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return BlockEntityRegistry.PORTAL_PAD_BE.get().create(blockPos, blockState);
+    }
+
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        if (level.isClientSide) {
+            return null;
+        }
+        if (blockEntityType.equals(BlockEntityRegistry.PORTAL_PAD_BE.get())) {
+            return PortalPadEntity::tick;
+        }
+        return null;
     }
 
     private static Level resolveLevel(ServerLevel currentLevel, ResourceLocation dimension) {

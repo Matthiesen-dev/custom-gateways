@@ -252,7 +252,7 @@ public final class PortalLinkingCard extends Item {
             registry.linkPortals(source, destination);
 
             // Update both block entities immediately so linked state + animation are visible now.
-            triggerLinkStateUpdate(level, sourcePos, destination);
+            triggerLinkStateUpdate(sourceLevel, sourcePos, destination);
             triggerLinkStateUpdate(level, portalPos, source);
 
             clearStoredPortalData(heldItem, tag);

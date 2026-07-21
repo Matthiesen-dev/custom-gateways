@@ -5,11 +5,7 @@
       "trigger": "custom_gateways:use_portal"
     }
   },
-  "requirements": [
-    [
-      "used_portal"
-    ]
-  ],
+  "requirements": [["used_portal"]],
   "display": {
     "title": {
       "translate": "advancements.custom_gateways.portals.used.title"
@@ -20,7 +16,7 @@
     "icon": {
       "id": "custom_gateways:portal_frame"
     },
-    "frame": "goal"
+    "frame": "task"
   },
   "sends_telemetry_event": true
 }

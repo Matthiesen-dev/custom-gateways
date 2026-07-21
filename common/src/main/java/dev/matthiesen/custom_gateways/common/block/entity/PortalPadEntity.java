@@ -1,5 +1,6 @@
 package dev.matthiesen.custom_gateways.common.block.entity;
 
+import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -7,6 +8,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,6 +23,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public final class PortalPadEntity extends BlockEntity implements GeoBlockEntity {
     private static final String LINKED_TAG = "is_linked";
+    private static final long LINK_STATE_CHECK_INTERVAL_TICKS = 20L;
     private static final RawAnimation IDLE_ANIM = RawAnimation.begin()
         .thenLoop("animation.portal_pad.idle");
 
@@ -86,6 +90,25 @@ public final class PortalPadEntity extends BlockEntity implements GeoBlockEntity
         CompoundTag tag = new CompoundTag();
         this.saveAdditional(tag, provider);
         return tag;
+    }
+
+    public static <T extends BlockEntity> void tick(Level level, BlockPos blockPos, BlockState blockState, T t) {
+        if (!(t instanceof PortalPadEntity portalPadEntity)) {
+            return;
+        }
+        if (level.isClientSide || !(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        if (serverLevel.getGameTime() % LINK_STATE_CHECK_INTERVAL_TICKS != 0L) {
+            return;
+        }
+
+        PortalRegistry registry = PortalRegistry.get(serverLevel);
+        PortalRegistry.PortalLocation currentPortal =
+            new PortalRegistry.PortalLocation(level.dimension().location(), blockPos);
+
+        boolean shouldBeLinked = registry.getLinkedPortal(currentPortal) != null;
+        portalPadEntity.setLinked(shouldBeLinked);
     }
 }
 

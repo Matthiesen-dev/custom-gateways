@@ -18,9 +18,9 @@
       "translate": "advancements.custom_gateways.portals.linked_cross_dimension.description"
     },
     "icon": {
-      "id": "custom_gateways:portal_pad"
+      "id": "custom_gateways:portal_frame"
     },
-    "frame": "goal"
+    "frame": "task"
   },
   "sends_telemetry_event": true
 }
