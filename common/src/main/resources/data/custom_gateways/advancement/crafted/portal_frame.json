@@ -8,7 +8,7 @@
       "translate": "advancements.custom_gateways.crafted.portal_frame.description"
     },
     "icon": {
-      "item": "custom_gateways:portal_frame"
+      "id": "custom_gateways:portal_frame"
     },
     "frame": "task"
   },

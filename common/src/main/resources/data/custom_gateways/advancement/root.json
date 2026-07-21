@@ -20,8 +20,7 @@
       "translate": "advancements.custom_gateways.root.description"
     },
     "icon": {
-      "count": 1,
-      "item": "custom_gateways:portal_frame"
+      "id": "custom_gateways:portal_frame"
     }
   },
   "sends_telemetry_event": true
