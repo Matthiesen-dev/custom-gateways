@@ -114,7 +114,8 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
 
     public boolean hasNearbyPlayerCached(Level level, double targetX, double targetY, double targetZ, double maxDistanceSqr) {
         long gameTime = level.getGameTime();
-        if (gameTime < this.lastNearbyPlayerCheckTick
+        if (this.lastNearbyPlayerCheckTick == Long.MIN_VALUE
+            || gameTime < this.lastNearbyPlayerCheckTick
             || gameTime - this.lastNearbyPlayerCheckTick >= NEARBY_PLAYER_CHECK_INTERVAL_TICKS) {
             this.hasNearbyPlayerCache = false;
             for (Player player : level.players()) {

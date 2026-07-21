@@ -3,6 +3,7 @@ package dev.matthiesen.custom_gateways.common.block;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.MapCodec;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
+import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import dev.matthiesen.custom_gateways.common.item.PortalLinkingCard;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
@@ -212,6 +213,8 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
                         BlockEntity linkedEntity = serverLevel.getBlockEntity(linkedLocation.getBlockPos());
                         if (linkedEntity instanceof PortalFrameEntity linkedPortalEntity) {
                             linkedPortalEntity.clearLinkedTarget();
+                        } else if (linkedEntity instanceof PortalPadEntity linkedPortalPadEntity) {
+                            linkedPortalPadEntity.setLinked(false);
                         }
                     }
                 }
@@ -338,14 +341,10 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
     }
 
     private static ParticleOptions pickGatewayParticle(RandomSource random) {
-        float roll = random.nextFloat();
-        if (roll < 0.4F) {
+        if (random.nextFloat() < 0.4F) {
             return ParticleTypes.ENCHANT;
         }
-        if (roll < 0.8F) {
-            return ParticleTypes.PORTAL;
-        }
-        return ParticleTypes.END_ROD;
+        return ParticleTypes.PORTAL;
     }
 
     private static double randomBetween(RandomSource random, double min, double max) {

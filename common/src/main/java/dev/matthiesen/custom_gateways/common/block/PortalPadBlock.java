@@ -3,15 +3,18 @@ package dev.matthiesen.custom_gateways.common.block;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.MapCodec;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
+import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import dev.matthiesen.custom_gateways.common.item.PortalLinkingCard;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -37,6 +40,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public final class PortalPadBlock extends HorizontalDirectionalBlock implements EntityBlock {
+    private static final double PARTICLE_Y_OFFSET = 0.12D;
+    private static final double PARTICLE_SPREAD = 0.24D;
+    private static final double PARTICLE_SPEED = 0.015D;
+    private static final double PARTICLE_MAX_DISTANCE = 20.0D;
+
     private final Map<Direction, VoxelShape> shapes = Maps.newEnumMap(Direction.class);
     private final VoxelShape baseShape;
 
@@ -101,6 +109,31 @@ public final class PortalPadBlock extends HorizontalDirectionalBlock implements 
     }
 
     @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (!(blockEntity instanceof PortalPadEntity portalPadEntity) || !portalPadEntity.isLinked()) {
+            return;
+        }
+
+        double centerX = pos.getX() + 0.5D;
+        double centerY = pos.getY() + PARTICLE_Y_OFFSET;
+        double centerZ = pos.getZ() + 0.5D;
+
+        if (!level.hasNearbyAlivePlayer(centerX, centerY, centerZ, PARTICLE_MAX_DISTANCE)) {
+            return;
+        }
+
+        if (random.nextFloat() < 0.385F) {
+            double spawnX = centerX + randomBetween(random, -PARTICLE_SPREAD, PARTICLE_SPREAD);
+            double spawnZ = centerZ + randomBetween(random, -PARTICLE_SPREAD, PARTICLE_SPREAD);
+            double velocityX = randomBetween(random, -PARTICLE_SPEED, PARTICLE_SPEED);
+            double velocityY = randomBetween(random, 0.006D, 0.018D);
+            double velocityZ = randomBetween(random, -PARTICLE_SPEED, PARTICLE_SPEED);
+            level.addParticle(ParticleTypes.PORTAL, spawnX, centerY, spawnZ, velocityX, velocityY, velocityZ);
+        }
+    }
+
+    @Override
     protected void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         if (blockState.getBlock() != blockState2.getBlock() && !level.isClientSide && level instanceof ServerLevel serverLevel) {
             PortalRegistry registry = PortalRegistry.get(serverLevel);
@@ -115,6 +148,8 @@ public final class PortalPadBlock extends HorizontalDirectionalBlock implements 
                 BlockEntity linkedEntity = linkedLevel.getBlockEntity(linkedLocation.getBlockPos());
                 if (linkedEntity instanceof PortalFrameEntity linkedPortalEntity) {
                     linkedPortalEntity.clearLinkedTarget();
+                } else if (linkedEntity instanceof PortalPadEntity linkedPortalPadEntity) {
+                    linkedPortalPadEntity.setLinked(false);
                 }
             }
         }
@@ -136,6 +171,10 @@ public final class PortalPadBlock extends HorizontalDirectionalBlock implements 
         ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, dimension);
         ServerLevel resolved = currentLevel.getServer().getLevel(dimensionKey);
         return resolved != null ? resolved : currentLevel;
+    }
+
+    private static double randomBetween(RandomSource random, double min, double max) {
+        return min + (max - min) * random.nextDouble();
     }
 
     @SuppressWarnings("NullableProblems")

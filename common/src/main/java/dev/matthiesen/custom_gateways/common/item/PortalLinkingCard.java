@@ -1,6 +1,7 @@
 package dev.matthiesen.custom_gateways.common.item;
 
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
+import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import dev.matthiesen.custom_gateways.common.registry.SoundRegistry;
 import dev.matthiesen.custom_gateways.common.util.PortalLinkTags;
@@ -316,6 +317,8 @@ public final class PortalLinkingCard extends Item {
         BlockEntity blockEntity = level.getBlockEntity(portalPos);
         if (blockEntity instanceof PortalFrameEntity portalFrameEntity) {
             portalFrameEntity.setLinkedTarget(target.dimension(), target.getBlockPos(), true);
+        } else if (blockEntity instanceof PortalPadEntity portalPadEntity) {
+            portalPadEntity.setLinked(true);
         }
     }
 
@@ -323,6 +326,8 @@ public final class PortalLinkingCard extends Item {
         BlockEntity blockEntity = level.getBlockEntity(portalPos);
         if (blockEntity instanceof PortalFrameEntity portalFrameEntity) {
             portalFrameEntity.clearLinkedTarget();
+        } else if (blockEntity instanceof PortalPadEntity portalPadEntity) {
+            portalPadEntity.setLinked(false);
         }
     }
 }
