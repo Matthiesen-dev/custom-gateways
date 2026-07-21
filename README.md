@@ -26,8 +26,8 @@ Documentation for this mod can be found at [mods.matthiesen.dev](https://mods.ma
 ## FastStats Metrics
 
 This library uses [FastStats](https://faststats.dev) to collect anonymous usage statistics. This helps the developer understand
-how the library and the mods built using the library are being used and improve it over time. You can learn more about the data
-collected and how it is used by visiting [FastStats: Information](https://faststats.dev/info).
+how this mod is being used and improve it over time. You can learn more about the data collected and how it is used by visiting
+[FastStats: Information](https://faststats.dev/info).
 
 You can also view the data collected by this library on the [FastStats: Custom Gateways](https://faststats.dev/project/custom-gateways) page.
 
