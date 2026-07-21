@@ -1,0 +1,26 @@
+{
+  "parent": "custom_gateways:root",
+  "criteria": {
+    "used_portal": {
+      "trigger": "custom_gateways:use_portal"
+    }
+  },
+  "requirements": [
+    [
+      "used_portal"
+    ]
+  ],
+  "display": {
+    "title": {
+      "translate": "advancements.custom_gateways.used_portal.title"
+    },
+    "description": {
+      "translate": "advancements.custom_gateways.used_portal.description"
+    },
+    "icon": {
+      "item": "custom_gateways:portal_frame"
+    },
+    "frame": "goal"
+  },
+  "sends_telemetry_event": true
+}

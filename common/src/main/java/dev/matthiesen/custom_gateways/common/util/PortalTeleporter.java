@@ -1,10 +1,12 @@
 package dev.matthiesen.custom_gateways.common.util;
 
+import dev.matthiesen.custom_gateways.common.registry.CriterionRegistry;
 import dev.matthiesen.custom_gateways.common.registry.SoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -56,6 +58,8 @@ public final class PortalTeleporter {
 
         // Play teleport success sound at the destination
         targetLevel.playSound(null, safeLandingSpot, SoundRegistry.GATEWAY_TELEPORT_SUCCESS.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+
+        CriterionRegistry.USE_PORTAL.get().trigger((ServerPlayer) player);
 
         // Send feedback message
         player.displayClientMessage(

@@ -1,4 +1,9 @@
 {
+  "advancement.custom_gateways.root.title": "Custom Gateways",
+  "advancements.custom_gateways.root.description": "Discover the power of Custom Gateways, a mod that allows you to create and link portals for instant travel across dimensions.",
+  "advancements.custom_gateways.used_portal.title": "Used a Custom Gateway",
+  "advancements.custom_gateways.used_portal.description": "Successfully used a Custom Gateway to teleport to another location.",
+
   "block.custom_gateways.portal_frame": "Portal Frame",
   "block.custom_gateways.portal_pad": "Portal Pad",
 

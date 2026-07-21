@@ -1,0 +1,28 @@
+{
+  "criteria": {
+    "tick": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "requirements": [
+    [
+      "tick"
+    ]
+  ],
+  "display": {
+    "announce_to_chat": false,
+    "show_toast": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
+    "title": {
+      "translate": "advancement.custom_gateways.root.title"
+    },
+    "description": {
+      "translate": "advancement.custom_gateways.root.description"
+    },
+    "icon": {
+      "count": 1,
+      "item": "custom_gateways:portal_frame"
+    }
+  },
+  "sends_telemetry_event": true
+}
