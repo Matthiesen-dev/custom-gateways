@@ -261,6 +261,11 @@ public final class PortalLinkingCard extends Item {
 
             CriterionRegistry.LINK_PORTALS.get().trigger((ServerPlayer) player);
 
+            // Trigger cross-dimension advancement if linking across different dimensions
+            if (!sourceDimension.equals(currentDimension)) {
+                CriterionRegistry.LINK_CROSS_DIMENSION_PORTALS.get().trigger((ServerPlayer) player);
+            }
+
             player.displayClientMessage(
                 Component.translatable("interaction.custom_gateways.portal_linking_card.link_portal", sourcePos.toShortString(), portalPos.toShortString()),
                 false

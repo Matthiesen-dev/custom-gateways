@@ -1,40 +1,24 @@
 {
   "advancements.custom_gateways.root.title": "Custom Gateways",
   "advancements.custom_gateways.root.description": "Discover the power of Custom Gateways, a mod that allows you to create and link portals for instant travel across dimensions.",
-
-  "advancements.custom_gateways.portals.used.title": "Used a Custom Gateway",
-  "advancements.custom_gateways.portals.used.description": "Successfully used a Custom Gateway to teleport to another location.",
-
   "advancements.custom_gateways.crafted.portal_linking_card.title": "Crafted a Portal Linking Card",
   "advancements.custom_gateways.crafted.portal_linking_card.description": "Crafted a Portal Linking Card, an essential tool for linking Custom Gateways.",
   "advancements.custom_gateways.crafted.portal_frame.title": "Crafted a Portal Frame",
   "advancements.custom_gateways.crafted.portal_frame.description": "Crafted a Portal Frame, the core component of a Custom Gateway.",
   "advancements.custom_gateways.crafted.portal_pad.title": "Crafted a Portal Pad",
   "advancements.custom_gateways.crafted.portal_pad.description": "Crafted a Portal Pad, a destination-only component of a Custom Gateway.",
+  "advancements.custom_gateways.portals.used.title": "Used a Custom Gateway",
+  "advancements.custom_gateways.portals.used.description": "Successfully used a Custom Gateway to teleport to another location.",
+  "advancements.custom_gateways.portals.linked.title": "Linked Portals",
+  "advancements.custom_gateways.portals.linked.description": "Successfully linked two portals together using the Portal Linking Card.",
+  "advancements.custom_gateways.portals.linked_cross_dimension.title": "Interdimensional Gateway",
+  "advancements.custom_gateways.portals.linked_cross_dimension.description": "Successfully linked two portals across different dimensions, such as the Overworld and the Nether.",
 
   "block.custom_gateways.portal_frame": "Portal Frame",
   "block.custom_gateways.portal_pad": "Portal Pad",
 
-  "item.custom_gateways.portal_linking_card": "Portal Linking Card",
-
-  "itemGroup.custom_gateways.portal_frame_tab": "Custom Gateways",
-  "itemGroup.custom_gateways.portal_frame_tab.portal_frames_section": "Portal Frames",
-  "itemGroup.custom_gateways.portal_frame_tab.portal_tools_section": "Portal Tools",
-
-  "tooltip.custom_gateways.portal_linking_card.empty.status": "§7Status: §cNo source portal set",
-  "tooltip.custom_gateways.portal_linking_card.empty.action": "§7Right-click a §6Portal Frame §7to set a source.",
-  "tooltip.custom_gateways.portal_linking_card.linked.status": "§7Status: §aSource portal set",
-  "tooltip.custom_gateways.portal_linking_card.linked.dimension": "§7Dimension: §b%s",
-  "tooltip.custom_gateways.portal_linking_card.linked.position": "§7Position: §e%s, %s, %s",
-  "tooltip.custom_gateways.portal_linking_card.linked.action": "§7Right-click a §6Portal Frame §7or §6Portal Pad §7to link.",
-  "tooltip.custom_gateways.portal_linking_card.unlink_action": "§7Crouch-use twice (within 3s) on a linked §6Portal Frame §7or §6Portal Pad §7to unlink.",
-
-  "tooltip.custom_gateways.portal_pad.destination_only": "§6Destination only: §7cannot be used as a teleport source.",
-
-  "tooltip.custom_gateways.portal_frame.linked": "Portal is Linked",
-  "tooltip.custom_gateways.portal_frame.linked.position": "Position: %s",
-  "tooltip.custom_gateways.portal_frame.linked.dimension": "Dimension: %s",
-  "tooltip.custom_gateways.portal_frame.unlinked": "Portal is Unlinked",
+  "config.jade.plugin_custom_gateways.portal_frame": "Portal Frame",
+  "config.jade.plugin_custom_gateways.portal_pad": "Portal Pad",
 
   "interaction.custom_gateways.portal_linking_card.set_source": "§6Linking Card: §eSource portal set at §b%s §ein dimension §b%s",
   "interaction.custom_gateways.portal_linking_card.link_portal": "§6Portals linked! §aSource: §b%s §aDest: §b%s",
@@ -48,16 +32,32 @@
   "interaction.custom_gateways.portal_linking_card.unlink.success": "§6Portal link removed! §aPortal: §b%s §aUnlinked from: §b%s",
   "interaction.custom_gateways.portal_linking_card.clear.empty": "§7Linking Card has no stored source to clear.",
   "interaction.custom_gateways.portal_linking_card.clear.success": "§6Linking Card source cleared.",
-
   "interaction.custom_gateways.portal_frame.error.master_block": "Master block not found at %s",
   "interaction.custom_gateways.portal_frame.telported": "§6Teleported to §e%s",
 
-  "config.jade.plugin_custom_gateways.portal_frame": "Portal Frame",
-  "config.jade.plugin_custom_gateways.portal_pad": "Portal Pad",
+  "item.custom_gateways.portal_linking_card": "Portal Linking Card",
+
+  "itemGroup.custom_gateways.portal_frame_tab": "Custom Gateways",
+  "itemGroup.custom_gateways.portal_frame_tab.portal_frames_section": "Portal Frames",
+  "itemGroup.custom_gateways.portal_frame_tab.portal_tools_section": "Portal Tools",
 
   "sound.custom_gateways.gateway.teleport.success": "Gateway Teleport Success",
   "sound.custom_gateways.gateway.teleport.failure": "Gateway Teleport Failure",
   "sound.custom_gateways.linking_card.set_source": "Linking Card: Set Source",
   "sound.custom_gateways.linking_card.link_portal": "Linking Card: Link Portal",
-  "sound.custom_gateways.linking_card.unlink_portal": "Linking Card: Unlink Portal"
+  "sound.custom_gateways.linking_card.unlink_portal": "Linking Card: Unlink Portal",
+
+  "tooltip.custom_gateways.portal_linking_card.empty.status": "§7Status: §cNo source portal set",
+  "tooltip.custom_gateways.portal_linking_card.empty.action": "§7Right-click a §6Portal Frame §7to set a source.",
+  "tooltip.custom_gateways.portal_linking_card.linked.status": "§7Status: §aSource portal set",
+  "tooltip.custom_gateways.portal_linking_card.linked.dimension": "§7Dimension: §b%s",
+  "tooltip.custom_gateways.portal_linking_card.linked.position": "§7Position: §e%s, %s, %s",
+  "tooltip.custom_gateways.portal_linking_card.linked.action": "§7Right-click a §6Portal Frame §7or §6Portal Pad §7to link.",
+  "tooltip.custom_gateways.portal_linking_card.unlink_action": "§7Crouch-use twice (within 3s) on a linked §6Portal Frame §7or §6Portal Pad §7to unlink.",
+  "tooltip.custom_gateways.portal_pad.destination_only": "§6Destination only: §7cannot be used as a teleport source.",
+  "tooltip.custom_gateways.portal_frame.linked": "Portal is Linked",
+  "tooltip.custom_gateways.portal_frame.linked.position": "Position: %s",
+  "tooltip.custom_gateways.portal_frame.linked.dimension": "Dimension: %s",
+  "tooltip.custom_gateways.portal_frame.unlinked": "Portal is Unlinked"
+
 }
