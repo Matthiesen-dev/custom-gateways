@@ -1,0 +1,26 @@
+{
+  "parent": "custom_gateways:crafted/portal_linking_card",
+  "criteria": {
+    "linked_portal": {
+      "trigger": "custom_gateways:link_portals"
+    }
+  },
+  "requirements": [
+    [
+      "linked_portal"
+    ]
+  ],
+  "display": {
+    "title": {
+      "translate": "advancements.custom_gateways.portals.linked.title"
+    },
+    "description": {
+      "translate": "advancements.custom_gateways.portals.linked.description"
+    },
+    "icon": {
+      "item": "custom_gateways:portal_pad"
+    },
+    "frame": "goal"
+  },
+  "sends_telemetry_event": true
+}

@@ -3,6 +3,7 @@ package dev.matthiesen.custom_gateways.common.item;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
+import dev.matthiesen.custom_gateways.common.registry.CriterionRegistry;
 import dev.matthiesen.custom_gateways.common.registry.SoundRegistry;
 import dev.matthiesen.custom_gateways.common.util.PortalLinkTags;
 import net.minecraft.core.BlockPos;
@@ -13,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -256,6 +258,8 @@ public final class PortalLinkingCard extends Item {
             clearStoredPortalData(heldItem, tag);
 
             level.playSound(null, portalPos, SoundRegistry.LINKING_CARD_LINK_PORTAL.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+
+            CriterionRegistry.LINK_PORTALS.get().trigger((ServerPlayer) player);
 
             player.displayClientMessage(
                 Component.translatable("interaction.custom_gateways.portal_linking_card.link_portal", sourcePos.toShortString(), portalPos.toShortString()),

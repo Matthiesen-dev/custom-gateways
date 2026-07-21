@@ -14,10 +14,10 @@
     "show_toast": false,
     "background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
     "title": {
-      "translate": "advancement.custom_gateways.root.title"
+      "translate": "advancements.custom_gateways.root.title"
     },
     "description": {
-      "translate": "advancement.custom_gateways.root.description"
+      "translate": "advancements.custom_gateways.root.description"
     },
     "icon": {
       "count": 1,

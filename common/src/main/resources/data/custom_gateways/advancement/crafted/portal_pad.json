@@ -1,0 +1,30 @@
+{
+  "parent": "custom_gateways:crafted/portal_linking_card",
+  "display": {
+    "title": {
+      "translate": "advancements.custom_gateways.crafted.portal_pad.title"
+    },
+    "description": {
+      "translate": "advancements.custom_gateways.crafted.portal_pad.description"
+    },
+    "icon": {
+      "item": "custom_gateways:portal_pad"
+    },
+    "frame": "task"
+  },
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "custom_gateways:portal_pad"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "sends_telemetry_event": false
+}

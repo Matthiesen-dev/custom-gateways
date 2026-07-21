@@ -1,8 +1,16 @@
 {
-  "advancement.custom_gateways.root.title": "Custom Gateways",
+  "advancements.custom_gateways.root.title": "Custom Gateways",
   "advancements.custom_gateways.root.description": "Discover the power of Custom Gateways, a mod that allows you to create and link portals for instant travel across dimensions.",
-  "advancements.custom_gateways.used_portal.title": "Used a Custom Gateway",
-  "advancements.custom_gateways.used_portal.description": "Successfully used a Custom Gateway to teleport to another location.",
+
+  "advancements.custom_gateways.portals.used.title": "Used a Custom Gateway",
+  "advancements.custom_gateways.portals.used.description": "Successfully used a Custom Gateway to teleport to another location.",
+
+  "advancements.custom_gateways.crafted.portal_linking_card.title": "Crafted a Portal Linking Card",
+  "advancements.custom_gateways.crafted.portal_linking_card.description": "Crafted a Portal Linking Card, an essential tool for linking Custom Gateways.",
+  "advancements.custom_gateways.crafted.portal_frame.title": "Crafted a Portal Frame",
+  "advancements.custom_gateways.crafted.portal_frame.description": "Crafted a Portal Frame, the core component of a Custom Gateway.",
+  "advancements.custom_gateways.crafted.portal_pad.title": "Crafted a Portal Pad",
+  "advancements.custom_gateways.crafted.portal_pad.description": "Crafted a Portal Pad, a destination-only component of a Custom Gateway.",
 
   "block.custom_gateways.portal_frame": "Portal Frame",
   "block.custom_gateways.portal_pad": "Portal Pad",

@@ -12,10 +12,10 @@
   ],
   "display": {
     "title": {
-      "translate": "advancements.custom_gateways.used_portal.title"
+      "translate": "advancements.custom_gateways.portals.used.title"
     },
     "description": {
-      "translate": "advancements.custom_gateways.used_portal.description"
+      "translate": "advancements.custom_gateways.portals.used.description"
     },
     "icon": {
       "item": "custom_gateways:portal_frame"

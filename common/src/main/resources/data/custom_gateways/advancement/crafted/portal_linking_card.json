@@ -1,0 +1,30 @@
+{
+  "parent": "custom_gateways:root",
+  "display": {
+    "title": {
+      "translate": "advancements.custom_gateways.crafted.portal_linking_card.title"
+    },
+    "description": {
+      "translate": "advancements.custom_gateways.crafted.portal_linking_card.description"
+    },
+    "icon": {
+      "item": "custom_gateways:portal_linking_card"
+    },
+    "frame": "task"
+  },
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "custom_gateways:portal_linking_card"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "sends_telemetry_event": false
+}
