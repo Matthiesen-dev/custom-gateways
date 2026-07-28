@@ -43,20 +43,6 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
         CustomGatewaysCommonClient.INSTANCE.createInfoLog("Initialized Common Client");
 
         INSTANCE.getScreenManager().registerMenuScreen(MenuRegistry.REMOTE_DIALER_MENU, RemoteDialerScreen::new);
-    }
-
-    public void registerRenderers() {
-        CustomGatewaysCommonClient.INSTANCE.createInfoLog("Registering Renderers");
-
-        ItemRegistry.PORTAL_FRAME.get().renderProviderHolder.setValue(makeRendererProvider(new PortalFrameItemRenderer().getRenderer()));
-        ItemRegistry.PORTAL_PAD.get().renderProviderHolder.setValue(makeRendererProvider(new PortalPadItemRenderer().getRenderer()));
-
-        INSTANCE.getEntityRendererManager().registerEntityRenderers(registry ->
-                {
-                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> new PortalFrameBlockRenderer().getRenderer());
-                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_PAD_BE.get(), context -> new PortalPadBlockRenderer().getRenderer());
-                }
-        );
 
         PlatformClientEvents.BLOCK_HIGHLIGHT.subscribe(event -> {
             var context = event.context();
@@ -83,6 +69,20 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
             );
             return InteractionResult.FAIL;
         });
+    }
+
+    public void registerRenderers() {
+        CustomGatewaysCommonClient.INSTANCE.createInfoLog("Registering Renderers");
+
+        ItemRegistry.PORTAL_FRAME.get().renderProviderHolder.setValue(makeRendererProvider(new PortalFrameItemRenderer().getRenderer()));
+        ItemRegistry.PORTAL_PAD.get().renderProviderHolder.setValue(makeRendererProvider(new PortalPadItemRenderer().getRenderer()));
+
+        INSTANCE.getEntityRendererManager().registerEntityRenderers(registry ->
+                {
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> new PortalFrameBlockRenderer().getRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_PAD_BE.get(), context -> new PortalPadBlockRenderer().getRenderer());
+                }
+        );
     }
 
     public static @Nullable BlockPos getBasePos(Level level, BlockPos hitPos) {

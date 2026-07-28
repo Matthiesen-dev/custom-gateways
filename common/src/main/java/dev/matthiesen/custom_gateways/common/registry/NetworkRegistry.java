@@ -17,18 +17,14 @@ public final class NetworkRegistry {
             RemoteDialerActionPayload.TYPE,
             RemoteDialerActionPayload.STREAM_CODEC,
             (payload, context) -> context.enqueue(() -> {
-                if (!(context.player() instanceof ServerPlayer serverPlayer)) {
-                    return;
-                }
+                if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
                 RemoteDialerActionHandler.handle(serverPlayer, payload);
             })
         );
     }
 
     public static void sendToServer(CustomPacketPayload payload) {
-        if (INSTANCE == null) {
-            return;
-        }
+        if (INSTANCE == null) return;
         INSTANCE.sendToServer(payload);
     }
 }

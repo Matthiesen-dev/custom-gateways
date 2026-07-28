@@ -3,6 +3,7 @@ package dev.matthiesen.custom_gateways.common.item;
 import dev.matthiesen.custom_gateways.common.block.entity.RemoteGatewayBlockEntity;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import dev.matthiesen.custom_gateways.common.menu.RemoteDialerMenu;
+import dev.matthiesen.custom_gateways.common.registry.CriterionRegistry;
 import dev.matthiesen.custom_gateways.common.util.PortalLinkTags;
 import dev.matthiesen.custom_gateways.common.util.PortalValidation;
 import net.minecraft.core.BlockPos;
@@ -211,6 +212,7 @@ public final class RemoteDialerItem extends Item {
         }
 
         player.displayClientMessage(Component.translatable("interaction.custom_gateways.remote_dialer.spawn.success", entry.name()), true);
+        CriterionRegistry.USE_REMOTE_DIALER.get().trigger(player);
         return true;
     }
 

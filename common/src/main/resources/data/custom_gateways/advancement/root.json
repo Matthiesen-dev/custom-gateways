@@ -1,8 +1,14 @@
 {
   "criteria": {
-    "tick": { "trigger": "minecraft:tick" }
+    "tick": {
+      "trigger": "minecraft:tick"
+    }
   },
-  "requirements": [["tick"]],
+  "requirements": [
+    [
+      "tick"
+    ]
+  ],
   "display": {
     "announce_to_chat": false,
     "show_toast": false,

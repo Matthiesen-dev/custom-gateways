@@ -15,6 +15,8 @@
   "advancements.custom_gateways.portals.linked_cross_dimension.description": "Successfully linked two portals across different dimensions, such as the Overworld and the Nether.",
   "advancements.custom_gateways.crafted.remote_dialer.title": "Crafted a Remote Dialer",
   "advancements.custom_gateways.crafted.remote_dialer.description": "Crafted a Remote Dialer, a device that allows you to open Custom Gateways remotely.",
+  "advancements.custom_gateways.portals.used_remote_dialer.title": "Used a Remote Dialer",
+  "advancements.custom_gateways.portals.used_remote_dialer.description": "Successfully used a Remote Dialer to open a Custom Gateway from a distance.",
 
   "block.custom_gateways.portal_frame": "Portal Frame",
   "block.custom_gateways.portal_pad": "Portal Pad",
