@@ -15,7 +15,7 @@ import java.util.List;
 
 public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDialerMenu> {
     private static final int ROW_HEIGHT = 18;
-    private static final int VISIBLE_ROWS = 7;
+    private static final int VISIBLE_ROWS = 5;
 
     private Button selectButton;
     private Button deleteButton;
@@ -30,8 +30,8 @@ public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDial
 
     public RemoteDialerScreen(RemoteDialerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
-        this.imageWidth = 245;
-        this.imageHeight = 185;
+        this.imageWidth = 256;
+        this.imageHeight = 220;
     }
 
     @Override
@@ -41,80 +41,114 @@ public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDial
         int left = this.leftPos;
         int top = this.topPos;
 
-        this.renameInput = new EditBox(this.font, left + 12, top + 148, 140, 18, Component.translatable("menu.custom_gateways.remote_dialer.rename_input"));
+        // Title is at top
+        // List area: 8px margin, 115px tall (5 rows x 18px + gaps)
+
+        // Rename input and label
+        this.renameInput = new EditBox(this.font, left + 8, top + 132, 240, 18, Component.translatable("menu.custom_gateways.remote_dialer.rename_input"));
         this.renameInput.setMaxLength(48);
         this.addRenderableWidget(this.renameInput);
 
+        // Action buttons - organized in two columns
         this.selectButton = this.addRenderableWidget(Button.builder(Component.translatable("menu.custom_gateways.remote_dialer.open"),
-            button -> sendAction(RemoteDialerActionPayload.ACTION_SELECT, ""))
-            .bounds(left + 162, top + 148, 70, 18)
+            button -> {
+                sendAction(RemoteDialerActionPayload.ACTION_SELECT);
+                this.onClose();
+            })
+            .bounds(left + 8, top + 156, 75, 20)
             .build());
 
         this.deleteButton = this.addRenderableWidget(Button.builder(Component.translatable("menu.custom_gateways.remote_dialer.delete"),
-            button -> sendAction(RemoteDialerActionPayload.ACTION_DELETE, ""))
-            .bounds(left + 162, top + 126, 70, 18)
+            button -> {
+                int index = this.selectedIndex;
+                sendAction(RemoteDialerActionPayload.ACTION_DELETE, "", index);
+                applyClientDelete(index);
+            })
+            .bounds(left + 92, top + 156, 75, 20)
             .build());
 
         this.renameButton = this.addRenderableWidget(Button.builder(Component.translatable("menu.custom_gateways.remote_dialer.rename"),
-            button -> sendAction(RemoteDialerActionPayload.ACTION_RENAME, this.renameInput.getValue()))
-            .bounds(left + 12, top + 170, 68, 14)
+            button -> {
+                int index = this.selectedIndex;
+                applyClientRename(index);
+                sendAction(RemoteDialerActionPayload.ACTION_RENAME, this.renameInput.getValue(), index);
+            })
+            .bounds(left + 176, top + 156, 75, 20)
             .build());
 
         this.revalidateButton = this.addRenderableWidget(Button.builder(Component.translatable("menu.custom_gateways.remote_dialer.revalidate"),
-            button -> sendAction(RemoteDialerActionPayload.ACTION_REVALIDATE, ""))
-            .bounds(left + 84, top + 170, 68, 14)
+            button -> sendAction(RemoteDialerActionPayload.ACTION_REVALIDATE))
+            .bounds(left + 8, top + 180, 243, 20)
             .build());
 
-        this.scrollUpButton = this.addRenderableWidget(Button.builder(Component.literal("^"), button -> {
-            if (scrollOffset > 0) {
-                scrollOffset--;
-            }
-        }).bounds(left + 220, top + 18, 12, 14).build());
+        // Scroll buttons on the right side
+        this.scrollUpButton = this.addRenderableWidget(Button.builder(Component.literal("▲"),
+            button -> {
+                if (scrollOffset > 0) {
+                    scrollOffset--;
+                }
+            }).bounds(left + 240, top + 20, 16, 14).build());
 
-        this.scrollDownButton = this.addRenderableWidget(Button.builder(Component.literal("v"), button -> {
-            int maxOffset = Math.max(0, menu.getEntries().size() - VISIBLE_ROWS);
-            if (scrollOffset < maxOffset) {
-                scrollOffset++;
-            }
-        }).bounds(left + 220, top + 106, 12, 14).build());
+        this.scrollDownButton = this.addRenderableWidget(Button.builder(Component.literal("▼"),
+            button -> {
+                int maxOffset = Math.max(0, menu.getEntries().size() - VISIBLE_ROWS);
+                if (scrollOffset < maxOffset) {
+                    scrollOffset++;
+                }
+            }).bounds(left + 240, top + 104, 16, 14).build());
 
         refreshButtonStates();
+        syncRenameInputFromSelection();
     }
 
     @Override
     public void containerTick() {
         super.containerTick();
+
+        // Only update rename input when selection changes, not every tick
+        // This allows users to type freely without the field being reset
         refreshButtonStates();
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (super.mouseClicked(mouseX, mouseY, button)) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        // While editing a name, consume the inventory key so typing 'E' does not close the menu.
+        if (this.renameInput.isFocused() && this.minecraft != null && this.minecraft.options.keyInventory.matches(keyCode, scanCode)) {
             return true;
         }
 
-        int listLeft = this.leftPos + 12;
-        int listTop = this.topPos + 18;
-        int listWidth = 204;
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
 
-        if (mouseX < listLeft || mouseX > listLeft + listWidth) {
-            return false;
-        }
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        int listLeft = this.leftPos + 8;
+        int listTop = this.topPos + 20;
+        int listWidth = 228;
+        int listRight = listLeft + listWidth;
+        int listBottom = listTop + (VISIBLE_ROWS * ROW_HEIGHT);
 
-        for (int row = 0; row < VISIBLE_ROWS; row++) {
-            int y = listTop + row * ROW_HEIGHT;
-            if (mouseY >= y && mouseY <= y + ROW_HEIGHT - 2) {
-                int idx = scrollOffset + row;
-                if (idx < menu.getEntries().size()) {
-                    this.selectedIndex = idx;
-                    this.renameInput.setValue(menu.getEntries().get(idx).name());
-                    refreshButtonStates();
-                    return true;
+        // Check if click is in list area FIRST (before super processes it)
+        if (mouseX >= listLeft && mouseX <= listRight && mouseY >= listTop && mouseY <= listBottom) {
+            for (int row = 0; row < VISIBLE_ROWS; row++) {
+                int rowY = listTop + row * ROW_HEIGHT;
+                int rowYBottom = rowY + ROW_HEIGHT - 1;
+                if (mouseY >= rowY && mouseY <= rowYBottom) {
+                    int idx = scrollOffset + row;
+                    if (idx < menu.getEntries().size()) {
+                        this.selectedIndex = idx;
+                        // Update rename input when selecting a new entry
+                        this.renameInput.setValue(menu.getEntries().get(idx).name());
+                        this.renameInput.setFocused(false);
+                        refreshButtonStates();
+                        return true;
+                    }
                 }
             }
         }
 
-        return false;
+        // Now let super handle buttons and other widgets
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
@@ -122,9 +156,13 @@ public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDial
         int left = this.leftPos;
         int top = this.topPos;
 
-        graphics.fill(left, top, left + this.imageWidth, top + this.imageHeight, 0xCC202020);
-        graphics.fill(left + 10, top + 16, left + 218, top + 142, 0xCC111111);
+        // Background
+        graphics.fill(left, top, left + this.imageWidth, top + this.imageHeight, 0xCC1a1a1a);
 
+        // List area background
+        graphics.fill(left + 8, top + 20, left + 236, top + 120, 0xCC0d0d0d);
+
+        // List entry rows
         List<RemoteDialerItem.Entry> entries = menu.getEntries();
         for (int row = 0; row < VISIBLE_ROWS; row++) {
             int idx = scrollOffset + row;
@@ -132,35 +170,43 @@ public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDial
                 break;
             }
 
-            int y = top + 18 + row * ROW_HEIGHT;
+            int y = top + 20 + row * ROW_HEIGHT;
             boolean selected = idx == selectedIndex;
-            int rowColor = selected ? 0xAA3A3A3A : 0xAA262626;
-            graphics.fill(left + 12, y, left + 216, y + ROW_HEIGHT - 2, rowColor);
+            int rowColor = selected ? 0xCC2d5a2d : 0xCC1f1f1f;
+            graphics.fill(left + 9, y, left + 235, y + ROW_HEIGHT - 1, rowColor);
         }
     }
 
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(this.font, this.title, 12, 6, 0xFFFFFF, false);
+        // Title
+        graphics.drawString(this.font, this.title, 8, 6, 0xFFFFFF, false);
 
         List<RemoteDialerItem.Entry> entries = menu.getEntries();
-        for (int row = 0; row < VISIBLE_ROWS; row++) {
-            int idx = scrollOffset + row;
-            if (idx >= entries.size()) {
-                break;
-            }
 
-            RemoteDialerItem.Entry entry = entries.get(idx);
-            int color = entry.valid() ? 0xC8FFC8 : 0xFF6666;
-            String label = entry.name();
-            if (!entry.valid()) {
-                label = label + " (Invalid)";
-            }
+        if (entries.isEmpty()) {
+            graphics.drawString(this.font, "No destinations added yet", 14, 60, 0x999999, false);
+        } else {
+            for (int row = 0; row < VISIBLE_ROWS; row++) {
+                int idx = scrollOffset + row;
+                if (idx >= entries.size()) {
+                    break;
+                }
 
-            graphics.drawString(this.font, label, 14, 22 + row * ROW_HEIGHT, color, false);
+                RemoteDialerItem.Entry entry = entries.get(idx);
+                int color = entry.valid() ? 0x00FF00 : 0xFF6666;
+                String label = entry.name();
+                if (!entry.valid()) {
+                    label += " [Invalid]";
+                }
+
+                int y = 20 + row * ROW_HEIGHT;
+                graphics.drawString(this.font, label, 14, y + 4, color, false);
+            }
         }
 
-        graphics.drawString(this.font, Component.translatable("menu.custom_gateways.remote_dialer.rename_hint"), 12, 138, 0xA0A0A0, false);
+        // Rename input label
+        graphics.drawString(this.font, "Name:", 8, 120, 0xCCCCCC, false);
     }
 
     @Override
@@ -170,19 +216,45 @@ public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDial
         this.renderTooltip(graphics, mouseX, mouseY);
     }
 
-    private void sendAction(int action, String name) {
-        int index = selectedIndex;
-        if (action == RemoteDialerActionPayload.ACTION_REVALIDATE) {
-            index = -1;
+    private void sendAction(int action) {
+        int index = action == RemoteDialerActionPayload.ACTION_REVALIDATE ? -1 : this.selectedIndex;
+        NetworkRegistry.sendToServer(new RemoteDialerActionPayload(action, menu.getDialerSlot(), index, ""));
+    }
+
+    private void sendAction(int action, String name, int entryIndex) {
+        int index = action == RemoteDialerActionPayload.ACTION_REVALIDATE ? -1 : entryIndex;
+        NetworkRegistry.sendToServer(new RemoteDialerActionPayload(action, menu.getDialerSlot(), index, name == null ? "" : name));
+    }
+
+    private void applyClientRename(int entryIndex) {
+        if (entryIndex < 0) {
+            return;
         }
 
-        NetworkRegistry.sendToServer(new RemoteDialerActionPayload(action, menu.getDialerSlot(), index, name == null ? "" : name));
+        RemoteDialerItem.renameEntry(menu.getDialerStack(), entryIndex, this.renameInput.getValue());
+        refreshButtonStates();
+        syncRenameInputFromSelection();
+    }
+
+    private void applyClientDelete(int entryIndex) {
+        if (entryIndex < 0) {
+            return;
+        }
+
+        RemoteDialerItem.deleteEntry(menu.getDialerStack(), entryIndex);
+        this.selectedIndex = entryIndex;
+        refreshButtonStates();
+        syncRenameInputFromSelection();
     }
 
     private void refreshButtonStates() {
         List<RemoteDialerItem.Entry> entries = menu.getEntries();
-        if (selectedIndex >= entries.size()) {
-            selectedIndex = entries.isEmpty() ? -1 : entries.size() - 1;
+
+        // Auto-select first entry if there are entries but nothing is selected
+        if (entries.isEmpty()) {
+            selectedIndex = -1;
+        } else if (selectedIndex < 0 || selectedIndex >= entries.size()) {
+            selectedIndex = 0;
         }
 
         boolean hasSelection = selectedIndex >= 0;
@@ -199,5 +271,14 @@ public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDial
 
         this.scrollUpButton.active = scrollOffset > 0;
         this.scrollDownButton.active = scrollOffset < maxOffset;
+    }
+
+    private void syncRenameInputFromSelection() {
+        List<RemoteDialerItem.Entry> entries = menu.getEntries();
+        if (selectedIndex >= 0 && selectedIndex < entries.size()) {
+            this.renameInput.setValue(entries.get(selectedIndex).name());
+        } else {
+            this.renameInput.setValue("");
+        }
     }
 }

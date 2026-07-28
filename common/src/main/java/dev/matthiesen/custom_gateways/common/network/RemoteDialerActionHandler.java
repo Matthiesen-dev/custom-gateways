@@ -44,6 +44,8 @@ public final class RemoteDialerActionHandler {
         }
 
         player.getInventory().setChanged();
+        player.containerMenu.broadcastChanges();
+        player.inventoryMenu.broadcastChanges();
     }
 }
 

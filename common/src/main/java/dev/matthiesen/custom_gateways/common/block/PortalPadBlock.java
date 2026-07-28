@@ -107,7 +107,8 @@ public final class PortalPadBlock extends HorizontalDirectionalBlock implements 
         if (heldItem.getItem() instanceof PortalLinkingCard) {
             return PortalLinkingCard.useOnPortalEndpoint(level, player, blockPos);
         }
-        return InteractionResult.SUCCESS;
+        // Let other items process use-on behavior (e.g. Remote Dialer saving destinations).
+        return InteractionResult.PASS;
     }
 
     @Override

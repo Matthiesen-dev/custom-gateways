@@ -22,6 +22,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
@@ -107,6 +108,27 @@ public final class RemoteDialerItem extends Item {
         revalidateEntries(stack, (ServerLevel) level);
         RemoteDialerMenu.open(serverPlayer, player.getInventory().selected);
         return InteractionResultHolder.consume(stack);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+
+        List<Entry> entries = readEntries(stack);
+        int invalidCount = 0;
+        for (Entry entry : entries) {
+            if (!entry.valid()) {
+                invalidCount++;
+            }
+        }
+
+        tooltipComponents.add(Component.translatable("tooltip.custom_gateways.remote_dialer.entries", entries.size(), MAX_ENTRIES));
+        if (invalidCount > 0) {
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.remote_dialer.invalid", invalidCount));
+        }
+
+        tooltipComponents.add(Component.translatable("tooltip.custom_gateways.remote_dialer.open"));
+        tooltipComponents.add(Component.translatable("tooltip.custom_gateways.remote_dialer.add"));
     }
 
     public static void revalidateEntries(ItemStack stack, ServerLevel currentLevel) {
