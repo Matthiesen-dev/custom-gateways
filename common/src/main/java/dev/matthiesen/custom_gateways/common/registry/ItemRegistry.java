@@ -1,7 +1,7 @@
 package dev.matthiesen.custom_gateways.common.registry;
 
-import dev.matthiesen.common.matthiesen_lib.core.MatthiesenLibCreativeModeTabSectionsManager;
-import dev.matthiesen.common.matthiesen_lib.registry.AbstractItemRegistry;
+import dev.matthiesen.matthiesen_core.common.core.registry.CreativeModeTabSectionsManager;
+import dev.matthiesen.matthiesen_core.common.registry.AbstractItemRegistry;
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import dev.matthiesen.custom_gateways.common.item.PortalFrameItem;
 import dev.matthiesen.custom_gateways.common.item.PortalLinkingCard;
@@ -33,7 +33,7 @@ public final class ItemRegistry extends AbstractItemRegistry {
         return () -> new ItemStack(PORTAL_FRAME.get());
     }
 
-    public static void registerCreativeModeTabItems(MatthiesenLibCreativeModeTabSectionsManager.SectionBuilder builder) {
+    public static void registerCreativeModeTabItems(CreativeModeTabSectionsManager.SectionBuilder builder) {
         builder.addItemToSection(CreativeModeTabRegistry.PORTAL_FRAMES_SECTION_ID, new ItemStack(PORTAL_FRAME.get()));
         builder.addItemToSection(CreativeModeTabRegistry.PORTAL_FRAMES_SECTION_ID, new ItemStack(PORTAL_PAD.get()));
         builder.addItemToSection(CreativeModeTabRegistry.PORTAL_TOOLS_SECTION_ID, new ItemStack(PORTAL_LINKING_CARD.get()));

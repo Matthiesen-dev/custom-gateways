@@ -1,8 +1,8 @@
 package dev.matthiesen.custom_gateways.common;
 
-import dev.matthiesen.common.matthiesen_lib_api.abstracts.AbstractCommonMod;
 import dev.matthiesen.custom_gateways.common.registry.*;
 import dev.matthiesen.libs.faststats.Token;
+import dev.matthiesen.matthiesen_core.common.AbstractCommonMod;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,14 +32,6 @@ public final class CustomGatewaysCommon extends AbstractCommonMod {
         CriterionRegistry.init();
 
         createInfoLog("Initialized Common");
-    }
-
-    @Override
-    public Runnable reload() {
-        return () -> {
-            // TODO
-            createInfoLog("Reloaded");
-        };
     }
 
     @Override

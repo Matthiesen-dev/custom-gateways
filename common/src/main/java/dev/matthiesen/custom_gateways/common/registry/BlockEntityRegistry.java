@@ -1,6 +1,6 @@
 package dev.matthiesen.custom_gateways.common.registry;
 
-import dev.matthiesen.common.matthiesen_lib.registry.AbstractBlockEntityRegistry;
+import dev.matthiesen.matthiesen_core.common.registry.AbstractBlockEntityRegistry;
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;

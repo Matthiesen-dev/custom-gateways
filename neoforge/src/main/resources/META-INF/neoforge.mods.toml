@@ -28,16 +28,9 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "matthiesen_lib"
+modId = "matthiesen_core"
 mandatory = true
-versionRange = "[1.11.2,)"
-ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.${mod_id}]]
-modId = "matthiesen_lib_api"
-mandatory = true
-versionRange = "[1.11.2,)"
+versionRange = "[1.0.0-beta.13,)"
 ordering = "AFTER"
 side = "BOTH"
 

@@ -1,7 +1,7 @@
 package dev.matthiesen.custom_gateways.common.registry;
 
-import dev.matthiesen.common.matthiesen_lib.registry.AbstractSoundRegistry;
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
+import dev.matthiesen.matthiesen_core.common.registry.AbstractSoundRegistry;
 import net.minecraft.sounds.SoundEvent;
 
 import java.util.function.Supplier;

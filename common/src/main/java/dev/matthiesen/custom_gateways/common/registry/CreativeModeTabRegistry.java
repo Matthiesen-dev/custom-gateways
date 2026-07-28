@@ -1,6 +1,6 @@
 package dev.matthiesen.custom_gateways.common.registry;
 
-import dev.matthiesen.common.matthiesen_lib.registry.AbstractCreativeModeTabRegistry;
+import dev.matthiesen.matthiesen_core.common.registry.AbstractCreativeModeTabRegistry;
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

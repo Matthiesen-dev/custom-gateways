@@ -1,7 +1,6 @@
 package dev.matthiesen.custom_gateways.common;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.matthiesen.common.matthiesen_lib.abstracts.AbstractCommonClientMod;
 import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
 import dev.matthiesen.custom_gateways.common.client.geckolib.PortalFrameBlockRenderer;
 import dev.matthiesen.custom_gateways.common.client.geckolib.PortalPadBlockRenderer;
@@ -10,6 +9,8 @@ import dev.matthiesen.custom_gateways.common.client.geckolib.PortalPadItemRender
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import dev.matthiesen.custom_gateways.common.registry.BlockRegistry;
 import dev.matthiesen.custom_gateways.common.registry.ItemRegistry;
+import dev.matthiesen.matthiesen_core.common.AbstractCommonClientMod;
+import dev.matthiesen.matthiesen_core.common.api.events.PlatformClientEvents;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -17,6 +18,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,26 +39,14 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
     @Override
     public void initialize() {
         CustomGatewaysCommonClient.INSTANCE.createInfoLog("Initialized Common Client");
-    }
 
-    public void registerRenderers() {
-        CustomGatewaysCommonClient.INSTANCE.createInfoLog("Registering Renderers");
+        PlatformClientEvents.BLOCK_HIGHLIGHT.subscribe(event -> {
+            var context = event.context();
 
-        ItemRegistry.PORTAL_FRAME.get().renderProviderHolder.setValue(makeRendererProvider(new PortalFrameItemRenderer().getRenderer()));
-        ItemRegistry.PORTAL_PAD.get().renderProviderHolder.setValue(makeRendererProvider(new PortalPadItemRenderer().getRenderer()));
-
-        INSTANCE.registerEntityRenderers(registry ->
-                {
-                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> new PortalFrameBlockRenderer().getRenderer());
-                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_PAD_BE.get(), context -> new PortalPadBlockRenderer().getRenderer());
-                }
-        );
-
-        INSTANCE.registerBlockOutlineListener(context -> {
             ClientLevel level = context.level();
             BlockPos basePos = getBasePos(level, context.blockHitResult().getBlockPos());
 
-            if (basePos == null) return true;
+            if (basePos == null) return InteractionResult.PASS;
 
             PoseStack poseStack = context.poseStack();
             MultiBufferSource bufferSource = context.multiBufferSource();
@@ -75,8 +65,22 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
                     0.0F, 0.0F, 0.0F, 0.4F, false
             );
 
-            return false;
+            return InteractionResult.FAIL;
         });
+    }
+
+    public void registerRenderers() {
+        CustomGatewaysCommonClient.INSTANCE.createInfoLog("Registering Renderers");
+
+        ItemRegistry.PORTAL_FRAME.get().renderProviderHolder.setValue(makeRendererProvider(new PortalFrameItemRenderer().getRenderer()));
+        ItemRegistry.PORTAL_PAD.get().renderProviderHolder.setValue(makeRendererProvider(new PortalPadItemRenderer().getRenderer()));
+
+        INSTANCE.getEntityRendererManager().registerEntityRenderers(registry ->
+                {
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> new PortalFrameBlockRenderer().getRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_PAD_BE.get(), context -> new PortalPadBlockRenderer().getRenderer());
+                }
+        );
     }
 
     public static @Nullable BlockPos getBasePos(Level level, BlockPos hitPos) {

@@ -1,6 +1,6 @@
 package dev.matthiesen.custom_gateways.common.registry;
 
-import dev.matthiesen.common.matthiesen_lib.registry.AbstractCriteriaTriggerRegistry;
+import dev.matthiesen.matthiesen_core.common.registry.AbstractCriteriaTriggerRegistry;
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import dev.matthiesen.custom_gateways.common.advancements.LinkCrossDimensionPortalsCriterion;
 import dev.matthiesen.custom_gateways.common.advancements.LinkPortalsCriterion;

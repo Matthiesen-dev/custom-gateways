@@ -1,16 +1,15 @@
 # Custom Gateways
 
 <div>
-  <img src="https://mods.matthiesen.dev/badges/matthiesenLibAPI.svg" alt="Matthiesen Lib API">
-  <img src="https://mods.matthiesen.dev/badges/matthiesenLib.svg" alt="Matthiesen Lib">
+  <img src="https://mods.matthiesen.dev/badges/matthiesenCore.svg" alt="Matthiesen Core">
   <img src="https://mods.matthiesen.dev/badges/geckolib.svg" alt="GeckoLib">
 </div>
 
 TODO
 
 ## Requirements
-- [Matthiesen Lib API](https://modrinth.com/mod/matthiesen-lib-api)
-- [Matthiesen Lib](https://modrinth.com/mod/matthiesen-lib)
+
+- [Matthiesen Core](https://modrinth.com/mod/matthiesen-core)
 - [GeckoLib](https://modrinth.com/mod/geckolib)
 
 ## Docs
@@ -31,7 +30,7 @@ how this mod is being used and improve it over time. You can learn more about th
 
 You can also view the data collected by this mod on the [FastStats: Custom Gateways](https://faststats.dev/project/custom-gateways) page.
 
-To opt out of this data collection, set the `enabled` property to `false` in the `<game_directory>/config/matthiesen_lib_api/metrics.properties` file.
+To opt out of this data collection, set the `enabled` property to `false` in the `<game_directory>/config/matthiesen_core/metrics.properties` file.
 
 ## License
 
