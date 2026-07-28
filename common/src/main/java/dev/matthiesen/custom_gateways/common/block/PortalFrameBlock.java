@@ -65,7 +65,9 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
     private static final float EDGE_SPAWN_CHANCE = 0.65F;
 
     private final Map<Direction, VoxelShape> shapes = Maps.newEnumMap(Direction.class);
+    private final Map<Direction, VoxelShape> slaveShapes = Maps.newEnumMap(Direction.class);
     private final VoxelShape baseShape;
+    private final VoxelShape slaveBaseShape;
     private final VoxelShape collisionShape;
 
     public PortalFrameBlock() {
@@ -74,8 +76,10 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
                 .requiresCorrectToolForDrops());
         this.registerDefaultState(this.stateDefinition.any().setValue(IS_SLAVE, false).setValue(FACING, Direction.NORTH));
         this.baseShape = createShape();
+        this.slaveBaseShape = createSlaveShape();
         this.collisionShape = createCollisionShape();
         initializeShapes();
+        initializeSlaveShapes();
     }
 
     private VoxelShape createShape() {
@@ -111,6 +115,26 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
         shape = Shapes.join(shape, Shapes.box(1.0465625, 0.099375, 0.8975, 1.1459375, 0.695625, 0.996875), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(-0.14593750000000005, 0.695625, 0.4503125, -0.04656250000000006, 0.795, 0.5496875), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(1.0465625, 0.695625, 0.4503125, 1.1459375, 0.795, 0.5496875), BooleanOp.OR);
+        return shape;
+    }
+
+    /**
+     * Creates the outline/interaction shape for the slave (upper) block.
+     * This represents the upper portion of the portal frame in slave-local coordinates
+     * (master Y > 1.0, shifted down by 1.0 to slave-local Y = 0.0 origin).
+     */
+    private VoxelShape createSlaveShape() {
+        VoxelShape shape = Shapes.empty();
+        // Left arch post – slave portion (master Y 0.944→2.286, clamped to 1.0→2.286 → slave Y 0→1.286)
+        shape = Shapes.join(shape, Shapes.box(-0.14593750000000005, 0.0, 0.4503125, -0.04656250000000006, 1.285625, 0.5496875), BooleanOp.OR);
+        // Right arch post – slave portion
+        shape = Shapes.join(shape, Shapes.box(1.0465625, 0.0, 0.4503125, 1.1459375, 1.285625, 0.5496875), BooleanOp.OR);
+        // Left top cap  (master Y 2.335→2.435 → slave Y 1.335→1.435)
+        shape = Shapes.join(shape, Shapes.box(-0.14593750000000005, 1.3353125, 0.4503125, -0.04656250000000006, 1.4346875000000003, 0.5496875), BooleanOp.OR);
+        // Right top cap
+        shape = Shapes.join(shape, Shapes.box(1.0465625, 1.3353125, 0.4503125, 1.1459375, 1.4346875000000003, 0.5496875), BooleanOp.OR);
+        // Top centre bar
+        shape = Shapes.join(shape, Shapes.box(0.003124999999999989, 1.3353125, 0.4503125, 0.996875, 1.4346875000000003, 0.5496875), BooleanOp.OR);
         return shape;
     }
 
@@ -178,10 +202,12 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
 
     @Override
     public void setPlacedBy(Level level, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
-        // If we are the master, create slave block above
+        // If we are the master, create slave block above – inherit FACING so the slave's shape is correctly oriented
         if (!blockState.getValue(IS_SLAVE)) {
             BlockPos slavePos = blockPos.above();
-            BlockState slaveState = this.defaultBlockState().setValue(IS_SLAVE, true);
+            BlockState slaveState = this.defaultBlockState()
+                    .setValue(IS_SLAVE, true)
+                    .setValue(FACING, blockState.getValue(FACING));
             level.setBlock(slavePos, slaveState, 3);
         }
     }
@@ -258,6 +284,13 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
         shapes.put(Direction.WEST, calculateRotation(Direction.WEST, baseShape));
     }
 
+    private void initializeSlaveShapes() {
+        slaveShapes.put(Direction.NORTH, slaveBaseShape);
+        slaveShapes.put(Direction.SOUTH, calculateRotation(Direction.SOUTH, slaveBaseShape));
+        slaveShapes.put(Direction.EAST, calculateRotation(Direction.EAST, slaveBaseShape));
+        slaveShapes.put(Direction.WEST, calculateRotation(Direction.WEST, slaveBaseShape));
+    }
+
     @Override
     public @NotNull BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
@@ -265,6 +298,9 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
 
     @Override
     public @NotNull VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        if (state.getValue(IS_SLAVE)) {
+            return slaveShapes.getOrDefault(state.getValue(FACING), slaveBaseShape);
+        }
         return shapes.getOrDefault(state.getValue(FACING), baseShape);
     }
 
