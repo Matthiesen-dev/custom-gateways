@@ -31,7 +31,7 @@ public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDial
     public RemoteDialerScreen(RemoteDialerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         this.imageWidth = 256;
-        this.imageHeight = 220;
+        this.imageHeight = 228;
     }
 
     @Override
@@ -45,7 +45,7 @@ public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDial
         // List area: 8px margin, 115px tall (5 rows x 18px + gaps)
 
         // Rename input and label
-        this.renameInput = new EditBox(this.font, left + 8, top + 132, 240, 18, Component.translatable("menu.custom_gateways.remote_dialer.rename_input"));
+        this.renameInput = new EditBox(this.font, left + 8, top + 141, 240, 18, Component.translatable("menu.custom_gateways.remote_dialer.rename_input"));
         this.renameInput.setMaxLength(48);
         this.addRenderableWidget(this.renameInput);
 
@@ -55,7 +55,7 @@ public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDial
                 sendAction(RemoteDialerActionPayload.ACTION_SELECT);
                 this.onClose();
             })
-            .bounds(left + 8, top + 156, 75, 20)
+            .bounds(left + 8, top + 164, 75, 20)
             .build());
 
         this.deleteButton = this.addRenderableWidget(Button.builder(Component.translatable("menu.custom_gateways.remote_dialer.delete"),
@@ -64,7 +64,7 @@ public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDial
                 sendAction(RemoteDialerActionPayload.ACTION_DELETE, "", index);
                 applyClientDelete(index);
             })
-            .bounds(left + 92, top + 156, 75, 20)
+            .bounds(left + 92, top + 164, 75, 20)
             .build());
 
         this.renameButton = this.addRenderableWidget(Button.builder(Component.translatable("menu.custom_gateways.remote_dialer.rename"),
@@ -73,12 +73,12 @@ public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDial
                 applyClientRename(index);
                 sendAction(RemoteDialerActionPayload.ACTION_RENAME, this.renameInput.getValue(), index);
             })
-            .bounds(left + 176, top + 156, 75, 20)
+            .bounds(left + 176, top + 164, 75, 20)
             .build());
 
         this.revalidateButton = this.addRenderableWidget(Button.builder(Component.translatable("menu.custom_gateways.remote_dialer.revalidate"),
             button -> sendAction(RemoteDialerActionPayload.ACTION_REVALIDATE))
-            .bounds(left + 8, top + 180, 243, 20)
+            .bounds(left + 8, top + 188, 243, 20)
             .build());
 
         // Scroll buttons on the right side
@@ -156,11 +156,21 @@ public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDial
         int left = this.leftPos;
         int top = this.topPos;
 
-        // Background
-        graphics.fill(left, top, left + this.imageWidth, top + this.imageHeight, 0xCC1a1a1a);
+        // Main background — lighter panel
+        graphics.fill(left, top, left + this.imageWidth, top + this.imageHeight, 0xE0262626);
+
+        // Subtle title-bar stripe
+        graphics.fill(left, top, left + this.imageWidth, top + 18, 0xE02e2e2e);
 
         // List area background
-        graphics.fill(left + 8, top + 20, left + 236, top + 120, 0xCC0d0d0d);
+        graphics.fill(left + 8, top + 20, left + 236, top + 120, 0xFF111111);
+
+        // List area border (1 px outline)
+        int borderColor = 0xFF454545;
+        graphics.fill(left + 7,   top + 19,  left + 237, top + 20,  borderColor); // top
+        graphics.fill(left + 7,   top + 120, left + 237, top + 121, borderColor); // bottom
+        graphics.fill(left + 7,   top + 19,  left + 8,   top + 121, borderColor); // left
+        graphics.fill(left + 236, top + 19,  left + 237, top + 121, borderColor); // right
 
         // List entry rows
         List<RemoteDialerItem.Entry> entries = menu.getEntries();
@@ -172,9 +182,12 @@ public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDial
 
             int y = top + 20 + row * ROW_HEIGHT;
             boolean selected = idx == selectedIndex;
-            int rowColor = selected ? 0xCC2d5a2d : 0xCC1f1f1f;
-            graphics.fill(left + 9, y, left + 235, y + ROW_HEIGHT - 1, rowColor);
+            int rowColor = selected ? 0xFF1a4d1a : (row % 2 == 0 ? 0xFF181818 : 0xFF131313);
+            graphics.fill(left + 8, y, left + 236, y + ROW_HEIGHT - 1, rowColor);
         }
+
+        // Thin separator between list section and controls
+        graphics.fill(left + 7, top + 126, left + 249, top + 127, 0xFF383838);
     }
 
     @Override
@@ -206,7 +219,7 @@ public final class RemoteDialerScreen extends AbstractContainerScreen<RemoteDial
         }
 
         // Rename input label
-        graphics.drawString(this.font, "Name:", 8, 120, 0xCCCCCC, false);
+        graphics.drawString(this.font, "Name:", 8, 130, 0xAAAAAA, false);
     }
 
     @Override
