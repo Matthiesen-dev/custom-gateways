@@ -17,6 +17,9 @@ public final class MenuRegistry extends AbstractMenuTypeRegistry {
 
     public static void init() {}
 
-    public static final Supplier<MenuType<RemoteDialerMenu>> REMOTE_DIALER_MENU =
-        INSTANCE.register("remote_dialer", GatewayMenus::remoteDialerMenu);
+    public static final Supplier<MenuType<RemoteDialerMenu>> REMOTE_DIALER_MENU;
+
+    static {
+        REMOTE_DIALER_MENU = INSTANCE.register("remote_dialer", GatewayMenus::remoteDialerMenu);
+    }
 }
