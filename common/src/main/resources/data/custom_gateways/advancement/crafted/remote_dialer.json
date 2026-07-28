@@ -1,0 +1,30 @@
+{
+  "parent": "custom_gateways:crafted/portal_linking_card",
+  "display": {
+    "title": {
+      "translate": "advancements.custom_gateways.crafted.remote_dialer.title"
+    },
+    "description": {
+      "translate": "advancements.custom_gateways.crafted.remote_dialer.description"
+    },
+    "icon": {
+      "id": "custom_gateways:remote_dialer"
+    },
+    "frame": "task"
+  },
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "custom_gateways:remote_dialer"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "sends_telemetry_event": false
+}
