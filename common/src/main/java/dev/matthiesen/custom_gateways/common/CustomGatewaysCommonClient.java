@@ -6,9 +6,11 @@ import dev.matthiesen.custom_gateways.common.client.geckolib.PortalFrameBlockRen
 import dev.matthiesen.custom_gateways.common.client.geckolib.PortalPadBlockRenderer;
 import dev.matthiesen.custom_gateways.common.client.geckolib.PortalFrameItemRenderer;
 import dev.matthiesen.custom_gateways.common.client.geckolib.PortalPadItemRenderer;
+import dev.matthiesen.custom_gateways.common.client.screen.RemoteDialerScreen;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import dev.matthiesen.custom_gateways.common.registry.BlockRegistry;
 import dev.matthiesen.custom_gateways.common.registry.ItemRegistry;
+import dev.matthiesen.custom_gateways.common.registry.MenuRegistry;
 import dev.matthiesen.matthiesen_core.common.AbstractCommonClientMod;
 import dev.matthiesen.matthiesen_core.common.api.events.PlatformClientEvents;
 import net.minecraft.client.Camera;
@@ -39,6 +41,8 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
     @Override
     public void initialize() {
         CustomGatewaysCommonClient.INSTANCE.createInfoLog("Initialized Common Client");
+
+        INSTANCE.getScreenManager().registerMenuScreen(MenuRegistry.REMOTE_DIALER_MENU, RemoteDialerScreen::new);
 
         PlatformClientEvents.BLOCK_HIGHLIGHT.subscribe(event -> {
             var context = event.context();

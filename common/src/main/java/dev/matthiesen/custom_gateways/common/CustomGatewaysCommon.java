@@ -30,6 +30,8 @@ public final class CustomGatewaysCommon extends AbstractCommonMod {
         CreativeModeTabRegistry.init();
         SoundRegistry.init();
         CriterionRegistry.init();
+        MenuRegistry.init();
+        NetworkRegistry.init(this);
 
         createInfoLog("Initialized Common");
     }

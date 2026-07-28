@@ -16,6 +16,7 @@
 
   "block.custom_gateways.portal_frame": "Portal Frame",
   "block.custom_gateways.portal_pad": "Portal Pad",
+  "block.custom_gateways.remote_gateway": "Remote Gateway",
 
   "config.jade.plugin_custom_gateways.portal_frame": "Portal Frame",
   "config.jade.plugin_custom_gateways.portal_pad": "Portal Pad",
@@ -34,12 +35,28 @@
   "interaction.custom_gateways.portal_linking_card.clear.success": "§6Linking Card source cleared.",
   "interaction.custom_gateways.portal_frame.error.master_block": "Master block not found at %s",
   "interaction.custom_gateways.portal_frame.telported": "§6Teleported to §e%s",
+  "interaction.custom_gateways.remote_dialer.add.success": "§6Remote Dialer: Added §b%s",
+  "interaction.custom_gateways.remote_dialer.add.duplicate": "§7Remote Dialer already has this location.",
+  "interaction.custom_gateways.remote_dialer.add.full": "§cRemote Dialer is full (%s max).",
+  "interaction.custom_gateways.remote_dialer.spawn.success": "§6Opening gateway to §b%s",
+  "interaction.custom_gateways.remote_dialer.spawn.failed": "§cNo safe spot found for a remote gateway.",
+  "interaction.custom_gateways.remote_dialer.select.failed": "§cThat entry cannot be opened right now.",
+  "interaction.custom_gateways.remote_dialer.rename.failed": "§cRename failed. Enter a valid name.",
 
   "item.custom_gateways.portal_linking_card": "Portal Linking Card",
+  "item.custom_gateways.remote_dialer": "Remote Dialer",
 
   "itemGroup.custom_gateways.portal_frame_tab": "Custom Gateways",
   "itemGroup.custom_gateways.portal_frame_tab.portal_frames_section": "Portal Frames",
   "itemGroup.custom_gateways.portal_frame_tab.portal_tools_section": "Portal Tools",
+
+  "menu.custom_gateways.remote_dialer.title": "Remote Dialer",
+  "menu.custom_gateways.remote_dialer.open": "Open",
+  "menu.custom_gateways.remote_dialer.delete": "Delete",
+  "menu.custom_gateways.remote_dialer.rename": "Rename",
+  "menu.custom_gateways.remote_dialer.revalidate": "Recheck",
+  "menu.custom_gateways.remote_dialer.rename_input": "Entry name",
+  "menu.custom_gateways.remote_dialer.rename_hint": "Select an entry, edit the name, then click Rename.",
 
   "sound.custom_gateways.gateway.teleport.success": "Gateway Teleport Success",
   "sound.custom_gateways.gateway.teleport.failure": "Gateway Teleport Failure",
