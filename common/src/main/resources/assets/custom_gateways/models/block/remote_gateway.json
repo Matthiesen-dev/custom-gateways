@@ -1,7 +1,11 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "credit": "Made with Blockbench",
+  "parent": "builtin/entity",
+  "texture_size": [
+    64,
+    64
+  ],
   "textures": {
-    "all": "custom_gateways:block/remote_gateway"
+    "particle": "custom_gateways:item/remote_gateway"
   }
 }
-

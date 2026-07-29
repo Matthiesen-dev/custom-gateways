@@ -1,0 +1,59 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.remote_gateway",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
+			},
+			"bones": [
+				{
+					"name": "remote_gateway",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "top",
+					"parent": "remote_gateway",
+					"pivot": [0, 16, 0],
+					"cubes": [
+						{
+							"origin": [-8, 16, -1],
+							"size": [16, 16, 2],
+							"uv": {
+								"north": {"uv": [16, 0], "uv_size": [16, 16]},
+								"east": {"uv": [18, 32], "uv_size": [2, 16]},
+								"south": {"uv": [16, 16], "uv_size": [16, 16]},
+								"west": {"uv": [32, 18], "uv_size": [2, 16]},
+								"up": {"uv": [34, 0], "uv_size": [16, 2]},
+								"down": {"uv": [2, 36], "uv_size": [16, -2]}
+							}
+						}
+					]
+				},
+				{
+					"name": "bottom",
+					"parent": "remote_gateway",
+					"pivot": [0, 16, 0],
+					"cubes": [
+						{
+							"origin": [-8, 0, -1],
+							"size": [16, 16, 2],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [16, 16]},
+								"east": {"uv": [0, 32], "uv_size": [2, 16]},
+								"south": {"uv": [0, 16], "uv_size": [16, 16]},
+								"west": {"uv": [32, 0], "uv_size": [2, 16]},
+								"up": {"uv": [2, 32], "uv_size": [16, 2]},
+								"down": {"uv": [32, 18], "uv_size": [16, -2]}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

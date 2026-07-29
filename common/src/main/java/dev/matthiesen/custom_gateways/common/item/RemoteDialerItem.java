@@ -205,7 +205,13 @@ public final class RemoteDialerItem extends Item {
             return false;
         }
 
-        boolean spawned = RemoteGatewayBlockEntity.spawnGateway(level, spawnPos, entry.location(), player.getUUID());
+        boolean spawned = RemoteGatewayBlockEntity.spawnGateway(
+            level,
+            spawnPos,
+            player.getDirection().getOpposite(),
+            entry.location(),
+            player.getUUID()
+        );
         if (!spawned) {
             player.displayClientMessage(Component.translatable("interaction.custom_gateways.remote_dialer.spawn.failed"), true);
             return false;

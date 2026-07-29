@@ -7,6 +7,7 @@ import dev.matthiesen.custom_gateways.common.registry.BlockRegistry;
 import dev.matthiesen.custom_gateways.common.util.PlayerCooldownTracker;
 import dev.matthiesen.custom_gateways.common.util.PortalTeleporter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -20,6 +21,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +32,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public final class RemoteGatewayBlockEntity extends BlockEntity {
+public final class RemoteGatewayBlockEntity extends BlockEntity implements GeoBlockEntity {
     private static final int MAX_LIFETIME_TICKS = 1200;
     private static final Map<UUID, GatewayRef> ACTIVE_BY_OWNER = new HashMap<>();
 
@@ -42,7 +47,7 @@ public final class RemoteGatewayBlockEntity extends BlockEntity {
         super(BlockEntityRegistry.REMOTE_GATEWAY_BE.get(), pos, state);
     }
 
-    public static boolean spawnGateway(ServerLevel level, BlockPos basePos, PortalRegistry.PortalLocation destination, UUID ownerUuid) {
+    public static boolean spawnGateway(ServerLevel level, BlockPos basePos, Direction facing, PortalRegistry.PortalLocation destination, UUID ownerUuid) {
         if (!canPlaceGateway(level, basePos)) {
             return false;
         }
@@ -51,7 +56,7 @@ public final class RemoteGatewayBlockEntity extends BlockEntity {
 
         BlockState baseState = BlockRegistry.REMOTE_GATEWAY.get().defaultBlockState()
             .setValue(RemoteGatewayBlock.IS_TOP, false)
-            .setValue(RemoteGatewayBlock.FACING, net.minecraft.core.Direction.NORTH);
+            .setValue(RemoteGatewayBlock.FACING, facing);
         BlockState topState = baseState.setValue(RemoteGatewayBlock.IS_TOP, true);
 
         level.setBlock(basePos, baseState, 3);
@@ -194,6 +199,26 @@ public final class RemoteGatewayBlockEntity extends BlockEntity {
             this.ownerUuid = tag.getUUID("owner");
         }
         this.ageTicks = tag.getInt("age_ticks");
+    }
+
+    private static final RawAnimation DEPLOY_ANIM = RawAnimation.begin()
+            .then("animation.remote_gateway.open", Animation.LoopType.PLAY_ONCE)
+            .thenLoop("animation.remote_gateway.idle");
+
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, this::deployAnimController));
+    }
+
+    private <E extends RemoteGatewayBlockEntity> PlayState deployAnimController(final AnimationState<E> state) {
+        return state.setAndContinue(DEPLOY_ANIM);
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
     }
 
     private record GatewayRef(ResourceLocation dimension, BlockPos basePos) {}

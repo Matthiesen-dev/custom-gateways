@@ -2,10 +2,7 @@ package dev.matthiesen.custom_gateways.common;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
-import dev.matthiesen.custom_gateways.common.client.geckolib.PortalFrameBlockRenderer;
-import dev.matthiesen.custom_gateways.common.client.geckolib.PortalPadBlockRenderer;
-import dev.matthiesen.custom_gateways.common.client.geckolib.PortalFrameItemRenderer;
-import dev.matthiesen.custom_gateways.common.client.geckolib.PortalPadItemRenderer;
+import dev.matthiesen.custom_gateways.common.client.geckolib.*;
 import dev.matthiesen.custom_gateways.common.client.screen.RemoteDialerScreen;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import dev.matthiesen.custom_gateways.common.registry.BlockRegistry;
@@ -81,6 +78,7 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
                 {
                     registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> new PortalFrameBlockRenderer().getRenderer());
                     registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_PAD_BE.get(), context -> new PortalPadBlockRenderer().getRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.REMOTE_GATEWAY_BE.get(), context -> new RemoteGatewayBlockRenderer().getRenderer());
                 }
         );
     }
