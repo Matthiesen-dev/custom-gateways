@@ -6,6 +6,6 @@
     64
   ],
   "textures": {
-    "particle": "custom_gateways:item/remote_gateway"
+    "particle": "custom_gateways:block/remote_gateway"
   }
 }
