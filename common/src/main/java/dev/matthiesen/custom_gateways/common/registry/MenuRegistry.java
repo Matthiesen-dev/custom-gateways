@@ -1,7 +1,6 @@
 package dev.matthiesen.custom_gateways.common.registry;
 
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
-import dev.matthiesen.custom_gateways.common.menu.GatewayMenus;
 import dev.matthiesen.custom_gateways.common.menu.RemoteDialerMenu;
 import dev.matthiesen.matthiesen_core.common.registry.AbstractMenuTypeRegistry;
 import net.minecraft.world.inventory.MenuType;
@@ -20,6 +19,6 @@ public final class MenuRegistry extends AbstractMenuTypeRegistry {
     public static final Supplier<MenuType<RemoteDialerMenu>> REMOTE_DIALER_MENU;
 
     static {
-        REMOTE_DIALER_MENU = INSTANCE.register("remote_dialer", GatewayMenus::remoteDialerMenu);
+        REMOTE_DIALER_MENU = INSTANCE.register("remote_dialer", RemoteDialerMenu::new);
     }
 }
