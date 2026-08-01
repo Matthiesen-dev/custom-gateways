@@ -17,13 +17,17 @@ public final class CreativeModeTabRegistry extends AbstractCreativeModeTabRegist
 
     public static void init() {}
 
-    public static final ResourceLocation PORTAL_FRAME_TAB_ID = CustomGatewaysCommon.modResource("portal_frame_tab");
-    public static final ResourceLocation PORTAL_FRAMES_SECTION_ID = CustomGatewaysCommon.modResource("portal_frames_section");
-    public static final ResourceLocation PORTAL_TOOLS_SECTION_ID = CustomGatewaysCommon.modResource("portal_tools_section");
+    public static final ResourceLocation PORTAL_FRAME_TAB_ID;
+    public static final ResourceLocation PORTAL_FRAMES_SECTION_ID;
+    public static final ResourceLocation PORTAL_TOOLS_SECTION_ID;
 
     public static final Supplier<CreativeModeTab> PORTAL_FRAMES_TAB;
 
     static {
+        PORTAL_FRAME_TAB_ID = CustomGatewaysCommon.modResource("portal_frame_tab");
+        PORTAL_FRAMES_SECTION_ID = CustomGatewaysCommon.modResource("portal_frames_section");
+        PORTAL_TOOLS_SECTION_ID = CustomGatewaysCommon.modResource("portal_tools_section");
+
         PORTAL_FRAMES_TAB = INSTANCE.registerSectionedCreativeTab(
                 PORTAL_FRAME_TAB_ID,
                 Component.translatable("itemGroup.custom_gateways.portal_frame_tab"),
