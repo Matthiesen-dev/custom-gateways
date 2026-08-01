@@ -1,6 +1,5 @@
 {
   "variants": {
-    "": { "model": "custom_gateways:block/remote_gateway" },
     "facing=north,is_top=false": { "model": "custom_gateways:block/remote_gateway" },
     "facing=south,is_top=false": { "model": "custom_gateways:block/remote_gateway" },
     "facing=east,is_top=false": { "model": "custom_gateways:block/remote_gateway" },
