@@ -1,5 +1,5 @@
 {
-  "parent": "custom_gateways:crafted/portal_linking_card",
+  "parent": "custom_gateways:crafted/portal_pad",
   "display": {
     "title": {
       "translate": "advancements.custom_gateways.crafted.portal_frame.title"
