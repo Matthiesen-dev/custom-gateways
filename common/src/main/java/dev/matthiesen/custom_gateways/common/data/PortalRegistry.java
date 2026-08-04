@@ -110,45 +110,45 @@ public final class PortalRegistry extends SavedData {
     }
 
     /**
-         * Represents a portal's location including its dimension
-         */
-        public record PortalLocation(ResourceLocation dimension, int x, int y, int z) {
+     * Represents a portal's location including its dimension
+    */
+    public record PortalLocation(ResourceLocation dimension, int x, int y, int z) {
 
         public PortalLocation(ResourceLocation dimension, BlockPos pos) {
-                this(dimension, pos.getX(), pos.getY(), pos.getZ());
-            }
+            this(dimension, pos.getX(), pos.getY(), pos.getZ());
+        }
 
-            public BlockPos getBlockPos() {
-                return new BlockPos(x, y, z);
-            }
+        public BlockPos getBlockPos() {
+            return new BlockPos(x, y, z);
+        }
 
-            public CompoundTag serialize() {
-                CompoundTag tag = new CompoundTag();
-                tag.putString("dimension", dimension.toString());
-                tag.putInt("x", x);
-                tag.putInt("y", y);
-                tag.putInt("z", z);
-                return tag;
-            }
+        public CompoundTag serialize() {
+            CompoundTag tag = new CompoundTag();
+            tag.putString("dimension", dimension.toString());
+            tag.putInt("x", x);
+            tag.putInt("y", y);
+            tag.putInt("z", z);
+            return tag;
+        }
 
-            public static PortalLocation deserialize(CompoundTag tag) {
-                ResourceLocation dimension = ResourceLocation.parse(tag.getString("dimension"));
-                int x = tag.getInt("x");
-                int y = tag.getInt("y");
-                int z = tag.getInt("z");
-                return new PortalLocation(dimension, x, y, z);
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                if (this == o) return true;
-                if (!(o instanceof PortalLocation(ResourceLocation dimension1, int x1, int y1, int z1))) return false;
-                return x == x1 && y == y1 && z == z1 && dimension.equals(dimension1);
-            }
+        public static PortalLocation deserialize(CompoundTag tag) {
+            ResourceLocation dimension = ResourceLocation.parse(tag.getString("dimension"));
+            int x = tag.getInt("x");
+            int y = tag.getInt("y");
+            int z = tag.getInt("z");
+            return new PortalLocation(dimension, x, y, z);
+        }
 
         @Override
-            public @NotNull String toString() {
-                return dimension + ":" + x + "," + y + "," + z;
-            }
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof PortalLocation(ResourceLocation dimension1, int x1, int y1, int z1))) return false;
+            return x == x1 && y == y1 && z == z1 && dimension.equals(dimension1);
         }
+
+        @Override
+        public @NotNull String toString() {
+            return dimension + ":" + x + "," + y + "," + z;
+        }
+    }
 }
