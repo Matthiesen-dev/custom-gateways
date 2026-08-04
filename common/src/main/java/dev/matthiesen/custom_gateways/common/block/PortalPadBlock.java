@@ -51,9 +51,13 @@ public final class PortalPadBlock extends HorizontalDirectionalBlock implements 
     private final VoxelShape baseShape;
 
     public PortalPadBlock() {
-        super(BlockBehaviour.Properties.of().noOcclusion()
-                .strength(4f)
-                .requiresCorrectToolForDrops());
+        super(
+                BlockBehaviour.Properties.of()
+                        .noOcclusion()
+                        .strength(4f)
+                        .requiresCorrectToolForDrops()
+                        .lightLevel(state -> 5)
+        );
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
         this.baseShape = createShape();
         initializeShapes();

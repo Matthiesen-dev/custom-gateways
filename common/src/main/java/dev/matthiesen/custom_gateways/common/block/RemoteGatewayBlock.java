@@ -38,11 +38,14 @@ public final class RemoteGatewayBlock extends HorizontalDirectionalBlock impleme
     private final VoxelShape baseShape;
 
     public RemoteGatewayBlock() {
-        super(BlockBehaviour.Properties.of()
-            .noCollission()
-            .strength(-1.0f, 3_600_000.0f)
-            .noLootTable()
-            .pushReaction(PushReaction.BLOCK));
+        super(
+                BlockBehaviour.Properties.of()
+                        .noCollission()
+                        .strength(-1.0f, 3_600_000.0f)
+                        .noLootTable()
+                        .pushReaction(PushReaction.BLOCK)
+                        .lightLevel(state -> 9)
+        );
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(IS_TOP, false));
         this.baseShape = createShape();
         initializeShapes();

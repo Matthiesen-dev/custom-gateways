@@ -71,9 +71,13 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
     private final VoxelShape collisionShape;
 
     public PortalFrameBlock() {
-        super(BlockBehaviour.Properties.of().noOcclusion()
-                .strength(4f)
-                .requiresCorrectToolForDrops());
+        super(
+                BlockBehaviour.Properties.of()
+                        .noOcclusion()
+                        .strength(4f)
+                        .requiresCorrectToolForDrops()
+                        .lightLevel(state -> 7)
+        );
         this.registerDefaultState(this.stateDefinition.any().setValue(IS_SLAVE, false).setValue(FACING, Direction.NORTH));
         this.baseShape = createShape();
         this.slaveBaseShape = createSlaveShape();
