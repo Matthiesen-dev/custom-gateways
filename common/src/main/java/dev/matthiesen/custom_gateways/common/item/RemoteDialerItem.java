@@ -1,5 +1,6 @@
 package dev.matthiesen.custom_gateways.common.item;
 
+import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import dev.matthiesen.custom_gateways.common.block.entity.RemoteGatewayBlockEntity;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import dev.matthiesen.custom_gateways.common.menu.RemoteDialerMenu;
@@ -37,8 +38,6 @@ import java.util.Locale;
 import java.util.Objects;
 
 public final class RemoteDialerItem extends Item {
-    public static final int MAX_ENTRIES = 32;
-
     private static final String DIALER_DATA_TAG = "dialer_data";
     private static final String DIALER_ENTRIES_TAG = "entries";
     private static final String ENTRY_NAME_TAG = "name";
@@ -50,6 +49,10 @@ public final class RemoteDialerItem extends Item {
 
     public RemoteDialerItem() {
         super(new Properties().stacksTo(1));
+    }
+
+    public static int getMaxEntries() {
+        return CustomGatewaysCommon.INSTANCE.getServerConfig().remoteDialerItemConfig.maxPortalEntries;
     }
 
     @Override
@@ -80,8 +83,8 @@ public final class RemoteDialerItem extends Item {
             return InteractionResult.CONSUME;
         }
 
-        if (entries.size() >= MAX_ENTRIES) {
-            player.displayClientMessage(Component.translatable("interaction.custom_gateways.remote_dialer.add.full", MAX_ENTRIES), true);
+        if (entries.size() >= getMaxEntries()) {
+            player.displayClientMessage(Component.translatable("interaction.custom_gateways.remote_dialer.add.full", getMaxEntries()), true);
             return InteractionResult.CONSUME;
         }
 
@@ -123,7 +126,7 @@ public final class RemoteDialerItem extends Item {
             }
         }
 
-        tooltipComponents.add(Component.translatable("tooltip.custom_gateways.remote_dialer.entries", entries.size(), MAX_ENTRIES));
+        tooltipComponents.add(Component.translatable("tooltip.custom_gateways.remote_dialer.entries", entries.size(), getMaxEntries()));
         if (invalidCount > 0) {
             tooltipComponents.add(Component.translatable("tooltip.custom_gateways.remote_dialer.invalid", invalidCount));
         }
@@ -243,7 +246,7 @@ public final class RemoteDialerItem extends Item {
         ListTag listTag = data.getList(DIALER_ENTRIES_TAG, Tag.TAG_COMPOUND);
 
         List<Entry> entries = new ArrayList<>();
-        for (int i = 0; i < listTag.size() && entries.size() < MAX_ENTRIES; i++) {
+        for (int i = 0; i < listTag.size() && entries.size() < getMaxEntries(); i++) {
             CompoundTag entryTag = listTag.getCompound(i);
             String dimensionRaw = entryTag.getString(ENTRY_DIMENSION_TAG);
             if (dimensionRaw.isEmpty()) {

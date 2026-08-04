@@ -1,5 +1,6 @@
 package dev.matthiesen.custom_gateways.common.util;
 
+import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import dev.matthiesen.custom_gateways.common.registry.CriterionRegistry;
 import dev.matthiesen.custom_gateways.common.registry.SoundRegistry;
 import net.minecraft.core.BlockPos;
@@ -23,6 +24,7 @@ public final class PortalTeleporter {
      */
     public static void teleportEntity(Entity entity, ServerLevel targetLevel, BlockPos targetPos) {
         if (!(entity instanceof Player player)) {
+            if (!CustomGatewaysCommon.INSTANCE.getServerConfig().teleportValidation.allowNonPlayerTeleport) return;
             teleportNonPlayer(entity, targetLevel, targetPos);
             return;
         }
@@ -30,8 +32,6 @@ public final class PortalTeleporter {
         // Find a safe landing spot
         BlockPos safeLandingSpot = PortalValidation.findSafeLandingSpot(targetLevel, targetPos);
         if (safeLandingSpot == null) {
-            // No safe landing spot found — play failure sound at the destination portal and abort.
-            // TODO: also trigger this for portal blocked/broken state (future feature)
             targetLevel.playSound(null, targetPos, SoundRegistry.GATEWAY_TELEPORT_FAILURE.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
             return;
         }

@@ -1,5 +1,6 @@
 package dev.matthiesen.custom_gateways.common.util;
 
+import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -10,8 +11,11 @@ import java.util.UUID;
  * Tracks per-player teleportation cooldowns to prevent spam teleportation
  */
 public final class PlayerCooldownTracker {
-    private static final long COOLDOWN_DURATION_MS = 5000; // 5 seconds default
     private static final Map<UUID, Long> cooldowns = new HashMap<>();
+
+    private static long getCooldownDurationMs() {
+        return CustomGatewaysCommon.INSTANCE.getServerConfig().teleportValidation.cooldownMS;
+    }
 
     /**
      * Checks if a player is on cooldown
@@ -37,7 +41,7 @@ public final class PlayerCooldownTracker {
      */
     public static void setCooldown(Player player) {
         UUID uuid = player.getUUID();
-        cooldowns.put(uuid, System.currentTimeMillis() + COOLDOWN_DURATION_MS);
+        cooldowns.put(uuid, System.currentTimeMillis() + getCooldownDurationMs());
     }
 }
 

@@ -1,5 +1,6 @@
 package dev.matthiesen.custom_gateways.common.util;
 
+import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -52,7 +53,7 @@ public final class PortalValidation {
         }
 
         // Search in expanding rings around the target
-        int searchRadius = 5;
+        int searchRadius = CustomGatewaysCommon.INSTANCE.getServerConfig().teleportValidation.safeSearchRadius;
         for (int radius = 1; radius <= searchRadius; radius++) {
             for (int x = -radius; x <= radius; x++) {
                 for (int z = -radius; z <= radius; z++) {
