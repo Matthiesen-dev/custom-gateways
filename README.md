@@ -11,6 +11,8 @@ TODO
 
 - [Matthiesen Core](https://modrinth.com/mod/matthiesen-core)
 - [GeckoLib](https://modrinth.com/mod/geckolib)
+- [Fabric API](https://modrinth.com/mod/fabric-api) (Fabric only)
+- [Forge Config API Port](https://modrinth.com/mod/forge-config-api-port) (Fabric only)
 
 ## Docs
 

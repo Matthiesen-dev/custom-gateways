@@ -1,6 +1,6 @@
 package dev.matthiesen.custom_gateways.common.util;
 
-import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
+import dev.matthiesen.custom_gateways.common.config.GatewaysConfig;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
@@ -14,7 +14,7 @@ public final class PlayerCooldownTracker {
     private static final Map<UUID, Long> cooldowns = new HashMap<>();
 
     private static long getCooldownDurationMs() {
-        return CustomGatewaysCommon.INSTANCE.getServerConfig().teleportValidation.cooldownMS;
+        return GatewaysConfig.SERVER_CONFIG.teleportValidation_cooldownMS.getAsLong();
     }
 
     /**

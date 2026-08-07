@@ -1,7 +1,7 @@
 package dev.matthiesen.custom_gateways.common.item;
 
-import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import dev.matthiesen.custom_gateways.common.block.entity.RemoteGatewayBlockEntity;
+import dev.matthiesen.custom_gateways.common.config.GatewaysConfig;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import dev.matthiesen.custom_gateways.common.menu.RemoteDialerMenu;
 import dev.matthiesen.custom_gateways.common.registry.CriterionRegistry;
@@ -52,7 +52,7 @@ public final class RemoteDialerItem extends Item {
     }
 
     public static int getMaxEntries() {
-        return CustomGatewaysCommon.INSTANCE.getServerConfig().remoteDialerItemConfig.maxPortalEntries;
+        return GatewaysConfig.SERVER_CONFIG.remoteDialer_maxPortalEntries.getAsInt();
     }
 
     @Override

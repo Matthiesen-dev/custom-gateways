@@ -1,11 +1,10 @@
 package dev.matthiesen.custom_gateways.common;
 
-import dev.matthiesen.custom_gateways.common.config.ServerConfig;
+import dev.matthiesen.custom_gateways.common.config.GatewaysConfig;
 import dev.matthiesen.custom_gateways.common.registry.*;
 import dev.matthiesen.libs.faststats.Token;
 import dev.matthiesen.matthiesen_core.common.AbstractCommonMod;
-import dev.matthiesen.matthiesen_core.common.api.events.PlatformEvents;
-import dev.matthiesen.matthiesen_core.common.utility.config.ConfigManager;
+import dev.matthiesen.matthiesen_core.common.api.platform.loader.ModConfigType;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,16 +19,14 @@ public final class CustomGatewaysCommon extends AbstractCommonMod {
 
     public static final CustomGatewaysCommon INSTANCE = new CustomGatewaysCommon();
 
-    private static final ConfigManager<ServerConfig> SERVER_CONFIG_MANAGER =
-            INSTANCE.createConfigManager(ServerConfig.class, "server");
-
     public CustomGatewaysCommon() {
         super(MOD_ID, MOD_NAME);
     }
 
     public void initialize() {
         super.initialize();
-        SERVER_CONFIG_MANAGER.loadConfig();
+
+        registerModConfig(MOD_ID, ModConfigType.SERVER, GatewaysConfig.SERVER_SPEC, "custom_gateways/server.toml");
 
         BlockRegistry.init();
         BlockEntityRegistry.init();
@@ -40,16 +37,7 @@ public final class CustomGatewaysCommon extends AbstractCommonMod {
         MenuRegistry.init();
         NetworkRegistry.init(this);
 
-        PlatformEvents.SERVER_RELOAD.subscribe(event -> {
-            SERVER_CONFIG_MANAGER.loadConfig();
-            createInfoLog("Reloaded configs");
-        });
-
         createInfoLog("Initialized Common");
-    }
-
-    public ServerConfig getServerConfig() {
-        return SERVER_CONFIG_MANAGER.getConfig();
     }
 
     @Override
