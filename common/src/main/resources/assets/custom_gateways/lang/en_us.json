@@ -83,6 +83,26 @@
   "tooltip.custom_gateways.portal_frame.linked": "Portal is Linked",
   "tooltip.custom_gateways.portal_frame.linked.position": "Position: %s",
   "tooltip.custom_gateways.portal_frame.linked.dimension": "Dimension: %s",
-  "tooltip.custom_gateways.portal_frame.unlinked": "Portal is Unlinked"
+  "tooltip.custom_gateways.portal_frame.unlinked": "Portal is Unlinked",
 
+  "custom_gateways.configuration.title": "Custom Gateways Configuration",
+  "custom_gateways.configuration.section.custom.gateways.server.toml": "Custom Gateways Server Configuration",
+  "custom_gateways.configuration.section.custom.gateways.server.toml.title": "Custom Gateways Server Configuration",
+  "custom_gateways.configuration.server": "Custom Gateways Server Configuration",
+  "custom_gateways.configuration.server.tooltip": "Custom Gateways Server Configuration",
+  "custom_gateways.configuration.server.button": "Edit",
+  "custom_gateways.configuration.server.teleportValidation": "Teleport Validation Configuration",
+  "custom_gateways.configuration.server.teleportValidation.tooltip": "Configuration for teleportation validation in Custom Gateways.",
+  "custom_gateways.configuration.server.teleportValidation.button": "Edit",
+  "custom_gateways.configuration.server.teleportValidation.cooldownMS": "Teleportation Cooldown (ms)",
+  "custom_gateways.configuration.server.teleportValidation.cooldownMS.tooltip": "The cooldown in milliseconds between teleportation attempts.",
+  "custom_gateways.configuration.server.teleportValidation.safeSearchRadius": "Safe Search Radius",
+  "custom_gateways.configuration.server.teleportValidation.safeSearchRadius.tooltip": "The radius in blocks to search for a safe teleportation location.",
+  "custom_gateways.configuration.server.teleportValidation.allowNonPlayerTeleport": "Allow Non-Player Teleportation",
+  "custom_gateways.configuration.server.teleportValidation.allowNonPlayerTeleport.tooltip": "Whether to allow non-player entities to teleport using the custom gateways.",
+  "custom_gateways.configuration.server.remoteDialer": "Remote Dialer Configuration",
+  "custom_gateways.configuration.server.remoteDialer.tooltip": "Configuration for the Remote Dialer item in Custom Gateways.",
+  "custom_gateways.configuration.server.remoteDialer.button": "Edit",
+  "custom_gateways.configuration.server.remoteDialer.maxPortalEntries": "Max Portal Entries",
+  "custom_gateways.configuration.server.remoteDialer.maxPortalEntries.tooltip": "The maximum number of portal entries that can be stored in a Remote Dialer item."
 }

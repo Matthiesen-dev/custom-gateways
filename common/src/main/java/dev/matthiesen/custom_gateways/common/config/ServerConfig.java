@@ -13,19 +13,27 @@ public final class ServerConfig {
     public ModConfigSpec.IntValue remoteDialer_maxPortalEntries;
 
     public ServerConfig(ModConfigSpec.Builder builder) {
-        builder.comment("Custom Gateways Server Configuration").push("server");
+        builder.comment("Custom Gateways Server Configuration")
+                .translation("custom_gateways.configuration.server")
+                .push("server");
 
-        builder.comment("Teleport Validation Configuration").push("teleportValidation");
+        builder.comment("Teleport Validation Configuration")
+                .translation("custom_gateways.configuration.server.teleportValidation")
+                .push("teleportValidation");
         teleportValidation_cooldownMS = builder.comment("The cooldown in milliseconds between teleportation attempts")
+                .translation("custom_gateways.configuration.server.teleportValidation.cooldownMS")
                 .defineInRange("cooldownMS", 5000L, 0L, Long.MAX_VALUE);
         teleportValidation_safeSearchRadius = builder.comment("The radius in blocks to search for a safe teleportation location")
+                .translation("custom_gateways.configuration.server.teleportValidation.safeSearchRadius")
                 .defineInRange("safeSearchRadius", 5, 0, Integer.MAX_VALUE);
         teleportValidation_allowNonPlayerTeleport = builder.comment("Whether to allow non-player entities to teleport using the custom gateways")
+                .translation("custom_gateways.configuration.server.teleportValidation.allowNonPlayerTeleport")
                 .define("allowNonPlayerTeleport", false);
         builder.pop(); // Closes "teleportValidation"
 
         builder.comment("Remote Dialer Configuration").push("remoteDialer");
         remoteDialer_maxPortalEntries = builder.comment("The maximum number of portal entries that can be stored in a Remote Dialer item")
+                .translation("custom_gateways.configuration.server.remoteDialer.maxPortalEntries")
                 .defineInRange("maxPortalEntries", 32, 1, Integer.MAX_VALUE);
         builder.pop(); // Closes "remoteDialer"
 
