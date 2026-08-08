@@ -31,7 +31,9 @@ public final class ServerConfig {
                 .define("allowNonPlayerTeleport", false);
         builder.pop(); // Closes "teleportValidation"
 
-        builder.comment("Remote Dialer Configuration").push("remoteDialer");
+        builder.comment("Remote Dialer Configuration")
+                .translation("custom_gateways.configuration.server.remoteDialer")
+                .push("remoteDialer");
         remoteDialer_maxPortalEntries = builder.comment("The maximum number of portal entries that can be stored in a Remote Dialer item")
                 .translation("custom_gateways.configuration.server.remoteDialer.maxPortalEntries")
                 .defineInRange("maxPortalEntries", 32, 1, Integer.MAX_VALUE);

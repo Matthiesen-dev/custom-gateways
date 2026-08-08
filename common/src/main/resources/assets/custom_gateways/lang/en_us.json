@@ -86,9 +86,9 @@
   "tooltip.custom_gateways.portal_frame.unlinked": "Portal is Unlinked",
 
   "custom_gateways.configuration.title": "Custom Gateways Configuration",
-  "custom_gateways.configuration.section.custom.gateways.server.toml": "Custom Gateways Server Configuration",
-  "custom_gateways.configuration.section.custom.gateways.server.toml.title": "Custom Gateways Server Configuration",
-  "custom_gateways.configuration.server": "Custom Gateways Server Configuration",
+  "custom_gateways.configuration.section.custom.gateways.server.toml": "Server Configuration",
+  "custom_gateways.configuration.section.custom.gateways.server.toml.title": "Server Configuration",
+  "custom_gateways.configuration.server": "Server Configuration",
   "custom_gateways.configuration.server.tooltip": "Custom Gateways Server Configuration",
   "custom_gateways.configuration.server.button": "Edit",
   "custom_gateways.configuration.server.teleportValidation": "Teleport Validation Configuration",
