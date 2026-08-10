@@ -16,6 +16,10 @@ dialer item that can be used to activate the gateways from a distance.
 - [Fabric API](https://modrinth.com/mod/fabric-api) (Fabric only)
 - [Forge Config API Port](https://modrinth.com/mod/forge-config-api-port) (Fabric only)
 
+## Optional Support for:
+
+- [Jade](https://modrinth.com/mod/jade) - Displays information about the gateway when looking at it.
+
 ## Docs
 
 Documentation for this mod can be found at [mods.matthiesen.dev](https://mods.matthiesen.dev/custom-gateways/)
