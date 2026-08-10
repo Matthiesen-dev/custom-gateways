@@ -5,7 +5,7 @@ import dev.matthiesen.custom_gateways.common.client.geckolib.abstracts.GeoBlockR
 
 public final class RemoteGatewayBlockRenderer extends GeoBlockRenderer<RemoteGatewayBlockEntity> {
     public RemoteGatewayBlockRenderer() {
-        super("remote_gateway");
+        super("remote_gateway", true, true);
     }
 }
 

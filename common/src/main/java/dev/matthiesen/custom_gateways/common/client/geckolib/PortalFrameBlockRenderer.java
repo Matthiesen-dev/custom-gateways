@@ -5,6 +5,6 @@ import dev.matthiesen.custom_gateways.common.client.geckolib.abstracts.GeoBlockR
 
 public final class PortalFrameBlockRenderer extends GeoBlockRenderer<PortalFrameEntity> {
     public PortalFrameBlockRenderer() {
-        super("portal_frame");
+        super("portal_frame", true, true);
     }
 }

@@ -12,13 +12,24 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.layer.AutoGlowingGeoLayer;
 
 public class GeoBlockRenderer<T extends BlockEntity & GeoAnimatable> {
     private final Renderer<T> renderer;
 
+    public GeoBlockRenderer(String name, boolean isTransparent, boolean isEmissive) {
+        Model<T> model = new Model<>(name);
+        this.renderer = new Renderer<>(model, isTransparent, isEmissive);
+    }
+
+    public GeoBlockRenderer(String name, boolean isTransparent) {
+        Model<T> model = new Model<>(name);
+        this.renderer = new Renderer<>(model, isTransparent, false);
+    }
+
     public GeoBlockRenderer(String name) {
         Model<T> model = new Model<>(name);
-        this.renderer = new Renderer<>(model);
+        this.renderer = new Renderer<>(model, false, false);
     }
 
     public Renderer<T> getRenderer() {
@@ -49,8 +60,14 @@ public class GeoBlockRenderer<T extends BlockEntity & GeoAnimatable> {
     }
 
     public static class Renderer<T extends BlockEntity & GeoAnimatable> extends software.bernie.geckolib.renderer.GeoBlockRenderer<T> {
-        public Renderer(GeoModel<T> model) {
+        private final boolean isTransparent;
+
+        public Renderer(GeoModel<T> model, boolean isTransparent, boolean isEmissive) {
             super(model);
+            this.isTransparent = isTransparent;
+            if (isEmissive) {
+                addRenderLayer(new AutoGlowingGeoLayer<>(this));
+            }
         }
 
         @Override
@@ -59,6 +76,14 @@ public class GeoBlockRenderer<T extends BlockEntity & GeoAnimatable> {
                 if (portalFrameEntity.isSlave()) return;
             }
             super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+        }
+
+        @Override
+        public @Nullable RenderType getRenderType(T animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+            if (isTransparent) {
+                return RenderType.entityTranslucent(getTextureLocation(animatable));
+            }
+            return super.getRenderType(animatable, texture, bufferSource, partialTick);
         }
     }
 }
