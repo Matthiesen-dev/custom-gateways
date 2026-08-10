@@ -1,5 +1,5 @@
 {
-  "parent": "custom_gateways:crafted/portal_linking_card",
+  "parent": "custom_gateways:crafted/portal_linking_device",
   "display": {
     "title": {
       "translate": "advancements.custom_gateways.crafted.remote_dialer.title"

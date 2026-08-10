@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public final class PortalLinkingCard extends Item {
+public final class PortalLinkingDevice extends Item {
     public static final String PORTAL_DATA_TAG = "portal_data";
     public static final String DIMENSION_TAG = "dimension";
     public static final String X_TAG = "x";
@@ -46,7 +46,7 @@ public final class PortalLinkingCard extends Item {
     private static final long DOUBLE_CROUCH_WINDOW_TICKS = 60L; // 3 seconds at 20 TPS
     private static final Map<UUID, Long> LAST_CROUCH_USE_TICKS = new HashMap<>();
 
-    public PortalLinkingCard() {
+    public PortalLinkingDevice() {
         super(new Properties().stacksTo(1));
     }
 
@@ -87,13 +87,13 @@ public final class PortalLinkingCard extends Item {
         CompoundTag portalData = tag.getCompound(PORTAL_DATA_TAG);
 
         if (portalData.isEmpty()) {
-            player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.clear.empty"), true);
+            player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_device.clear.empty"), true);
             return InteractionResultHolder.success(heldItem);
         }
 
         clearStoredPortalData(heldItem, tag);
-        level.playSound(null, player.blockPosition(), SoundRegistry.LINKING_CARD_UNLINK_PORTAL.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
-        player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.clear.success"), true);
+        level.playSound(null, player.blockPosition(), SoundRegistry.LINKING_DEVICE_UNLINK_PORTAL.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+        player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_device.clear.success"), true);
         return InteractionResultHolder.success(heldItem);
     }
 
@@ -106,8 +106,8 @@ public final class PortalLinkingCard extends Item {
 
         if (portalData.isEmpty()) {
             // No source stored — card is empty
-            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.empty.status"));
-            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.empty.action"));
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_device.empty.status"));
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_device.empty.action"));
         } else {
             // Source portal is stored
             String dimension = portalData.getString(DIMENSION_TAG);
@@ -118,11 +118,11 @@ public final class PortalLinkingCard extends Item {
             // Shorten the dimension name (e.g. "minecraft:overworld" → "overworld")
             String dimShort = dimension.contains(":") ? dimension.split(":")[1] : dimension;
 
-            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.linked.status"));
-            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.linked.dimension", dimShort));
-            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.linked.position", x, y, z));
-            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.linked.action"));
-            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_card.unlink_action"));
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_device.linked.status"));
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_device.linked.dimension", dimShort));
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_device.linked.position", x, y, z));
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_device.linked.action"));
+            tooltipComponents.add(Component.translatable("tooltip.custom_gateways.portal_linking_device.unlink_action"));
         }
     }
 
@@ -135,7 +135,7 @@ public final class PortalLinkingCard extends Item {
         }
 
         ItemStack heldItem = player.getMainHandItem();
-        if (!(heldItem.getItem() instanceof PortalLinkingCard)) {
+        if (!(heldItem.getItem() instanceof PortalLinkingDevice)) {
             return InteractionResult.FAIL;
         }
 
@@ -154,13 +154,13 @@ public final class PortalLinkingCard extends Item {
         PortalRegistry.PortalLocation currentPortal = new PortalRegistry.PortalLocation(currentDimension, portalPos);
         if (player.isCrouching()) {
             if (!isDoubleCrouchUse(serverLevel, player)) {
-                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.unlink.double_crouch_hint"), true);
+                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_device.unlink.double_crouch_hint"), true);
                 return InteractionResult.SUCCESS;
             }
 
             PortalRegistry.PortalLocation linkedPortal = registry.getLinkedPortal(currentPortal);
             if (linkedPortal == null) {
-                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.unlink.error.not_linked"), true);
+                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_device.unlink.error.not_linked"), true);
                 return InteractionResult.FAIL;
             }
 
@@ -173,11 +173,11 @@ public final class PortalLinkingCard extends Item {
                 clearStoredPortalData(heldItem, tag);
             }
 
-            level.playSound(null, portalPos, SoundRegistry.LINKING_CARD_UNLINK_PORTAL.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+            level.playSound(null, portalPos, SoundRegistry.LINKING_DEVICE_UNLINK_PORTAL.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
 
             player.displayClientMessage(
                 Component.translatable(
-                    "interaction.custom_gateways.portal_linking_card.unlink.success",
+                    "interaction.custom_gateways.portal_linking_device.unlink.success",
                     portalPos.toShortString(),
                     linkedPortal.getBlockPos().toShortString()
                 ),
@@ -189,7 +189,7 @@ public final class PortalLinkingCard extends Item {
         // Check if we already have a source portal stored
         if (portalData.isEmpty()) {
             if (!isPortalLinkSource(currentState)) {
-                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.error.source_must_be_frame"), true);
+                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_device.error.source_must_be_frame"), true);
                 return InteractionResult.FAIL;
             }
 
@@ -203,18 +203,18 @@ public final class PortalLinkingCard extends Item {
             tag.put(PORTAL_DATA_TAG, newPortalData);
             heldItem.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
 
-            level.playSound(null, portalPos, SoundRegistry.LINKING_CARD_SET_SOURCE.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+            level.playSound(null, portalPos, SoundRegistry.LINKING_DEVICE_SET_SOURCE.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
 
             player.displayClientMessage(
                 Component.translatable(
-                        "interaction.custom_gateways.portal_linking_card.set_source",
+                        "interaction.custom_gateways.portal_linking_device.set_source",
                         portalPos.toShortString(),
                         currentDimension.getPath()),
                 true
             );
         } else {
             if (!isPortalLinkDestination(currentState)) {
-                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.error.invalid_destination"), true);
+                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_device.error.invalid_destination"), true);
                 return InteractionResult.FAIL;
             }
 
@@ -229,13 +229,13 @@ public final class PortalLinkingCard extends Item {
             BlockState sourceState = sourceLevel.getBlockState(sourcePos);
             if (!isPortalLinkSource(sourceState)) {
                 clearStoredPortalData(heldItem, tag);
-                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.error.stored_source_invalid"), true);
+                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_device.error.stored_source_invalid"), true);
                 return InteractionResult.FAIL;
             }
 
             // Check if we're linking to the same portal
             if (sourcePos.equals(portalPos) && sourceDimension.equals(currentDimension)) {
-                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.error.self_link"), true);
+                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_device.error.self_link"), true);
                 return InteractionResult.FAIL;
             }
 
@@ -245,7 +245,7 @@ public final class PortalLinkingCard extends Item {
 
             // Explicit unlink is required before relinking either endpoint.
             if (registry.getLinkedPortal(source) != null || registry.getLinkedPortal(destination) != null) {
-                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_card.error.already_linked"), true);
+                player.displayClientMessage(Component.translatable("interaction.custom_gateways.portal_linking_device.error.already_linked"), true);
                 return InteractionResult.FAIL;
             }
 
@@ -257,7 +257,7 @@ public final class PortalLinkingCard extends Item {
 
             clearStoredPortalData(heldItem, tag);
 
-            level.playSound(null, portalPos, SoundRegistry.LINKING_CARD_LINK_PORTAL.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+            level.playSound(null, portalPos, SoundRegistry.LINKING_DEVICE_LINK_PORTAL.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
 
             CriterionRegistry.LINK_PORTALS.get().trigger((ServerPlayer) player);
 
@@ -267,7 +267,7 @@ public final class PortalLinkingCard extends Item {
             }
 
             player.displayClientMessage(
-                Component.translatable("interaction.custom_gateways.portal_linking_card.link_portal", sourcePos.toShortString(), portalPos.toShortString()),
+                Component.translatable("interaction.custom_gateways.portal_linking_device.link_portal", sourcePos.toShortString(), portalPos.toShortString()),
                 false
             );
 

@@ -5,7 +5,7 @@ import dev.matthiesen.matthiesen_core.common.core.registry.CreativeModeTabSectio
 import dev.matthiesen.matthiesen_core.common.registry.AbstractItemRegistry;
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import dev.matthiesen.custom_gateways.common.item.PortalFrameItem;
-import dev.matthiesen.custom_gateways.common.item.PortalLinkingCard;
+import dev.matthiesen.custom_gateways.common.item.PortalLinkingDevice;
 import dev.matthiesen.custom_gateways.common.item.PortalPadItem;
 import net.minecraft.world.item.ItemStack;
 
@@ -22,13 +22,13 @@ public final class ItemRegistry extends AbstractItemRegistry {
 
     public static final Supplier<PortalFrameItem> PORTAL_FRAME;
     public static final Supplier<PortalPadItem> PORTAL_PAD;
-    public static final Supplier<PortalLinkingCard> PORTAL_LINKING_CARD;
+    public static final Supplier<PortalLinkingDevice> PORTAL_LINKING_CARD;
     public static final Supplier<RemoteDialerItem> REMOTE_DIALER;
 
     static {
         PORTAL_FRAME = INSTANCE.register("portal_frame", PortalFrameItem::new);
         PORTAL_PAD = INSTANCE.register("portal_pad", PortalPadItem::new);
-        PORTAL_LINKING_CARD = INSTANCE.register("portal_linking_card", PortalLinkingCard::new);
+        PORTAL_LINKING_CARD = INSTANCE.register("portal_linking_device", PortalLinkingDevice::new);
         REMOTE_DIALER = INSTANCE.register("remote_dialer", RemoteDialerItem::new);
     }
 

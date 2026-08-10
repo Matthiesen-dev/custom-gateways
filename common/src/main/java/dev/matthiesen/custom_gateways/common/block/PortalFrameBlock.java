@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
-import dev.matthiesen.custom_gateways.common.item.PortalLinkingCard;
+import dev.matthiesen.custom_gateways.common.item.PortalLinkingDevice;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -159,8 +159,8 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
 
         // Check if player is holding a linking card
         ItemStack heldItem = player.getMainHandItem();
-        if (heldItem.getItem() instanceof PortalLinkingCard) {
-            return PortalLinkingCard.useOnPortalEndpoint(level, player, blockPos);
+        if (heldItem.getItem() instanceof PortalLinkingDevice) {
+            return PortalLinkingDevice.useOnPortalEndpoint(level, player, blockPos);
         }
 
         // Let other items process use-on behavior (e.g. Remote Dialer saving destinations).

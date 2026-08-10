@@ -2,13 +2,13 @@
   "parent": "custom_gateways:root",
   "display": {
     "title": {
-      "translate": "advancements.custom_gateways.crafted.portal_linking_card.title"
+      "translate": "advancements.custom_gateways.crafted.portal_linking_device.title"
     },
     "description": {
-      "translate": "advancements.custom_gateways.crafted.portal_linking_card.description"
+      "translate": "advancements.custom_gateways.crafted.portal_linking_device.description"
     },
     "icon": {
-      "id": "custom_gateways:portal_linking_card"
+      "id": "custom_gateways:portal_linking_device"
     },
     "frame": "task"
   },
@@ -19,7 +19,7 @@
         "items": [
           {
             "items": [
-              "custom_gateways:portal_linking_card"
+              "custom_gateways:portal_linking_device"
             ]
           }
         ]

@@ -13,12 +13,12 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_portal_linking_card": {
+    "has_portal_linking_device": {
       "conditions": {
         "items": [
           {
             "items": [
-              "custom_gateways:portal_linking_card"
+              "custom_gateways:portal_linking_device"
             ]
           }
         ]
@@ -71,7 +71,7 @@
   "requirements": [
     [
       "has_ender_pearl",
-      "has_portal_linking_card",
+      "has_portal_linking_device",
       "has_chorus_fruit",
       "has_netherite_ingot",
       "has_blaze_rod",

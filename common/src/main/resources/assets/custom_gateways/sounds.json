@@ -15,27 +15,27 @@
       }
     ]
   },
-  "linking_card.set_source": {
-    "subtitle": "sound.custom_gateways.linking_card.set_source",
+  "linking_device.set_source": {
+    "subtitle": "sound.custom_gateways.linking_device.set_source",
     "sounds": [
       {
-        "name": "custom_gateways:linking_card/set_source"
+        "name": "custom_gateways:linking_device/set_source"
       }
     ]
   },
-  "linking_card.link_portal": {
-    "subtitle": "sound.custom_gateways.linking_card.link_portal",
+  "linking_device.link_portal": {
+    "subtitle": "sound.custom_gateways.linking_device.link_portal",
     "sounds": [
       {
-        "name": "custom_gateways:linking_card/linking"
+        "name": "custom_gateways:linking_device/linking"
       }
     ]
   },
-  "linking_card.unlink_portal": {
-    "subtitle": "sound.custom_gateways.linking_card.unlink_portal",
+  "linking_device.unlink_portal": {
+    "subtitle": "sound.custom_gateways.linking_device.unlink_portal",
     "sounds": [
       {
-        "name": "custom_gateways:linking_card/linking"
+        "name": "custom_gateways:linking_device/unlinking"
       }
     ]
   }

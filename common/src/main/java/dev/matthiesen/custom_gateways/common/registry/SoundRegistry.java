@@ -17,20 +17,20 @@ public final class SoundRegistry extends AbstractSoundRegistry {
 
     public static final Supplier<SoundEvent> GATEWAY_TELEPORT_SUCCESS;
     public static final Supplier<SoundEvent> GATEWAY_TELEPORT_FAILURE;
-    public static final Supplier<SoundEvent> LINKING_CARD_SET_SOURCE;
-    public static final Supplier<SoundEvent> LINKING_CARD_LINK_PORTAL;
-    public static final Supplier<SoundEvent> LINKING_CARD_UNLINK_PORTAL;
+    public static final Supplier<SoundEvent> LINKING_DEVICE_SET_SOURCE;
+    public static final Supplier<SoundEvent> LINKING_DEVICE_LINK_PORTAL;
+    public static final Supplier<SoundEvent> LINKING_DEVICE_UNLINK_PORTAL;
 
     static {
         GATEWAY_TELEPORT_SUCCESS = INSTANCE.register("gateway_teleport_success", () ->
                 SoundEvent.createVariableRangeEvent(CustomGatewaysCommon.modResource("gateway.teleport.success")));
         GATEWAY_TELEPORT_FAILURE = INSTANCE.register("gateway_teleport_failure", () ->
                 SoundEvent.createVariableRangeEvent(CustomGatewaysCommon.modResource("gateway.teleport.failure")));
-        LINKING_CARD_SET_SOURCE = INSTANCE.register("linking_card_set_source", () ->
-                SoundEvent.createVariableRangeEvent(CustomGatewaysCommon.modResource("linking_card.set_source")));
-        LINKING_CARD_LINK_PORTAL = INSTANCE.register("linking_card_link_portal", () ->
-                SoundEvent.createVariableRangeEvent(CustomGatewaysCommon.modResource("linking_card.link_portal")));
-        LINKING_CARD_UNLINK_PORTAL = INSTANCE.register("linking_card_unlink_portal", () ->
-                SoundEvent.createVariableRangeEvent(CustomGatewaysCommon.modResource("linking_card.unlink_portal")));
+        LINKING_DEVICE_SET_SOURCE = INSTANCE.register("linking_card_set_source", () ->
+                SoundEvent.createVariableRangeEvent(CustomGatewaysCommon.modResource("linking_device.set_source")));
+        LINKING_DEVICE_LINK_PORTAL = INSTANCE.register("linking_device_link_portal", () ->
+                SoundEvent.createVariableRangeEvent(CustomGatewaysCommon.modResource("linking_device.link_portal")));
+        LINKING_DEVICE_UNLINK_PORTAL = INSTANCE.register("linking_device_unlink_portal", () ->
+                SoundEvent.createVariableRangeEvent(CustomGatewaysCommon.modResource("linking_device.unlink_portal")));
     }
 }

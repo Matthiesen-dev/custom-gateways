@@ -1,5 +1,5 @@
 {
-  "parent": "custom_gateways:crafted/portal_linking_card",
+  "parent": "custom_gateways:crafted/portal_linking_device",
   "criteria": {
     "linked_portal": {
       "trigger": "custom_gateways:link_portals"
