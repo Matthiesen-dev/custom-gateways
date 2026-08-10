@@ -5,7 +5,9 @@
   <img src="https://mods.matthiesen.dev/badges/geckolib.svg" alt="GeckoLib">
 </div>
 
-TODO
+Custom Gateways is a Minecraft mod that adds a new way to travel between locations or dimensions using custom gateways. Players
+can create their own gateway frames and pads, then link them together, allowing for travel between them. The mod also includes a remote
+dialer item that can be used to activate the gateways from a distance.
 
 ## Requirements
 
