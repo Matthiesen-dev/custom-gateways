@@ -3,7 +3,9 @@ package dev.matthiesen.custom_gateways.common.client.geckolib.abstracts;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
+import dev.matthiesen.custom_gateways.common.block.entity.DimensionalGate;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
+import dev.matthiesen.custom_gateways.common.util.DimensionVariants;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -20,11 +22,6 @@ public class GeoBlockRenderer<T extends BlockEntity & GeoAnimatable> {
     public GeoBlockRenderer(String name, boolean isTransparent, boolean isEmissive) {
         Model<T> model = new Model<>(name);
         this.renderer = new Renderer<>(model, isTransparent, isEmissive);
-    }
-
-    public GeoBlockRenderer(String name, boolean isTransparent) {
-        Model<T> model = new Model<>(name);
-        this.renderer = new Renderer<>(model, isTransparent, false);
     }
 
     public GeoBlockRenderer(String name) {
@@ -50,6 +47,12 @@ public class GeoBlockRenderer<T extends BlockEntity & GeoAnimatable> {
 
         @Override
         public ResourceLocation getTextureResource(T animatable) {
+            if (animatable instanceof DimensionalGate gateway) {
+                DimensionVariants variants = gateway.getDimensionVariant();
+                if (variants != null) {
+                    return CustomGatewaysCommon.modResource("textures/block/" + name + "/" + variants.getDimension() + ".png");
+                }
+            }
             return CustomGatewaysCommon.modResource("textures/block/" + name + ".png");
         }
 
