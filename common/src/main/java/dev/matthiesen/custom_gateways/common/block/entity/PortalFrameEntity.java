@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public final class PortalFrameEntity extends BlockEntity implements GeoBlockEntity {
+public final class PortalFrameEntity extends BlockEntity implements GeoBlockEntity, DimensionalGate {
     private static final long TELEPORT_WARMUP_TICKS = 60L; // 3 seconds at 20 TPS
     private static final long WARMUP_STALE_TICKS = 5L;
     private static final long NEARBY_PLAYER_CHECK_INTERVAL_TICKS = 20L;
@@ -104,6 +104,7 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
         return getBlockState().getValue(PortalFrameBlock.IS_SLAVE);
     }
 
+    @Override
     public ResourceLocation getLinkedDimension() {
         return ResourceLocation.parse(DIMENSION);
     }

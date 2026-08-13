@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public final class RemoteGatewayBlockEntity extends BlockEntity implements GeoBlockEntity {
+public final class RemoteGatewayBlockEntity extends BlockEntity implements GeoBlockEntity, DimensionalGate {
     private static final int MAX_LIFETIME_TICKS = 1200;
     private static final Map<UUID, GatewayRef> ACTIVE_BY_OWNER = new HashMap<>();
 
@@ -42,6 +42,11 @@ public final class RemoteGatewayBlockEntity extends BlockEntity implements GeoBl
     private int destinationZ;
     private UUID ownerUuid = new UUID(0L, 0L);
     private int ageTicks;
+
+    @Override
+    public ResourceLocation getLinkedDimension() {
+        return ResourceLocation.parse(destinationDimension);
+    }
 
     public RemoteGatewayBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.REMOTE_GATEWAY_BE.get(), pos, state);
