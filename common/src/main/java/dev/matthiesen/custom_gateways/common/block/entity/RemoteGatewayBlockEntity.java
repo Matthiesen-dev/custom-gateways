@@ -11,15 +11,20 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -52,6 +57,27 @@ public final class RemoteGatewayBlockEntity extends BlockEntity implements GeoBl
         super(BlockEntityRegistry.REMOTE_GATEWAY_BE.get(), pos, state);
     }
 
+    public void setDestinationDimension(PortalRegistry.PortalLocation destination, UUID ownerUuid) {
+        this.destinationDimension = destination.dimension().toString();
+        this.destinationX = destination.x();
+        this.destinationY = destination.y();
+        this.destinationZ = destination.z();
+        this.ownerUuid = ownerUuid;
+        this.ageTicks = 0;
+        syncToClient();
+    }
+
+    private void syncToClient() {
+        this.setChanged();
+
+        if (this.level == null || this.level.isClientSide) {
+            return;
+        }
+
+        BlockState state = this.getBlockState();
+        this.level.sendBlockUpdated(this.worldPosition, state, state, Block.UPDATE_CLIENTS);
+    }
+
     public static boolean spawnGateway(ServerLevel level, BlockPos basePos, Direction facing, PortalRegistry.PortalLocation destination, UUID ownerUuid) {
         if (!canPlaceGateway(level, basePos)) {
             return false;
@@ -73,13 +99,7 @@ public final class RemoteGatewayBlockEntity extends BlockEntity implements GeoBl
             return false;
         }
 
-        gateway.destinationDimension = destination.dimension().toString();
-        gateway.destinationX = destination.x();
-        gateway.destinationY = destination.y();
-        gateway.destinationZ = destination.z();
-        gateway.ownerUuid = ownerUuid;
-        gateway.ageTicks = 0;
-        gateway.setChanged();
+        gateway.setDestinationDimension(destination, ownerUuid);
 
         ACTIVE_BY_OWNER.put(ownerUuid, new GatewayRef(level.dimension().location(), basePos));
         return true;
@@ -204,6 +224,18 @@ public final class RemoteGatewayBlockEntity extends BlockEntity implements GeoBl
             this.ownerUuid = tag.getUUID("owner");
         }
         this.ageTicks = tag.getInt("age_ticks");
+    }
+
+    @Override
+    public @NotNull Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        CompoundTag tag = new CompoundTag();
+        this.saveAdditional(tag, provider);
+        return tag;
     }
 
     private static final RawAnimation DEPLOY_ANIM = RawAnimation.begin()

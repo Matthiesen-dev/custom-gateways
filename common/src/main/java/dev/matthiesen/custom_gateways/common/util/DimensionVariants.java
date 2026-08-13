@@ -23,7 +23,7 @@ public enum DimensionVariants {
     public static DimensionVariants fromResourceLocation(ResourceLocation resourceLocation) {
         String dimension = resourceLocation.toString();
         for (DimensionVariants variant : values()) {
-            if (variant.getDimension().equalsIgnoreCase(dimension)) {
+            if (variant.dimension.toString().equalsIgnoreCase(dimension)) {
                 return variant;
             }
         }
