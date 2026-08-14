@@ -4,8 +4,17 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.matthiesen.custom_gateways.common.block.AncientPortalBlock;
 import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
 import dev.matthiesen.custom_gateways.common.block.PortalStoneBlock;
+import dev.matthiesen.custom_gateways.common.block.entity.AncientPortalEntity;
+import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
+import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
+import dev.matthiesen.custom_gateways.common.block.entity.PortalStoneEntity;
 import dev.matthiesen.custom_gateways.common.client.geckolib.*;
+import dev.matthiesen.custom_gateways.common.client.geckolib.abstracts.AbstractGeoBlockRenderer;
 import dev.matthiesen.custom_gateways.common.client.screen.RemoteDialerScreen;
+import dev.matthiesen.custom_gateways.common.item.AncientPortalItem;
+import dev.matthiesen.custom_gateways.common.item.PortalFrameItem;
+import dev.matthiesen.custom_gateways.common.item.PortalPadItem;
+import dev.matthiesen.custom_gateways.common.item.PortalStoneItem;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import dev.matthiesen.custom_gateways.common.registry.BlockRegistry;
 import dev.matthiesen.custom_gateways.common.registry.ItemRegistry;
@@ -73,17 +82,22 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
     public void registerRenderers() {
         CustomGatewaysCommonClient.INSTANCE.createInfoLog("Registering Renderers");
 
-        ItemRegistry.ANCIENT_PORTAL.get().renderProviderHolder.setValue(makeRendererProvider(new AncientPortalItemRenderer().getRenderer()));
-        ItemRegistry.PORTAL_FRAME.get().renderProviderHolder.setValue(makeRendererProvider(new PortalFrameItemRenderer().getRenderer()));
-        ItemRegistry.PORTAL_PAD.get().renderProviderHolder.setValue(makeRendererProvider(new PortalPadItemRenderer().getRenderer()));
-        ItemRegistry.PORTAL_STONE.get().renderProviderHolder.setValue(makeRendererProvider(new PortalStoneItemRenderer().getRenderer()));
+        AbstractGeoBlockRenderer<AncientPortalEntity, AncientPortalItem> ancientPortalRenderer = new AncientPortalRenderer();
+        AbstractGeoBlockRenderer<PortalFrameEntity, PortalFrameItem> portalFrameRenderer = new PortalFrameRenderer();
+        AbstractGeoBlockRenderer<PortalPadEntity, PortalPadItem> portalPadRenderer = new PortalPadRenderer();
+        AbstractGeoBlockRenderer<PortalStoneEntity, PortalStoneItem> portalStoneRenderer = new PortalStoneRenderer();
+
+        ItemRegistry.ANCIENT_PORTAL.get().renderProviderHolder.setValue(makeRendererProvider(ancientPortalRenderer.getItemRenderer()));
+        ItemRegistry.PORTAL_FRAME.get().renderProviderHolder.setValue(makeRendererProvider(portalFrameRenderer.getItemRenderer()));
+        ItemRegistry.PORTAL_PAD.get().renderProviderHolder.setValue(makeRendererProvider(portalPadRenderer.getItemRenderer()));
+        ItemRegistry.PORTAL_STONE.get().renderProviderHolder.setValue(makeRendererProvider(portalStoneRenderer.getItemRenderer()));
 
         INSTANCE.getEntityRendererManager().registerEntityRenderers(registry ->
                 {
-                    registry.registerBlockEntityRenderer(BlockEntityRegistry.ANCIENT_PORTAL_BE.get(), context -> new AncientPortalBlockRenderer().getRenderer());
-                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> new PortalFrameBlockRenderer().getRenderer());
-                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_PAD_BE.get(), context -> new PortalPadBlockRenderer().getRenderer());
-                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_STONE_BE.get(), context -> new PortalStoneBlockRenderer().getRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.ANCIENT_PORTAL_BE.get(), context -> ancientPortalRenderer.getBlockRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> portalFrameRenderer.getBlockRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_PAD_BE.get(), context -> portalPadRenderer.getBlockRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_STONE_BE.get(), context -> portalStoneRenderer.getBlockRenderer());
                     registry.registerBlockEntityRenderer(BlockEntityRegistry.REMOTE_GATEWAY_BE.get(), context -> new RemoteGatewayBlockRenderer().getRenderer());
                 }
         );
