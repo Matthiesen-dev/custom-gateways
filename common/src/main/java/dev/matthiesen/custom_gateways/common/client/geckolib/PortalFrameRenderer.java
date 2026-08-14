@@ -8,4 +8,6 @@ public final class PortalFrameRenderer extends AbstractGeoBlockRenderer<PortalFr
     public PortalFrameRenderer() {
         super("portal_frame", true, true);
     }
+
+    public static final PortalFrameRenderer INSTANCE = new PortalFrameRenderer();
 }

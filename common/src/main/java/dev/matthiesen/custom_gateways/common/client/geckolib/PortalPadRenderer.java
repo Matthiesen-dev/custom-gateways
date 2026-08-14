@@ -8,4 +8,6 @@ public final class PortalPadRenderer extends AbstractGeoBlockRenderer<PortalPadE
     public PortalPadRenderer() {
         super("portal_pad");
     }
+
+    public static final PortalPadRenderer INSTANCE = new PortalPadRenderer();
 }

@@ -8,4 +8,6 @@ public final class PortalStoneRenderer extends AbstractGeoBlockRenderer<PortalSt
     public PortalStoneRenderer() {
         super("portal_stone", false, true);
     }
+
+    public static final PortalStoneRenderer INSTANCE = new PortalStoneRenderer();
 }

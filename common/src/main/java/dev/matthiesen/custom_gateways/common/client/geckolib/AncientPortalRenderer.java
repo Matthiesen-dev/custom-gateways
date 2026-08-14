@@ -8,4 +8,6 @@ public final class AncientPortalRenderer extends AbstractGeoBlockRenderer<Ancien
     public AncientPortalRenderer() {
         super("ancient_portal", true, true);
     }
+
+    public static final AncientPortalRenderer INSTANCE = new AncientPortalRenderer();
 }
