@@ -4,6 +4,7 @@
     "custom_gateways:portal_frame",
     "custom_gateways:portal_pad",
     "custom_gateways:remote_gateway",
-    "custom_gateways:ancient_portal"
+    "custom_gateways:ancient_portal",
+    "custom_gateways:portal_stone"
   ]
 }

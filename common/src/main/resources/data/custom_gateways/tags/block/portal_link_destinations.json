@@ -3,7 +3,8 @@
   "values": [
     "custom_gateways:portal_frame",
     "custom_gateways:portal_pad",
-    "custom_gateways:ancient_portal"
+    "custom_gateways:ancient_portal",
+    "custom_gateways:portal_stone"
   ]
 }
 

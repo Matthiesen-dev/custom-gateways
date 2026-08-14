@@ -1,0 +1,30 @@
+{
+  "parent": "custom_gateways:crafted/portal_pad",
+  "display": {
+    "title": {
+      "translate": "advancements.custom_gateways.crafted.portal_stone.title"
+    },
+    "description": {
+      "translate": "advancements.custom_gateways.crafted.portal_stone.description"
+    },
+    "icon": {
+      "id": "custom_gateways:portal_stone"
+    },
+    "frame": "task"
+  },
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "custom_gateways:portal_stone"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "sends_telemetry_event": false
+}

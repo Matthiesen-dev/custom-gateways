@@ -3,6 +3,7 @@ package dev.matthiesen.custom_gateways.common;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.matthiesen.custom_gateways.common.block.AncientPortalBlock;
 import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
+import dev.matthiesen.custom_gateways.common.block.PortalStoneBlock;
 import dev.matthiesen.custom_gateways.common.client.geckolib.*;
 import dev.matthiesen.custom_gateways.common.client.screen.RemoteDialerScreen;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
@@ -75,12 +76,14 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
         ItemRegistry.ANCIENT_PORTAL.get().renderProviderHolder.setValue(makeRendererProvider(new AncientPortalItemRenderer().getRenderer()));
         ItemRegistry.PORTAL_FRAME.get().renderProviderHolder.setValue(makeRendererProvider(new PortalFrameItemRenderer().getRenderer()));
         ItemRegistry.PORTAL_PAD.get().renderProviderHolder.setValue(makeRendererProvider(new PortalPadItemRenderer().getRenderer()));
+        ItemRegistry.PORTAL_STONE.get().renderProviderHolder.setValue(makeRendererProvider(new PortalStoneItemRenderer().getRenderer()));
 
         INSTANCE.getEntityRendererManager().registerEntityRenderers(registry ->
                 {
                     registry.registerBlockEntityRenderer(BlockEntityRegistry.ANCIENT_PORTAL_BE.get(), context -> new AncientPortalBlockRenderer().getRenderer());
                     registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> new PortalFrameBlockRenderer().getRenderer());
                     registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_PAD_BE.get(), context -> new PortalPadBlockRenderer().getRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_STONE_BE.get(), context -> new PortalStoneBlockRenderer().getRenderer());
                     registry.registerBlockEntityRenderer(BlockEntityRegistry.REMOTE_GATEWAY_BE.get(), context -> new RemoteGatewayBlockRenderer().getRenderer());
                 }
         );
@@ -103,6 +106,10 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
 
         if (hitState.is(BlockRegistry.PORTAL_PAD.get())) {
             return hitPos;
+        }
+
+        if (hitState.is(BlockRegistry.PORTAL_STONE.get()) && hitState.getBlock() instanceof PortalStoneBlock portalStoneBlock) {
+            return portalStoneBlock.getMasterPos(level, hitPos);
         }
 
         return null;

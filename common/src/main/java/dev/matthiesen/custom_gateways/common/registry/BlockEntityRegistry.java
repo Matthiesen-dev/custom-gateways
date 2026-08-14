@@ -5,6 +5,7 @@ import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import dev.matthiesen.custom_gateways.common.block.entity.AncientPortalEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
+import dev.matthiesen.custom_gateways.common.block.entity.PortalStoneEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.RemoteGatewayBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -22,12 +23,14 @@ public final class BlockEntityRegistry extends AbstractBlockEntityRegistry {
     public static final Supplier<BlockEntityType<AncientPortalEntity>> ANCIENT_PORTAL_BE;
     public static final Supplier<BlockEntityType<PortalFrameEntity>> PORTAL_FRAME_BE;
     public static final Supplier<BlockEntityType<PortalPadEntity>> PORTAL_PAD_BE;
+    public static final Supplier<BlockEntityType<PortalStoneEntity>> PORTAL_STONE_BE;
     public static final Supplier<BlockEntityType<RemoteGatewayBlockEntity>> REMOTE_GATEWAY_BE;
 
     static {
         ANCIENT_PORTAL_BE = INSTANCE.register("ancient_portal", AncientPortalEntity::new, BlockRegistry.ANCIENT_PORTAL);
         PORTAL_FRAME_BE = INSTANCE.register("portal_frame", PortalFrameEntity::new, BlockRegistry.PORTAL_FRAME);
         PORTAL_PAD_BE = INSTANCE.register("portal_pad", PortalPadEntity::new, BlockRegistry.PORTAL_PAD);
+        PORTAL_STONE_BE = INSTANCE.register("portal_stone", PortalStoneEntity::new, BlockRegistry.PORTAL_STONE);
         REMOTE_GATEWAY_BE = INSTANCE.register("remote_gateway", RemoteGatewayBlockEntity::new, BlockRegistry.REMOTE_GATEWAY);
     }
 }
