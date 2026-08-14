@@ -6,6 +6,7 @@ import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
 import dev.matthiesen.custom_gateways.common.item.PortalLinkingDevice;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import dev.matthiesen.custom_gateways.common.util.Cleanup;
+import dev.matthiesen.custom_gateways.common.util.VoxelShapeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -83,22 +84,9 @@ public final class PortalPadBlock extends HorizontalDirectionalBlock implements 
 
     private void initializeShapes() {
         shapes.put(Direction.NORTH, baseShape);
-        shapes.put(Direction.SOUTH, calculateRotation(Direction.SOUTH, baseShape));
-        shapes.put(Direction.EAST, calculateRotation(Direction.EAST, baseShape));
-        shapes.put(Direction.WEST, calculateRotation(Direction.WEST, baseShape));
-    }
-
-    private static VoxelShape calculateRotation(Direction direction, VoxelShape base) {
-        VoxelShape[] buffer = new VoxelShape[]{base, Shapes.empty()};
-        int times = (direction.get2DDataValue() - Direction.NORTH.get2DDataValue() + 4) % 4;
-        for (int i = 0; i < times; i++) {
-            buffer[0].forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) ->
-                    buffer[1] = Shapes.joinUnoptimized(buffer[1],
-                            Shapes.box(1 - maxZ, minY, minX, 1 - minZ, maxY, maxX), BooleanOp.OR));
-            buffer[0] = buffer[1].optimize();
-            buffer[1] = Shapes.empty();
-        }
-        return buffer[0];
+        shapes.put(Direction.SOUTH, VoxelShapeUtil.calculateRotation(Direction.SOUTH, baseShape));
+        shapes.put(Direction.EAST, VoxelShapeUtil.calculateRotation(Direction.EAST, baseShape));
+        shapes.put(Direction.WEST, VoxelShapeUtil.calculateRotation(Direction.WEST, baseShape));
     }
 
     @Override
@@ -127,11 +115,11 @@ public final class PortalPadBlock extends HorizontalDirectionalBlock implements 
         }
 
         if (random.nextFloat() < 0.385F) {
-            double spawnX = centerX + randomBetween(random, -PARTICLE_SPREAD, PARTICLE_SPREAD);
-            double spawnZ = centerZ + randomBetween(random, -PARTICLE_SPREAD, PARTICLE_SPREAD);
-            double velocityX = randomBetween(random, -PARTICLE_SPEED, PARTICLE_SPEED);
-            double velocityY = randomBetween(random, 0.006D, 0.018D);
-            double velocityZ = randomBetween(random, -PARTICLE_SPEED, PARTICLE_SPEED);
+            double spawnX = centerX + VoxelShapeUtil.randomBetween(random, -PARTICLE_SPREAD, PARTICLE_SPREAD);
+            double spawnZ = centerZ + VoxelShapeUtil.randomBetween(random, -PARTICLE_SPREAD, PARTICLE_SPREAD);
+            double velocityX = VoxelShapeUtil.randomBetween(random, -PARTICLE_SPEED, PARTICLE_SPEED);
+            double velocityY = VoxelShapeUtil.randomBetween(random, 0.006D, 0.018D);
+            double velocityZ = VoxelShapeUtil.randomBetween(random, -PARTICLE_SPEED, PARTICLE_SPEED);
             level.addParticle(ParticleTypes.PORTAL, spawnX, centerY, spawnZ, velocityX, velocityY, velocityZ);
         }
     }
@@ -164,10 +152,6 @@ public final class PortalPadBlock extends HorizontalDirectionalBlock implements 
             return PortalPadEntity::tick;
         }
         return null;
-    }
-
-    private static double randomBetween(RandomSource random, double min, double max) {
-        return min + (max - min) * random.nextDouble();
     }
 
     @SuppressWarnings("NullableProblems")

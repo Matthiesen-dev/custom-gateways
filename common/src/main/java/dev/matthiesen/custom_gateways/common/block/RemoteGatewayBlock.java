@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.mojang.serialization.MapCodec;
 import dev.matthiesen.custom_gateways.common.block.entity.RemoteGatewayBlockEntity;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
+import dev.matthiesen.custom_gateways.common.util.VoxelShapeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
@@ -145,22 +146,9 @@ public final class RemoteGatewayBlock extends HorizontalDirectionalBlock impleme
 
     private void initializeShapes() {
         shapes.put(Direction.NORTH, baseShape);
-        shapes.put(Direction.SOUTH, calculateRotation(Direction.SOUTH, baseShape));
-        shapes.put(Direction.EAST, calculateRotation(Direction.EAST, baseShape));
-        shapes.put(Direction.WEST, calculateRotation(Direction.WEST, baseShape));
-    }
-
-    private static VoxelShape calculateRotation(Direction direction, VoxelShape base) {
-        VoxelShape[] buffer = new VoxelShape[]{base, Shapes.empty()};
-        int times = (direction.get2DDataValue() - Direction.NORTH.get2DDataValue() + 4) % 4;
-        for (int i = 0; i < times; i++) {
-            buffer[0].forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) ->
-                buffer[1] = Shapes.joinUnoptimized(buffer[1],
-                    Shapes.box(1 - maxZ, minY, minX, 1 - minZ, maxY, maxX), BooleanOp.OR));
-            buffer[0] = buffer[1].optimize();
-            buffer[1] = Shapes.empty();
-        }
-        return buffer[0];
+        shapes.put(Direction.SOUTH, VoxelShapeUtil.calculateRotation(Direction.SOUTH, baseShape));
+        shapes.put(Direction.EAST, VoxelShapeUtil.calculateRotation(Direction.EAST, baseShape));
+        shapes.put(Direction.WEST, VoxelShapeUtil.calculateRotation(Direction.WEST, baseShape));
     }
 }
 

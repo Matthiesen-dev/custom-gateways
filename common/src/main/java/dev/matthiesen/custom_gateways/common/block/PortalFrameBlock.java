@@ -6,6 +6,7 @@ import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
 import dev.matthiesen.custom_gateways.common.item.PortalLinkingDevice;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import dev.matthiesen.custom_gateways.common.util.Cleanup;
+import dev.matthiesen.custom_gateways.common.util.VoxelShapeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
@@ -259,16 +260,16 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
 
     private void initializeShapes() {
         shapes.put(Direction.NORTH, baseShape);
-        shapes.put(Direction.SOUTH, calculateRotation(Direction.SOUTH, baseShape));
-        shapes.put(Direction.EAST, calculateRotation(Direction.EAST, baseShape));
-        shapes.put(Direction.WEST, calculateRotation(Direction.WEST, baseShape));
+        shapes.put(Direction.SOUTH, VoxelShapeUtil.calculateRotation(Direction.SOUTH, baseShape));
+        shapes.put(Direction.EAST, VoxelShapeUtil.calculateRotation(Direction.EAST, baseShape));
+        shapes.put(Direction.WEST, VoxelShapeUtil.calculateRotation(Direction.WEST, baseShape));
     }
 
     private void initializeSlaveShapes() {
         slaveShapes.put(Direction.NORTH, slaveBaseShape);
-        slaveShapes.put(Direction.SOUTH, calculateRotation(Direction.SOUTH, slaveBaseShape));
-        slaveShapes.put(Direction.EAST, calculateRotation(Direction.EAST, slaveBaseShape));
-        slaveShapes.put(Direction.WEST, calculateRotation(Direction.WEST, slaveBaseShape));
+        slaveShapes.put(Direction.SOUTH, VoxelShapeUtil.calculateRotation(Direction.SOUTH, slaveBaseShape));
+        slaveShapes.put(Direction.EAST, VoxelShapeUtil.calculateRotation(Direction.EAST, slaveBaseShape));
+        slaveShapes.put(Direction.WEST, VoxelShapeUtil.calculateRotation(Direction.WEST, slaveBaseShape));
     }
 
     @Override
@@ -321,26 +322,26 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
             double depth;
 
             if (random.nextFloat() < EDGE_SPAWN_CHANCE) {
-                depth = randomBetween(random, -EDGE_DEPTH_VARIANCE, EDGE_DEPTH_VARIANCE);
+                depth = VoxelShapeUtil.randomBetween(random, -EDGE_DEPTH_VARIANCE, EDGE_DEPTH_VARIANCE);
 
                 if (random.nextBoolean()) {
                     // Side pillars around the gateway opening.
                     double side = random.nextBoolean() ? 1.0D : -1.0D;
-                    lateral = side * randomBetween(random, EDGE_MIN_LATERAL, EDGE_MAX_LATERAL);
-                    height = randomBetween(random, OPENING_MIN_Y, TOP_MAX_Y);
+                    lateral = side * VoxelShapeUtil.randomBetween(random, EDGE_MIN_LATERAL, EDGE_MAX_LATERAL);
+                    height = VoxelShapeUtil.randomBetween(random, OPENING_MIN_Y, TOP_MAX_Y);
                 } else {
                     // Top/bottom frame bars to make the effect surround the gateway.
-                    lateral = randomBetween(random, -EDGE_MAX_LATERAL, EDGE_MAX_LATERAL);
+                    lateral = VoxelShapeUtil.randomBetween(random, -EDGE_MAX_LATERAL, EDGE_MAX_LATERAL);
                     if (random.nextBoolean()) {
-                        height = randomBetween(random, TOP_MIN_Y, TOP_MAX_Y);
+                        height = VoxelShapeUtil.randomBetween(random, TOP_MIN_Y, TOP_MAX_Y);
                     } else {
-                        height = randomBetween(random, BOTTOM_MIN_Y, BOTTOM_MAX_Y);
+                        height = VoxelShapeUtil.randomBetween(random, BOTTOM_MIN_Y, BOTTOM_MAX_Y);
                     }
                 }
             } else {
-                lateral = randomBetween(random, -OPENING_HALF_WIDTH, OPENING_HALF_WIDTH);
-                height = randomBetween(random, OPENING_MIN_Y, OPENING_MAX_Y);
-                depth = randomBetween(random, -CENTER_DEPTH_VARIANCE, CENTER_DEPTH_VARIANCE);
+                lateral = VoxelShapeUtil.randomBetween(random, -OPENING_HALF_WIDTH, OPENING_HALF_WIDTH);
+                height = VoxelShapeUtil.randomBetween(random, OPENING_MIN_Y, OPENING_MAX_Y);
+                depth = VoxelShapeUtil.randomBetween(random, -CENTER_DEPTH_VARIANCE, CENTER_DEPTH_VARIANCE);
             }
 
             double spawnX = targetX + lateralAxis.x * lateral + normal.x * depth;
@@ -355,11 +356,11 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
                 continue;
             }
 
-            double speed = randomBetween(random, 0.015D, 0.035D);
+            double speed = VoxelShapeUtil.randomBetween(random, 0.015D, 0.035D);
             double jitter = 0.004D;
-            double velocityX = dx / distance * speed + randomBetween(random, -jitter, jitter);
-            double velocityY = dy / distance * speed + randomBetween(random, -jitter, jitter);
-            double velocityZ = dz / distance * speed + randomBetween(random, -jitter, jitter);
+            double velocityX = dx / distance * speed + VoxelShapeUtil.randomBetween(random, -jitter, jitter);
+            double velocityY = dy / distance * speed + VoxelShapeUtil.randomBetween(random, -jitter, jitter);
+            double velocityZ = dz / distance * speed + VoxelShapeUtil.randomBetween(random, -jitter, jitter);
 
             level.addParticle(pickGatewayParticle(random), spawnX, spawnY, spawnZ, velocityX, velocityY, velocityZ);
         }
@@ -371,23 +372,4 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
         }
         return ParticleTypes.PORTAL;
     }
-
-    private static double randomBetween(RandomSource random, double min, double max) {
-        return min + (max - min) * random.nextDouble();
-    }
-
-    private static VoxelShape calculateRotation(Direction direction, VoxelShape base) {
-        VoxelShape[] buffer = new VoxelShape[]{base, Shapes.empty()};
-        int times = (direction.get2DDataValue() - Direction.NORTH.get2DDataValue() + 4) % 4;
-        for (int i = 0; i < times; i++) {
-            buffer[0].forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) ->
-                    buffer[1] = Shapes.joinUnoptimized(buffer[1],
-                            Shapes.box(1 - maxZ, minY, minX, 1 - minZ, maxY, maxX), BooleanOp.OR));
-            buffer[0] = buffer[1].optimize();
-            buffer[1] = Shapes.empty();
-        }
-        return buffer[0];
-    }
-
-
 }
