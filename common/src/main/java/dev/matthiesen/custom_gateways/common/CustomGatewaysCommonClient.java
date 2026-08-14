@@ -1,6 +1,7 @@
 package dev.matthiesen.custom_gateways.common;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.matthiesen.custom_gateways.common.block.AncientPortalBlock;
 import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
 import dev.matthiesen.custom_gateways.common.client.geckolib.*;
 import dev.matthiesen.custom_gateways.common.client.screen.RemoteDialerScreen;
@@ -71,11 +72,13 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
     public void registerRenderers() {
         CustomGatewaysCommonClient.INSTANCE.createInfoLog("Registering Renderers");
 
+        ItemRegistry.ANCIENT_PORTAL.get().renderProviderHolder.setValue(makeRendererProvider(new AncientPortalItemRenderer().getRenderer()));
         ItemRegistry.PORTAL_FRAME.get().renderProviderHolder.setValue(makeRendererProvider(new PortalFrameItemRenderer().getRenderer()));
         ItemRegistry.PORTAL_PAD.get().renderProviderHolder.setValue(makeRendererProvider(new PortalPadItemRenderer().getRenderer()));
 
         INSTANCE.getEntityRendererManager().registerEntityRenderers(registry ->
                 {
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.ANCIENT_PORTAL_BE.get(), context -> new AncientPortalBlockRenderer().getRenderer());
                     registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> new PortalFrameBlockRenderer().getRenderer());
                     registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_PAD_BE.get(), context -> new PortalPadBlockRenderer().getRenderer());
                     registry.registerBlockEntityRenderer(BlockEntityRegistry.REMOTE_GATEWAY_BE.get(), context -> new RemoteGatewayBlockRenderer().getRenderer());
@@ -85,6 +88,10 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
 
     public static @Nullable BlockPos getBasePos(Level level, BlockPos hitPos) {
         BlockState hitState = level.getBlockState(hitPos);
+
+        if (hitState.is(BlockRegistry.ANCIENT_PORTAL.get()) && hitState.getBlock() instanceof AncientPortalBlock ancientPortalBlock) {
+            return ancientPortalBlock.getMasterPos(level, hitPos);
+        }
 
         if (hitState.is(BlockRegistry.PORTAL_FRAME.get())) {
             if (hitState.getValue(PortalFrameBlock.IS_SLAVE)) {

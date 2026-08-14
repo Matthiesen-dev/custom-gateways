@@ -1,5 +1,7 @@
 package dev.matthiesen.custom_gateways.common.item;
 
+import dev.matthiesen.custom_gateways.common.block.AncientPortalBlock;
+import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
 import dev.matthiesen.custom_gateways.common.block.entity.RemoteGatewayBlockEntity;
 import dev.matthiesen.custom_gateways.common.config.GatewaysConfig;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
@@ -68,6 +70,8 @@ public final class RemoteDialerItem extends Item {
         if (!clickedState.is(PortalLinkTags.PORTAL_LINK_DESTINATIONS)) {
             return InteractionResult.PASS;
         }
+
+        clickedPos = resolvePortalDestinationPos(level, clickedPos, clickedState);
 
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
@@ -304,6 +308,16 @@ public final class RemoteDialerItem extends Item {
             }
         }
         return -1;
+    }
+
+    private static BlockPos resolvePortalDestinationPos(Level level, BlockPos clickedPos, BlockState clickedState) {
+        if (clickedState.getBlock() instanceof AncientPortalBlock ancientPortalBlock) {
+            return ancientPortalBlock.getMasterPos(level, clickedPos);
+        }
+        if (clickedState.getBlock() instanceof PortalFrameBlock && clickedState.getValue(PortalFrameBlock.IS_SLAVE)) {
+            return clickedPos.below();
+        }
+        return clickedPos;
     }
 
     private static String normalizeName(String candidate) {

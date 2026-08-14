@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "custom_gateways:block/ancient_portal"
+    }
+  }
+}
