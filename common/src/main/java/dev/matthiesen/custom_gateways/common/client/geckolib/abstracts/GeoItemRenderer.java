@@ -1,6 +1,7 @@
 package dev.matthiesen.custom_gateways.common.client.geckolib.abstracts;
 
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
+import dev.matthiesen.custom_gateways.common.item.DimensionalGateItem;
 import dev.matthiesen.custom_gateways.common.util.GeoType;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -44,6 +45,9 @@ public class GeoItemRenderer<T extends Item & GeoAnimatable> {
 
         @Override
         public ResourceLocation getTextureResource(T animatable) {
+            if (animatable instanceof DimensionalGateItem item && item.isDimensionalGate()) {
+                return CustomGatewaysCommon.modResource("textures/" + type.getName() + "/" + name + "/base.png");
+            }
             return CustomGatewaysCommon.modResource("textures/" + type.getName() + "/" + name + ".png");
         }
 

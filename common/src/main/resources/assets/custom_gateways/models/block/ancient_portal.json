@@ -74,6 +74,6 @@
     }
   },
   "textures": {
-    "particle": "custom_gateways:block/ancient_portal"
+    "particle": "custom_gateways:block/ancient_portal/base"
   }
 }

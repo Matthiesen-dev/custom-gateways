@@ -13,7 +13,7 @@ import software.bernie.geckolib.animation.RawAnimation;
 
 import java.util.function.Consumer;
 
-public final class AncientPortalItem extends BlockItem implements GeoItem {
+public final class AncientPortalItem extends BlockItem implements GeoItem, DimensionalGateItem {
     private static final RawAnimation IDLE_ANIM = RawAnimation.begin()
         .thenLoop("animation.ancient_portal.linked");
     private final AnimatableInstanceCache cache = new SingletonAnimatableInstanceCache(this);
