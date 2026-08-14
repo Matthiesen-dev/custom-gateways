@@ -1,13 +1,7 @@
 package dev.matthiesen.custom_gateways.common.item;
 
-import dev.matthiesen.custom_gateways.common.block.AncientPortalBlock;
-import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
-import dev.matthiesen.custom_gateways.common.block.PortalStoneBlock;
-import dev.matthiesen.custom_gateways.common.block.entity.AncientPortalEntity;
-
-import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
-import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
-import dev.matthiesen.custom_gateways.common.block.entity.PortalStoneEntity;
+import dev.matthiesen.custom_gateways.common.block.*;
+import dev.matthiesen.custom_gateways.common.block.entity.*;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import dev.matthiesen.custom_gateways.common.registry.CriterionRegistry;
 import dev.matthiesen.custom_gateways.common.registry.SoundRegistry;

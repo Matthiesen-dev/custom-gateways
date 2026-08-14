@@ -1,8 +1,6 @@
 package dev.matthiesen.custom_gateways.common.item;
 
-import dev.matthiesen.custom_gateways.common.block.AncientPortalBlock;
-import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
-import dev.matthiesen.custom_gateways.common.block.PortalStoneBlock;
+import dev.matthiesen.custom_gateways.common.block.*;
 import dev.matthiesen.custom_gateways.common.block.entity.RemoteGatewayBlockEntity;
 import dev.matthiesen.custom_gateways.common.config.GatewaysConfig;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
