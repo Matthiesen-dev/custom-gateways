@@ -2,17 +2,13 @@ package dev.matthiesen.custom_gateways.common.block;
 
 import com.google.common.collect.Maps;
 import com.mojang.serialization.MapCodec;
-import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
-import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import dev.matthiesen.custom_gateways.common.item.PortalLinkingDevice;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
+import dev.matthiesen.custom_gateways.common.util.Cleanup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
@@ -143,22 +139,7 @@ public final class PortalPadBlock extends HorizontalDirectionalBlock implements 
     @Override
     protected void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         if (blockState.getBlock() != blockState2.getBlock() && !level.isClientSide && level instanceof ServerLevel serverLevel) {
-            PortalRegistry registry = PortalRegistry.get(serverLevel);
-            PortalRegistry.PortalLocation portalLocation =
-                new PortalRegistry.PortalLocation(level.dimension().location(), blockPos);
-
-            PortalRegistry.PortalLocation linkedLocation = registry.getLinkedPortal(portalLocation);
-            registry.removePortal(portalLocation);
-
-            if (linkedLocation != null) {
-                Level linkedLevel = resolveLevel(serverLevel, linkedLocation.dimension());
-                BlockEntity linkedEntity = linkedLevel.getBlockEntity(linkedLocation.getBlockPos());
-                if (linkedEntity instanceof PortalFrameEntity linkedPortalEntity) {
-                    linkedPortalEntity.clearLinkedTarget();
-                } else if (linkedEntity instanceof PortalPadEntity linkedPortalPadEntity) {
-                    linkedPortalPadEntity.setLinked(false);
-                }
-            }
+            Cleanup.portalLinks(serverLevel, blockPos);
         }
 
         super.onRemove(blockState, level, blockPos, blockState2, bl);
@@ -183,12 +164,6 @@ public final class PortalPadBlock extends HorizontalDirectionalBlock implements 
             return PortalPadEntity::tick;
         }
         return null;
-    }
-
-    private static Level resolveLevel(ServerLevel currentLevel, ResourceLocation dimension) {
-        ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, dimension);
-        ServerLevel resolved = currentLevel.getServer().getLevel(dimensionKey);
-        return resolved != null ? resolved : currentLevel;
     }
 
     private static double randomBetween(RandomSource random, double min, double max) {

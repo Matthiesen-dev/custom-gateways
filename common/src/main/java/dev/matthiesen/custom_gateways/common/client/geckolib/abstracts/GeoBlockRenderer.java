@@ -3,6 +3,7 @@ package dev.matthiesen.custom_gateways.common.client.geckolib.abstracts;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
+import dev.matthiesen.custom_gateways.common.block.entity.AncientPortalEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.DimensionalGate;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
 import dev.matthiesen.custom_gateways.common.util.DimensionVariants;
@@ -75,6 +76,9 @@ public class GeoBlockRenderer<T extends BlockEntity & GeoAnimatable> {
 
         @Override
         public void actuallyRender(PoseStack poseStack, T animatable, BakedGeoModel model, @Nullable RenderType renderType, MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+            if (animatable instanceof AncientPortalEntity ancientPortalEntity) {
+                if (ancientPortalEntity.isProxy()) return;
+            }
             if (animatable instanceof PortalFrameEntity portalFrameEntity) {
                 if (portalFrameEntity.isSlave()) return;
             }

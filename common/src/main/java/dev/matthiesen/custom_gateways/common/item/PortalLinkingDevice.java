@@ -1,5 +1,9 @@
 package dev.matthiesen.custom_gateways.common.item;
 
+import dev.matthiesen.custom_gateways.common.block.AncientPortalBlock;
+import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
+import dev.matthiesen.custom_gateways.common.block.entity.AncientPortalEntity;
+
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
@@ -138,6 +142,8 @@ public final class PortalLinkingDevice extends Item {
         if (!(heldItem.getItem() instanceof PortalLinkingDevice)) {
             return InteractionResult.FAIL;
         }
+
+        portalPos = resolvePortalEndpointPos(level, portalPos);
 
         // Read current custom data from card (1.21.1 DataComponents API)
         CompoundTag tag = heldItem.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
@@ -322,9 +328,23 @@ public final class PortalLinkingDevice extends Item {
         return resolved != null ? resolved : currentLevel;
     }
 
+    private static BlockPos resolvePortalEndpointPos(Level level, BlockPos portalPos) {
+        BlockState state = level.getBlockState(portalPos);
+        if (state.getBlock() instanceof AncientPortalBlock ancientPortalBlock) {
+            return ancientPortalBlock.getMasterPos(level, portalPos);
+        }
+        if (state.getBlock() instanceof PortalFrameBlock && state.getValue(PortalFrameBlock.IS_SLAVE)) {
+            return portalPos.below();
+        }
+        return portalPos;
+    }
+
     private static void triggerLinkStateUpdate(Level level, BlockPos portalPos, PortalRegistry.PortalLocation target) {
+        portalPos = resolvePortalEndpointPos(level, portalPos);
         BlockEntity blockEntity = level.getBlockEntity(portalPos);
-        if (blockEntity instanceof PortalFrameEntity portalFrameEntity) {
+        if (blockEntity instanceof AncientPortalEntity ancientPortalEntity) {
+            ancientPortalEntity.setLinkedTarget(target.dimension(), target.getBlockPos(), true);
+        } else if (blockEntity instanceof PortalFrameEntity portalFrameEntity) {
             portalFrameEntity.setLinkedTarget(target.dimension(), target.getBlockPos(), true);
         } else if (blockEntity instanceof PortalPadEntity portalPadEntity) {
             portalPadEntity.setLinked(true);
@@ -332,8 +352,11 @@ public final class PortalLinkingDevice extends Item {
     }
 
     private static void clearLinkState(Level level, BlockPos portalPos) {
+        portalPos = resolvePortalEndpointPos(level, portalPos);
         BlockEntity blockEntity = level.getBlockEntity(portalPos);
-        if (blockEntity instanceof PortalFrameEntity portalFrameEntity) {
+        if (blockEntity instanceof AncientPortalEntity ancientPortalEntity) {
+            ancientPortalEntity.clearLinkedTarget();
+        } else if (blockEntity instanceof PortalFrameEntity portalFrameEntity) {
             portalFrameEntity.clearLinkedTarget();
         } else if (blockEntity instanceof PortalPadEntity portalPadEntity) {
             portalPadEntity.setLinked(false);
