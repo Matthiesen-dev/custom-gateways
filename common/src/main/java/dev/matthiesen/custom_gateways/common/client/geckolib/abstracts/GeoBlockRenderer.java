@@ -54,7 +54,7 @@ public class GeoBlockRenderer<T extends BlockEntity & GeoAnimatable> {
                     return CustomGatewaysCommon.modResource("textures/block/" + name + "/" + variants.getDimension() + ".png");
                 }
             }
-            return CustomGatewaysCommon.modResource("textures/block/" + name + ".png");
+            return CustomGatewaysCommon.modResource("textures/block/" + name + "/base.png");
         }
 
         @Override

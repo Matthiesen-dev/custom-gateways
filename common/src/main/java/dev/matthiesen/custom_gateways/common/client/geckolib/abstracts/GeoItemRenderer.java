@@ -44,7 +44,7 @@ public class GeoItemRenderer<T extends Item & GeoAnimatable> {
 
         @Override
         public ResourceLocation getTextureResource(T animatable) {
-            return CustomGatewaysCommon.modResource("textures/" + type.getName() + "/" + name + ".png");
+            return CustomGatewaysCommon.modResource("textures/" + type.getName() + "/" + name + "/base.png");
         }
 
         @Override

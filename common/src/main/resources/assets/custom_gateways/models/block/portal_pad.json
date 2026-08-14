@@ -96,6 +96,6 @@
     }
   },
   "textures": {
-    "particle": "custom_gateways:block/portal_pad"
+    "particle": "custom_gateways:block/portal_pad/base"
   }
 }
