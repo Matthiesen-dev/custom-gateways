@@ -2,10 +2,12 @@ package dev.matthiesen.custom_gateways.common.item;
 
 import dev.matthiesen.custom_gateways.common.block.AncientPortalBlock;
 import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
+import dev.matthiesen.custom_gateways.common.block.PortalStoneBlock;
 import dev.matthiesen.custom_gateways.common.block.entity.AncientPortalEntity;
 
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
+import dev.matthiesen.custom_gateways.common.block.entity.PortalStoneEntity;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import dev.matthiesen.custom_gateways.common.registry.CriterionRegistry;
 import dev.matthiesen.custom_gateways.common.registry.SoundRegistry;
@@ -333,6 +335,9 @@ public final class PortalLinkingDevice extends Item {
         if (state.getBlock() instanceof AncientPortalBlock ancientPortalBlock) {
             return ancientPortalBlock.getMasterPos(level, portalPos);
         }
+        if (state.getBlock() instanceof PortalStoneBlock portalStoneBlock) {
+            return portalStoneBlock.getMasterPos(level, portalPos);
+        }
         if (state.getBlock() instanceof PortalFrameBlock && state.getValue(PortalFrameBlock.IS_SLAVE)) {
             return portalPos.below();
         }
@@ -344,6 +349,8 @@ public final class PortalLinkingDevice extends Item {
         BlockEntity blockEntity = level.getBlockEntity(portalPos);
         if (blockEntity instanceof AncientPortalEntity ancientPortalEntity) {
             ancientPortalEntity.setLinkedTarget(target.dimension(), target.getBlockPos(), true);
+        } else if (blockEntity instanceof PortalStoneEntity portalStoneEntity) {
+            portalStoneEntity.setLinked(true);
         } else if (blockEntity instanceof PortalFrameEntity portalFrameEntity) {
             portalFrameEntity.setLinkedTarget(target.dimension(), target.getBlockPos(), true);
         } else if (blockEntity instanceof PortalPadEntity portalPadEntity) {
@@ -356,6 +363,8 @@ public final class PortalLinkingDevice extends Item {
         BlockEntity blockEntity = level.getBlockEntity(portalPos);
         if (blockEntity instanceof AncientPortalEntity ancientPortalEntity) {
             ancientPortalEntity.clearLinkedTarget();
+        } else if (blockEntity instanceof PortalStoneEntity portalStoneEntity) {
+            portalStoneEntity.setLinked(false);
         } else if (blockEntity instanceof PortalFrameEntity portalFrameEntity) {
             portalFrameEntity.clearLinkedTarget();
         } else if (blockEntity instanceof PortalPadEntity portalPadEntity) {

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "show_notification": true,
+  "category": "misc",
+  "pattern": [
+    " p ",
+    "pap",
+    "pip"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "p": {
+      "item": "minecraft:cobbled_deepslate"
+    },
+    "i": {
+      "item": "custom_gateways:portal_pad"
+    }
+  },
+  "result": {
+    "id": "custom_gateways:portal_stone",
+    "count": 1
+  }
+}
