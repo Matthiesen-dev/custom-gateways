@@ -16,7 +16,7 @@ public class AbstractGeoBlockRenderer<B extends BlockEntity & GeoAnimatable, I e
 
     public AbstractGeoBlockRenderer(String name) {
         this.blockRenderer = new GeoBlockRenderer<>(name);
-        this.itemRenderer = new GeoItemRenderer<>(name, null);
+        this.itemRenderer = new GeoItemRenderer<>(name, GeoType.BLOCK);
     }
 
     public GeoBlockRenderer.Renderer<B> getBlockRenderer() {

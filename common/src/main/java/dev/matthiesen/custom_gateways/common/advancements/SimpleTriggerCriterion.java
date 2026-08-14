@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public final class UsePortalCriterion extends SimpleCriterionTrigger<UsePortalCriterion.Conditions> {
+public final class SimpleTriggerCriterion extends SimpleCriterionTrigger<SimpleTriggerCriterion.Conditions> {
 
     @Override
     public @NotNull Codec<Conditions> codec() {
