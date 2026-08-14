@@ -5,11 +5,11 @@ import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import dev.matthiesen.custom_gateways.common.util.PlayerCooldownTracker;
 import dev.matthiesen.custom_gateways.common.util.PortalTeleporter;
+import dev.matthiesen.custom_gateways.common.util.PortalWarmupTracker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -33,16 +33,11 @@ import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public final class AncientPortalEntity extends BlockEntity implements GeoBlockEntity, DimensionalGate {
-    private static final long TELEPORT_WARMUP_TICKS = 60L;
-    private static final long WARMUP_STALE_TICKS = 5L;
     private static final long NEARBY_PLAYER_CHECK_INTERVAL_TICKS = 20L;
-    private static final Map<UUID, PlayerWarmup> PLAYER_WARMUPS = new HashMap<>();
+    private static final PortalWarmupTracker WARMUP_TRACKER = new PortalWarmupTracker();
     private static final RawAnimation IDLE_ANIM = RawAnimation.begin()
         .thenLoop("animation.ancient_portal.idle");
     private static final RawAnimation LINKED_ANIM = RawAnimation.begin()
@@ -112,11 +107,9 @@ public final class AncientPortalEntity extends BlockEntity implements GeoBlockEn
 
     private void syncToClient() {
         this.setChanged();
-
         if (this.level == null || this.level.isClientSide) {
             return;
         }
-
         BlockState state = this.getBlockState();
         this.level.sendBlockUpdated(this.worldPosition, state, state, Block.UPDATE_CLIENTS);
     }
@@ -159,7 +152,6 @@ public final class AncientPortalEntity extends BlockEntity implements GeoBlockEn
             }
             this.lastNearbyPlayerCheckTick = gameTime;
         }
-
         return this.hasNearbyPlayerCache;
     }
 
@@ -235,7 +227,7 @@ public final class AncientPortalEntity extends BlockEntity implements GeoBlockEn
         List<Entity> entities = level.getEntities(null, portalBounds);
         long gameTime = serverLevel.getGameTime();
 
-        cleanupStaleWarmups(gameTime);
+        WARMUP_TRACKER.cleanupStale(gameTime);
 
         ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, linkedPortal.dimension());
         ServerLevel targetLevel = serverLevel.getServer().getLevel(dimensionKey);
@@ -245,28 +237,14 @@ public final class AncientPortalEntity extends BlockEntity implements GeoBlockEn
 
         for (Entity entity : entities) {
             if (entity instanceof ServerPlayer player && PlayerCooldownTracker.isOnCooldown(player)) {
-                PLAYER_WARMUPS.remove(player.getUUID());
+                WARMUP_TRACKER.remove(player.getUUID());
                 continue;
             }
 
             if (entity instanceof ServerPlayer player) {
-                PlayerWarmup warmup = PLAYER_WARMUPS.get(player.getUUID());
-                if (warmup == null || !warmup.portalLocation.equals(currentPortal)) {
-                    warmup = new PlayerWarmup(currentPortal, gameTime, gameTime);
-                    PLAYER_WARMUPS.put(player.getUUID(), warmup);
-                } else {
-                    warmup.lastSeenTick = gameTime;
-                }
-
-                long elapsedTicks = gameTime - warmup.startedTick;
-                long remainingTicks = TELEPORT_WARMUP_TICKS - elapsedTicks;
-                if (remainingTicks > 0L) {
-                    double remainingSeconds = remainingTicks / 20.0D;
-                    player.sendSystemMessage(Component.literal(String.format("Teleporting in %.1fs", remainingSeconds)), true);
+                if (!WARMUP_TRACKER.processPlayer(player, currentPortal, gameTime)) {
                     continue;
                 }
-
-                PLAYER_WARMUPS.remove(player.getUUID());
             }
 
             PortalTeleporter.teleportEntity(entity, targetLevel, linkedPortal.getBlockPos());
@@ -278,27 +256,14 @@ public final class AncientPortalEntity extends BlockEntity implements GeoBlockEn
         double maxY = blockPos.getY() + 2.32D;
         if (facing.getAxis() == net.minecraft.core.Direction.Axis.Z) {
             return new AABB(
-                blockPos.getX() - 0.42D,
-                minY,
-                blockPos.getZ() + 0.18D,
-                blockPos.getX() + 1.42D,
-                maxY,
-                blockPos.getZ() + 0.82D
+                blockPos.getX() - 0.42D, minY, blockPos.getZ() + 0.18D,
+                blockPos.getX() + 1.42D, maxY, blockPos.getZ() + 0.82D
             );
         }
         return new AABB(
-            blockPos.getX() + 0.18D,
-            minY,
-            blockPos.getZ() - 0.42D,
-            blockPos.getX() + 0.82D,
-            maxY,
-            blockPos.getZ() + 1.42D
+            blockPos.getX() + 0.18D, minY, blockPos.getZ() - 0.42D,
+            blockPos.getX() + 0.82D, maxY, blockPos.getZ() + 1.42D
         );
-    }
-
-    private static void cleanupStaleWarmups(long gameTime) {
-        PLAYER_WARMUPS.entrySet().removeIf(entry ->
-            gameTime - entry.getValue().lastSeenTick > WARMUP_STALE_TICKS);
     }
 
     public @Nullable AncientPortalEntity getMasterEntity(Level level, BlockPos pos) {
@@ -319,18 +284,6 @@ public final class AncientPortalEntity extends BlockEntity implements GeoBlockEn
             return this;
         }
         return getMasterEntity(this.level, this.worldPosition);
-    }
-
-    private static final class PlayerWarmup {
-        private final PortalRegistry.PortalLocation portalLocation;
-        private final long startedTick;
-        private long lastSeenTick;
-
-        private PlayerWarmup(PortalRegistry.PortalLocation portalLocation, long startedTick, long lastSeenTick) {
-            this.portalLocation = portalLocation;
-            this.startedTick = startedTick;
-            this.lastSeenTick = lastSeenTick;
-        }
     }
 }
 

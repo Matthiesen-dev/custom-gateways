@@ -7,5 +7,7 @@ public final class RemoteGatewayBlockRenderer extends GeoBlockRenderer<RemoteGat
     public RemoteGatewayBlockRenderer() {
         super("remote_gateway", true, true);
     }
+
+    public static final RemoteGatewayBlockRenderer INSTANCE = new RemoteGatewayBlockRenderer();
 }
 

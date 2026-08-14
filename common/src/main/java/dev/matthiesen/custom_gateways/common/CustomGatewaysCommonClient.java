@@ -1,29 +1,24 @@
 package dev.matthiesen.custom_gateways.common;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import dev.matthiesen.custom_gateways.common.block.AncientPortalBlock;
-import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
-import dev.matthiesen.custom_gateways.common.block.PortalStoneBlock;
+import dev.matthiesen.custom_gateways.common.block.*;
+import dev.matthiesen.custom_gateways.common.block.entity.*;
 import dev.matthiesen.custom_gateways.common.client.geckolib.*;
 import dev.matthiesen.custom_gateways.common.client.screen.RemoteDialerScreen;
-import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
-import dev.matthiesen.custom_gateways.common.registry.BlockRegistry;
-import dev.matthiesen.custom_gateways.common.registry.ItemRegistry;
-import dev.matthiesen.custom_gateways.common.registry.MenuRegistry;
+import dev.matthiesen.custom_gateways.common.item.*;
+import dev.matthiesen.custom_gateways.common.registry.*;
 import dev.matthiesen.matthiesen_core.common.AbstractCommonClientMod;
 import dev.matthiesen.matthiesen_core.common.api.events.PlatformClientEvents;
+import dev.matthiesen.matthiesen_core.common.api.events.client.ClientEvent;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoItem;
@@ -42,49 +37,45 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
         CustomGatewaysCommonClient.INSTANCE.createInfoLog("Initialized Common Client");
 
         INSTANCE.getScreenManager().registerMenuScreen(MenuRegistry.REMOTE_DIALER_MENU, RemoteDialerScreen::new);
+        PlatformClientEvents.BLOCK_HIGHLIGHT.subscribe(this::onBlockHighlight);
+    }
 
-        PlatformClientEvents.BLOCK_HIGHLIGHT.subscribe(event -> {
-            var context = event.context();
-            ClientLevel level = context.level();
-            BlockPos basePos = getBasePos(level, context.blockHitResult().getBlockPos());
+    public InteractionResult onBlockHighlight(ClientEvent.BlockHighlight event) {
+        var context = event.context();
+        ClientLevel level = context.level();
+        BlockPos basePos = getBasePos(level, context.blockHitResult().getBlockPos());
+        if (basePos == null) return InteractionResult.PASS;
 
-            if (basePos == null) return InteractionResult.PASS;
+        Camera camera = context.camera();
+        double x = basePos.getX() - camera.getPosition().x();
+        double y = basePos.getY() - camera.getPosition().y();
+        double z = basePos.getZ() - camera.getPosition().z();
 
-            PoseStack poseStack = context.poseStack();
-            MultiBufferSource bufferSource = context.multiBufferSource();
-            Camera camera = context.camera();
-            VoxelShape shape = level.getBlockState(basePos).getShape(level, basePos);
-
-            double x = basePos.getX() - camera.getPosition().x();
-            double y = basePos.getY() - camera.getPosition().y();
-            double z = basePos.getZ() - camera.getPosition().z();
-
-            LevelRenderer.renderVoxelShape(
-                    poseStack,
-                    bufferSource.getBuffer(RenderType.lines()),
-                    shape,
-                    x, y, z,
-                    0.0F, 0.0F, 0.0F, 0.4F, false
-            );
-            return InteractionResult.FAIL;
-        });
+        LevelRenderer.renderVoxelShape(
+                context.poseStack(),
+                context.multiBufferSource().getBuffer(RenderType.lines()),
+                level.getBlockState(basePos).getShape(level, basePos),
+                x, y, z,
+                0.0F, 0.0F, 0.0F, 0.4F, false
+        );
+        return InteractionResult.FAIL;
     }
 
     public void registerRenderers() {
         CustomGatewaysCommonClient.INSTANCE.createInfoLog("Registering Renderers");
 
-        ItemRegistry.ANCIENT_PORTAL.get().renderProviderHolder.setValue(makeRendererProvider(new AncientPortalItemRenderer().getRenderer()));
-        ItemRegistry.PORTAL_FRAME.get().renderProviderHolder.setValue(makeRendererProvider(new PortalFrameItemRenderer().getRenderer()));
-        ItemRegistry.PORTAL_PAD.get().renderProviderHolder.setValue(makeRendererProvider(new PortalPadItemRenderer().getRenderer()));
-        ItemRegistry.PORTAL_STONE.get().renderProviderHolder.setValue(makeRendererProvider(new PortalStoneItemRenderer().getRenderer()));
+        ItemRegistry.ANCIENT_PORTAL.get().renderProviderHolder.setValue(makeRendererProvider(AncientPortalRenderer.INSTANCE.getItemRenderer()));
+        ItemRegistry.PORTAL_FRAME.get().renderProviderHolder.setValue(makeRendererProvider(PortalFrameRenderer.INSTANCE.getItemRenderer()));
+        ItemRegistry.PORTAL_PAD.get().renderProviderHolder.setValue(makeRendererProvider(PortalPadRenderer.INSTANCE.getItemRenderer()));
+        ItemRegistry.PORTAL_STONE.get().renderProviderHolder.setValue(makeRendererProvider(PortalStoneRenderer.INSTANCE.getItemRenderer()));
 
         INSTANCE.getEntityRendererManager().registerEntityRenderers(registry ->
                 {
-                    registry.registerBlockEntityRenderer(BlockEntityRegistry.ANCIENT_PORTAL_BE.get(), context -> new AncientPortalBlockRenderer().getRenderer());
-                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> new PortalFrameBlockRenderer().getRenderer());
-                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_PAD_BE.get(), context -> new PortalPadBlockRenderer().getRenderer());
-                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_STONE_BE.get(), context -> new PortalStoneBlockRenderer().getRenderer());
-                    registry.registerBlockEntityRenderer(BlockEntityRegistry.REMOTE_GATEWAY_BE.get(), context -> new RemoteGatewayBlockRenderer().getRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.ANCIENT_PORTAL_BE.get(), context -> AncientPortalRenderer.INSTANCE.getBlockRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_FRAME_BE.get(), context -> PortalFrameRenderer.INSTANCE.getBlockRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_PAD_BE.get(), context -> PortalPadRenderer.INSTANCE.getBlockRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_STONE_BE.get(), context -> PortalStoneRenderer.INSTANCE.getBlockRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.REMOTE_GATEWAY_BE.get(), context -> RemoteGatewayBlockRenderer.INSTANCE.getRenderer());
                 }
         );
     }
