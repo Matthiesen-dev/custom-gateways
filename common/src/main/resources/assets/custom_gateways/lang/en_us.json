@@ -21,6 +21,8 @@
   "advancements.custom_gateways.crafted.ancient_portal.description": "Crafted an Ancient Portal, a mysterious and powerful gateway.",
   "advancements.custom_gateways.crafted.portal_stone.title": "Crafted a Portal Stone",
   "advancements.custom_gateways.crafted.portal_stone.description": "Crafted a Portal Stone, a destination-only location.",
+  "advancements.custom_gateways.crafted.nether_gate.title": "Crafted a Nether Gate",
+  "advancements.custom_gateways.crafted.nether_gate.description": "Crafted a Nether Gate, a Demonic gateway",
 
   "block.custom_gateways.portal_frame": "Portal Frame",
   "block.custom_gateways.portal_pad": "Portal Pad",
