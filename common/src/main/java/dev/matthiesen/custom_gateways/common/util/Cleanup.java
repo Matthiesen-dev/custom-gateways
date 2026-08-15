@@ -1,9 +1,6 @@
 package dev.matthiesen.custom_gateways.common.util;
 
-import dev.matthiesen.custom_gateways.common.block.entity.AncientPortalEntity;
-import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
-import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
-import dev.matthiesen.custom_gateways.common.block.entity.PortalStoneEntity;
+import dev.matthiesen.custom_gateways.common.block.entity.*;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -47,6 +44,8 @@ public final class Cleanup {
                 linkedPortalEntity.clearLinkedTarget();
             } else if (linkedEntity instanceof PortalPadEntity linkedPortalPadEntity) {
                 linkedPortalPadEntity.setLinked(false);
+            } else if (linkedEntity instanceof NetherGateEntity linkedNetherGateEntity) {
+                linkedNetherGateEntity.clearLinkedTarget();
             }
         }
 

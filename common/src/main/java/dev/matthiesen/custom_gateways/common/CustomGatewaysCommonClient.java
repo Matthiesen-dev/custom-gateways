@@ -68,6 +68,7 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
         ItemRegistry.PORTAL_FRAME.get().renderProviderHolder.setValue(makeRendererProvider(PortalFrameRenderer.INSTANCE.getItemRenderer()));
         ItemRegistry.PORTAL_PAD.get().renderProviderHolder.setValue(makeRendererProvider(PortalPadRenderer.INSTANCE.getItemRenderer()));
         ItemRegistry.PORTAL_STONE.get().renderProviderHolder.setValue(makeRendererProvider(PortalStoneRenderer.INSTANCE.getItemRenderer()));
+        ItemRegistry.NETHER_GATE.get().renderProviderHolder.setValue(makeRendererProvider(NetherGateRenderer.INSTANCE.getItemRenderer()));
 
         INSTANCE.getEntityRendererManager().registerEntityRenderers(registry ->
                 {
@@ -76,6 +77,7 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
                     registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_PAD_BE.get(), context -> PortalPadRenderer.INSTANCE.getBlockRenderer());
                     registry.registerBlockEntityRenderer(BlockEntityRegistry.PORTAL_STONE_BE.get(), context -> PortalStoneRenderer.INSTANCE.getBlockRenderer());
                     registry.registerBlockEntityRenderer(BlockEntityRegistry.REMOTE_GATEWAY_BE.get(), context -> RemoteGatewayBlockRenderer.INSTANCE.getRenderer());
+                    registry.registerBlockEntityRenderer(BlockEntityRegistry.NETHER_GATE_BE.get(), context -> NetherGateRenderer.INSTANCE.getBlockRenderer());
                 }
         );
     }
@@ -96,6 +98,10 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
         }
 
         if (hitState.is(BlockRegistry.PORTAL_PAD.get())) {
+            return hitPos;
+        }
+
+        if (hitState.is(BlockRegistry.NETHER_GATE.get())) {
             return hitPos;
         }
 

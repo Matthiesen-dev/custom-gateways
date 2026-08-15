@@ -349,6 +349,8 @@ public final class PortalLinkingDevice extends Item {
             portalFrameEntity.setLinkedTarget(target.dimension(), target.getBlockPos(), true);
         } else if (blockEntity instanceof PortalPadEntity portalPadEntity) {
             portalPadEntity.setLinked(true);
+        } else if (blockEntity instanceof dev.matthiesen.custom_gateways.common.block.entity.NetherGateEntity netherGateEntity) {
+            netherGateEntity.setLinkedTarget(target.dimension(), target.getBlockPos(), true);
         }
     }
 
@@ -363,6 +365,8 @@ public final class PortalLinkingDevice extends Item {
             portalFrameEntity.clearLinkedTarget();
         } else if (blockEntity instanceof PortalPadEntity portalPadEntity) {
             portalPadEntity.setLinked(false);
+        } else if (blockEntity instanceof dev.matthiesen.custom_gateways.common.block.entity.NetherGateEntity netherGateEntity) {
+            netherGateEntity.clearLinkedTarget();
         }
     }
 }

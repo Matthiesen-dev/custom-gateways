@@ -3,6 +3,7 @@ package dev.matthiesen.custom_gateways.common.registry;
 import dev.matthiesen.matthiesen_core.common.registry.AbstractBlockEntityRegistry;
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import dev.matthiesen.custom_gateways.common.block.entity.AncientPortalEntity;
+import dev.matthiesen.custom_gateways.common.block.entity.NetherGateEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalStoneEntity;
@@ -25,6 +26,7 @@ public final class BlockEntityRegistry extends AbstractBlockEntityRegistry {
     public static final Supplier<BlockEntityType<PortalPadEntity>> PORTAL_PAD_BE;
     public static final Supplier<BlockEntityType<PortalStoneEntity>> PORTAL_STONE_BE;
     public static final Supplier<BlockEntityType<RemoteGatewayBlockEntity>> REMOTE_GATEWAY_BE;
+    public static final Supplier<BlockEntityType<NetherGateEntity>> NETHER_GATE_BE;
 
     static {
         ANCIENT_PORTAL_BE = INSTANCE.register("ancient_portal", AncientPortalEntity::new, BlockRegistry.ANCIENT_PORTAL);
@@ -32,5 +34,6 @@ public final class BlockEntityRegistry extends AbstractBlockEntityRegistry {
         PORTAL_PAD_BE = INSTANCE.register("portal_pad", PortalPadEntity::new, BlockRegistry.PORTAL_PAD);
         PORTAL_STONE_BE = INSTANCE.register("portal_stone", PortalStoneEntity::new, BlockRegistry.PORTAL_STONE);
         REMOTE_GATEWAY_BE = INSTANCE.register("remote_gateway", RemoteGatewayBlockEntity::new, BlockRegistry.REMOTE_GATEWAY);
+        NETHER_GATE_BE = INSTANCE.register("nether_gate", NetherGateEntity::new, BlockRegistry.NETHER_GATE);
     }
 }
