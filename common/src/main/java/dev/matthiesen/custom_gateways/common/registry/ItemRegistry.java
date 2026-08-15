@@ -5,6 +5,7 @@ import dev.matthiesen.matthiesen_core.common.core.registry.CreativeModeTabSectio
 import dev.matthiesen.matthiesen_core.common.registry.AbstractItemRegistry;
 import dev.matthiesen.custom_gateways.common.item.AncientPortalItem;
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
+import dev.matthiesen.custom_gateways.common.item.NetherGateItem;
 import dev.matthiesen.custom_gateways.common.item.PortalFrameItem;
 import dev.matthiesen.custom_gateways.common.item.PortalLinkingDevice;
 import dev.matthiesen.custom_gateways.common.item.PortalPadItem;
@@ -28,6 +29,7 @@ public final class ItemRegistry extends AbstractItemRegistry {
     public static final Supplier<PortalStoneItem> PORTAL_STONE;
     public static final Supplier<PortalLinkingDevice> PORTAL_LINKING_CARD;
     public static final Supplier<RemoteDialerItem> REMOTE_DIALER;
+    public static final Supplier<NetherGateItem> NETHER_GATE;
 
     static {
         ANCIENT_PORTAL = INSTANCE.register("ancient_portal", AncientPortalItem::new);
@@ -36,6 +38,7 @@ public final class ItemRegistry extends AbstractItemRegistry {
         PORTAL_STONE = INSTANCE.register("portal_stone", PortalStoneItem::new);
         PORTAL_LINKING_CARD = INSTANCE.register("portal_linking_device", PortalLinkingDevice::new);
         REMOTE_DIALER = INSTANCE.register("remote_dialer", RemoteDialerItem::new);
+        NETHER_GATE = INSTANCE.register("nether_gate", NetherGateItem::new);
     }
 
     public static Supplier<ItemStack> getCreativeModeTabIcon() {
@@ -47,6 +50,7 @@ public final class ItemRegistry extends AbstractItemRegistry {
         builder.addItemToSection(CreativeModeTabRegistry.PORTAL_FRAMES_SECTION_ID, new ItemStack(PORTAL_FRAME.get()));
         builder.addItemToSection(CreativeModeTabRegistry.PORTAL_FRAMES_SECTION_ID, new ItemStack(PORTAL_PAD.get()));
         builder.addItemToSection(CreativeModeTabRegistry.PORTAL_FRAMES_SECTION_ID, new ItemStack(PORTAL_STONE.get()));
+        builder.addItemToSection(CreativeModeTabRegistry.PORTAL_FRAMES_SECTION_ID, new ItemStack(NETHER_GATE.get()));
         builder.addItemToSection(CreativeModeTabRegistry.PORTAL_TOOLS_SECTION_ID, new ItemStack(PORTAL_LINKING_CARD.get()));
         builder.addItemToSection(CreativeModeTabRegistry.PORTAL_TOOLS_SECTION_ID, new ItemStack(REMOTE_DIALER.get()));
     }

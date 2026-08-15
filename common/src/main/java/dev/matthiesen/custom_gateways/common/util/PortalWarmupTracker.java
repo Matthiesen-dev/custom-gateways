@@ -59,6 +59,17 @@ public final class PortalWarmupTracker {
         playerWarmups.remove(uuid);
     }
 
+    /**
+     * Returns how far through the warmup countdown the player is, as a value in {@code [0, 1]}.
+     * Returns {@code 0} if no warmup entry exists for this player.
+     */
+    public float getWarmupProgress(UUID uuid, long gameTime) {
+        PlayerWarmup warmup = playerWarmups.get(uuid);
+        if (warmup == null) return 0f;
+        long elapsed = gameTime - warmup.startedTick;
+        return (float) Math.min(1.0, elapsed / (double) TELEPORT_WARMUP_TICKS);
+    }
+
     private static final class PlayerWarmup {
         private final PortalRegistry.PortalLocation portalLocation;
         private final long startedTick;

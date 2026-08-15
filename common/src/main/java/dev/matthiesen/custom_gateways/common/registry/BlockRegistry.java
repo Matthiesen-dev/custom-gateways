@@ -3,6 +3,7 @@ package dev.matthiesen.custom_gateways.common.registry;
 import dev.matthiesen.matthiesen_core.common.registry.AbstractBlockRegistry;
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import dev.matthiesen.custom_gateways.common.block.AncientPortalBlock;
+import dev.matthiesen.custom_gateways.common.block.NetherGateBlock;
 import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
 import dev.matthiesen.custom_gateways.common.block.PortalPadBlock;
 import dev.matthiesen.custom_gateways.common.block.PortalStoneBlock;
@@ -24,6 +25,7 @@ public final class BlockRegistry extends AbstractBlockRegistry {
     public static final Supplier<PortalPadBlock> PORTAL_PAD;
     public static final Supplier<PortalStoneBlock> PORTAL_STONE;
     public static final Supplier<RemoteGatewayBlock> REMOTE_GATEWAY;
+    public static final Supplier<NetherGateBlock> NETHER_GATE;
 
     static {
         ANCIENT_PORTAL = INSTANCE.register("ancient_portal", AncientPortalBlock::new);
@@ -31,5 +33,6 @@ public final class BlockRegistry extends AbstractBlockRegistry {
         PORTAL_PAD = INSTANCE.register("portal_pad", PortalPadBlock::new);
         PORTAL_STONE = INSTANCE.register("portal_stone", PortalStoneBlock::new);
         REMOTE_GATEWAY = INSTANCE.register("remote_gateway", RemoteGatewayBlock::new);
+        NETHER_GATE = INSTANCE.register("nether_gate", NetherGateBlock::new);
     }
 }

@@ -2,10 +2,12 @@ package dev.matthiesen.custom_gateways.common.client.jade;
 
 import dev.matthiesen.custom_gateways.common.CustomGatewaysCommon;
 import dev.matthiesen.custom_gateways.common.block.AncientPortalBlock;
+import dev.matthiesen.custom_gateways.common.block.NetherGateBlock;
 import dev.matthiesen.custom_gateways.common.block.PortalFrameBlock;
 import dev.matthiesen.custom_gateways.common.block.PortalPadBlock;
 import dev.matthiesen.custom_gateways.common.block.PortalStoneBlock;
 import dev.matthiesen.custom_gateways.common.block.entity.AncientPortalEntity;
+import dev.matthiesen.custom_gateways.common.block.entity.NetherGateEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalFrameEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalPadEntity;
 import dev.matthiesen.custom_gateways.common.block.entity.PortalStoneEntity;
@@ -18,6 +20,7 @@ public final class CustomGatewaysJadePlugin implements IWailaPlugin {
     public static final ResourceLocation PORTAL_FRAME = CustomGatewaysCommon.modResource("portal_frame");
     public static final ResourceLocation PORTAL_PAD = CustomGatewaysCommon.modResource("portal_pad");
     public static final ResourceLocation PORTAL_STONE = CustomGatewaysCommon.modResource("portal_stone");
+    public static final ResourceLocation NETHER_GATE = CustomGatewaysCommon.modResource("nether_gate");
 
     @Override
     public void register(IWailaCommonRegistration registration) {
@@ -27,6 +30,7 @@ public final class CustomGatewaysJadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(PortalPadJadeProvider.INSTANCE, PortalPadEntity.class);
         registration.registerBlockDataProvider(PortalStoneJadeProvider.INSTANCE, PortalStoneEntity.class);
         registration.registerBlockDataProvider(PortalStoneJadeProvider.INSTANCE, PortalStoneBlock.class);
+        registration.registerBlockDataProvider(NetherGateJadeProvider.INSTANCE, NetherGateEntity.class);
     }
 
     @Override
@@ -35,11 +39,13 @@ public final class CustomGatewaysJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(PortalFrameJadeProvider.INSTANCE, PortalFrameBlock.class);
         registration.registerBlockComponent(PortalPadJadeProvider.INSTANCE, PortalPadBlock.class);
         registration.registerBlockComponent(PortalStoneJadeProvider.INSTANCE, PortalStoneBlock.class);
+        registration.registerBlockComponent(NetherGateJadeProvider.INSTANCE, NetherGateBlock.class);
 
         registration.registerBlockIcon(AncientPortalJadeProvider.INSTANCE, AncientPortalBlock.class);
         registration.registerBlockIcon(PortalFrameJadeProvider.INSTANCE, PortalFrameBlock.class);
         registration.registerBlockIcon(PortalPadJadeProvider.INSTANCE, PortalPadBlock.class);
         registration.registerBlockIcon(PortalStoneJadeProvider.INSTANCE, PortalStoneBlock.class);
+        registration.registerBlockIcon(NetherGateJadeProvider.INSTANCE, NetherGateBlock.class);
 
         registration.addRayTraceCallback(((hitResult, accessor, originalAccessor) -> {
             if (accessor instanceof BlockAccessor blockAccessor && blockAccessor.getBlock() instanceof AncientPortalBlock blockTemplate) {
