@@ -1,13 +1,14 @@
 package dev.matthiesen.custom_gateways.common.block.entity;
 
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
+import dev.matthiesen.custom_gateways.common.network.GatewayEffectPayload;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
+import dev.matthiesen.custom_gateways.common.registry.NetworkRegistry;
 import dev.matthiesen.custom_gateways.common.util.PlayerCooldownTracker;
 import dev.matthiesen.custom_gateways.common.util.PortalTeleporter;
 import dev.matthiesen.custom_gateways.common.util.PortalWarmupTracker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -18,22 +19,32 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public final class NetherGateEntity extends BlockEntity implements GeoBlockEntity, DimensionalGate {
     private static final PortalWarmupTracker WARMUP_TRACKER = new PortalWarmupTracker();
+    private static final Map<UUID, WarmupEffectState> ACTIVE_WARMUP_EFFECTS = new HashMap<>();
+    private static final int WARMUP_EFFECT_SYNC_INTERVAL_TICKS = 10;
+    private static final double WARMUP_EFFECT_SYNC_DISTANCE_SQR = 0.0625D;
+    private static final double WARMUP_EFFECT_BROADCAST_RADIUS = 24.0D;
 
     private static final RawAnimation IDLE_ANIM = RawAnimation.begin()
         .thenLoop("animation.nether_gate.idle");
@@ -178,6 +189,7 @@ public final class NetherGateEntity extends BlockEntity implements GeoBlockEntit
 
         PortalRegistry.PortalLocation linkedPortal = registry.getLinkedPortal(currentPortal);
         if (linkedPortal == null) {
+            stopWarmupEffectsForPortal(serverLevel, currentPortal);
             entity.clearLinkedTarget();
             return;
         }
@@ -196,62 +208,135 @@ public final class NetherGateEntity extends BlockEntity implements GeoBlockEntit
 
         ResourceKey<Level> dimensionKey = ResourceKey.create(Registries.DIMENSION, linkedPortal.dimension());
         ServerLevel targetLevel = serverLevel.getServer().getLevel(dimensionKey);
-        if (targetLevel == null) return;
+        if (targetLevel == null) {
+            stopWarmupEffectsForPortal(serverLevel, currentPortal);
+            return;
+        }
+
+        Set<UUID> playersStillWarmingUp = new HashSet<>();
 
         for (Entity entityInBounds : entities) {
             if (entityInBounds instanceof ServerPlayer player && PlayerCooldownTracker.isOnCooldown(player)) {
                 WARMUP_TRACKER.remove(player.getUUID());
+                stopWarmupEffect(serverLevel, currentPortal, player.getUUID(), player.position(), player.getId());
                 continue;
             }
 
             if (entityInBounds instanceof ServerPlayer player) {
                 if (!WARMUP_TRACKER.processPlayer(player, currentPortal, gameTime)) {
-                    // Still in warmup — emit the fire spiral around this player
                     float progress = WARMUP_TRACKER.getWarmupProgress(player.getUUID(), gameTime);
-                    spawnWarmupSpiralParticles(serverLevel, player, gameTime, progress);
+                    syncWarmupEffect(serverLevel, currentPortal, player, player.position(), gameTime, progress);
+                    playersStillWarmingUp.add(player.getUUID());
                     continue;
                 }
+
+                stopWarmupEffect(serverLevel, currentPortal, player.getUUID(), player.position(), player.getId());
             }
 
             PortalTeleporter.teleportEntity(entityInBounds, targetLevel, linkedPortal.getBlockPos());
         }
+
+        stopMissingWarmupEffects(serverLevel, currentPortal, playersStillWarmingUp);
     }
 
-    /**
-     * Emits a spiralling fire helix around the player during the teleport warmup countdown.
-     * Two staggered rings of FLAME + SOUL_FIRE_FLAME particles rotate and rise around the player.
-     * The radius tightens as the countdown nears completion.
-     */
-    private static void spawnWarmupSpiralParticles(ServerLevel level, Player player, long gameTime, float progress) {
-        double baseAngle = (gameTime * 0.25D) % (2.0D * Math.PI);
-        double px = player.getX();
-        double py = player.getY();
-        double pz = player.getZ();
+    private static void syncWarmupEffect(ServerLevel level, PortalRegistry.PortalLocation portalLocation, ServerPlayer player, Vec3 center, long gameTime, float progress) {
+        WarmupEffectState state = ACTIVE_WARMUP_EFFECTS.get(player.getUUID());
+        if (state != null && !state.portalLocation.equals(portalLocation)) {
+            sendWarmupEffect(level, GatewayEffectPayload.PHASE_STOP, state.sourceEntityId, state.lastCenter, gameTime, progress);
+            ACTIVE_WARMUP_EFFECTS.remove(player.getUUID());
+            state = null;
+        }
 
-        // Radius tightens from 0.7 → 0.4 as the countdown finishes (pulls inward)
-        double radius = 0.7D - progress * 0.3D;
-        int rings = 2;
-        int particlesPerRing = 5;
-        double ringSpacing = 0.5D;
+        if (state == null) {
+            ACTIVE_WARMUP_EFFECTS.put(player.getUUID(), new WarmupEffectState(portalLocation, player.getId(), center, gameTime));
+            sendWarmupEffect(level, GatewayEffectPayload.PHASE_START, player.getId(), center, gameTime, progress);
+            return;
+        }
 
-        for (int ring = 0; ring < rings; ring++) {
-            // Each ring scrolls upward independently, looping back to feet every ~2.2 blocks
-            double heightOffset = ((gameTime * 0.08D + ring * ringSpacing) % 2.2D);
-            for (int i = 0; i < particlesPerRing; i++) {
-                double angle = baseAngle + (2.0D * Math.PI * i / particlesPerRing) + ring * 0.63D;
-                double particleX = px + Math.cos(angle) * radius;
-                double particleY = py + heightOffset;
-                double particleZ = pz + Math.sin(angle) * radius;
+        boolean shouldSync = gameTime - state.lastSyncTick >= WARMUP_EFFECT_SYNC_INTERVAL_TICKS
+            || state.lastCenter.distanceToSqr(center) >= WARMUP_EFFECT_SYNC_DISTANCE_SQR;
 
-                // Alternate between warm flame and blue soul-fire for a nether aesthetic
-                if ((ring + i) % 2 == 0) {
-                    level.sendParticles(ParticleTypes.FLAME,
-                        particleX, particleY, particleZ, 0, 0.0D, 1.0D, 0.0D, 0.05D);
-                } else {
-                    level.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,
-                        particleX, particleY, particleZ, 0, 0.0D, 1.0D, 0.0D, 0.04D);
-                }
+        state.lastCenter = center;
+        if (!shouldSync) {
+            return;
+        }
+
+        state.lastSyncTick = gameTime;
+        sendWarmupEffect(level, GatewayEffectPayload.PHASE_SYNC, player.getId(), center, gameTime, progress);
+    }
+
+    private static void stopWarmupEffect(ServerLevel level, PortalRegistry.PortalLocation portalLocation, UUID playerUuid, Vec3 fallbackCenter, int fallbackSourceEntityId) {
+        WarmupEffectState state = ACTIVE_WARMUP_EFFECTS.get(playerUuid);
+        if (state == null || !state.portalLocation.equals(portalLocation)) {
+            return;
+        }
+
+        ACTIVE_WARMUP_EFFECTS.remove(playerUuid);
+        sendWarmupEffect(
+            level,
+            GatewayEffectPayload.PHASE_STOP,
+            state.sourceEntityId > 0 ? state.sourceEntityId : fallbackSourceEntityId,
+            fallbackCenter != null ? fallbackCenter : state.lastCenter,
+            level.getGameTime(),
+            1.0F
+        );
+    }
+
+    private static void stopMissingWarmupEffects(ServerLevel level, PortalRegistry.PortalLocation portalLocation, Set<UUID> playersStillWarmingUp) {
+        Iterator<Map.Entry<UUID, WarmupEffectState>> iterator = ACTIVE_WARMUP_EFFECTS.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<UUID, WarmupEffectState> entry = iterator.next();
+            WarmupEffectState state = entry.getValue();
+            if (!state.portalLocation.equals(portalLocation) || playersStillWarmingUp.contains(entry.getKey())) {
+                continue;
             }
+
+            iterator.remove();
+            sendWarmupEffect(level, GatewayEffectPayload.PHASE_STOP, state.sourceEntityId, state.lastCenter, level.getGameTime(), 1.0F);
+        }
+    }
+
+    private static void stopWarmupEffectsForPortal(ServerLevel level, PortalRegistry.PortalLocation portalLocation) {
+        Iterator<Map.Entry<UUID, WarmupEffectState>> iterator = ACTIVE_WARMUP_EFFECTS.entrySet().iterator();
+        while (iterator.hasNext()) {
+            WarmupEffectState state = iterator.next().getValue();
+            if (!state.portalLocation.equals(portalLocation)) {
+                continue;
+            }
+
+            iterator.remove();
+            sendWarmupEffect(level, GatewayEffectPayload.PHASE_STOP, state.sourceEntityId, state.lastCenter, level.getGameTime(), 1.0F);
+        }
+    }
+
+    private static void sendWarmupEffect(ServerLevel level, int phase, int sourceEntityId, Vec3 center, long gameTime, float progress) {
+        NetworkRegistry.sendToNearbyPlayers(
+            level,
+            center,
+            WARMUP_EFFECT_BROADCAST_RADIUS,
+            new GatewayEffectPayload(
+                GatewayEffectPayload.EFFECT_NETHER_GATE_WARMUP,
+                phase,
+                sourceEntityId,
+                center,
+                gameTime,
+                progress,
+                (int) PortalWarmupTracker.TELEPORT_WARMUP_TICKS
+            )
+        );
+    }
+
+    private static final class WarmupEffectState {
+        private final PortalRegistry.PortalLocation portalLocation;
+        private final int sourceEntityId;
+        private Vec3 lastCenter;
+        private long lastSyncTick;
+
+        private WarmupEffectState(PortalRegistry.PortalLocation portalLocation, int sourceEntityId, Vec3 lastCenter, long lastSyncTick) {
+            this.portalLocation = portalLocation;
+            this.sourceEntityId = sourceEntityId;
+            this.lastCenter = lastCenter;
+            this.lastSyncTick = lastSyncTick;
         }
     }
 }
