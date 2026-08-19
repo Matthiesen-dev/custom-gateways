@@ -7,6 +7,8 @@ import dev.matthiesen.custom_gateways.common.item.PortalLinkingDevice;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import dev.matthiesen.custom_gateways.common.util.Cleanup;
 import dev.matthiesen.custom_gateways.common.util.VoxelShapeUtil;
+import dev.matthiesen.matthiesen_core.common.api.client.particle.ParticleSpawner;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
@@ -311,6 +313,10 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
             return;
         }
 
+        if (!level.isClientSide || !(level instanceof ClientLevel clientLevel)) {
+            return;
+        }
+
         Direction facing = state.getValue(FACING);
         Vec3 normal = new Vec3(facing.getStepX(), 0.0D, facing.getStepZ());
         Vec3 lateralAxis = new Vec3(facing.getClockWise().getStepX(), 0.0D, facing.getClockWise().getStepZ());
@@ -362,7 +368,8 @@ public final class PortalFrameBlock extends HorizontalDirectionalBlock implement
             double velocityY = dy / distance * speed + VoxelShapeUtil.randomBetween(random, -jitter, jitter);
             double velocityZ = dz / distance * speed + VoxelShapeUtil.randomBetween(random, -jitter, jitter);
 
-            level.addParticle(pickGatewayParticle(random), spawnX, spawnY, spawnZ, velocityX, velocityY, velocityZ);
+            ParticleSpawner spawner = ParticleSpawner.of(clientLevel, pickGatewayParticle(random));
+            spawner.spawnParticle(new Vec3(spawnX, spawnY, spawnZ), new Vec3(velocityX, velocityY, velocityZ));
         }
     }
 

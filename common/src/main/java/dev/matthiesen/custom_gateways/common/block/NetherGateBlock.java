@@ -7,6 +7,8 @@ import dev.matthiesen.custom_gateways.common.item.PortalLinkingDevice;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import dev.matthiesen.custom_gateways.common.util.Cleanup;
 import dev.matthiesen.custom_gateways.common.util.VoxelShapeUtil;
+import dev.matthiesen.matthiesen_core.common.api.client.particle.ParticleSpawner;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -29,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -115,6 +118,10 @@ public final class NetherGateBlock extends HorizontalDirectionalBlock implements
             return;
         }
 
+        if (!level.isClientSide || !(level instanceof ClientLevel clientLevel)) {
+            return;
+        }
+
         if (random.nextFloat() < 0.55F) {
             double angle = random.nextDouble() * 2.0D * Math.PI;
             double radius = VoxelShapeUtil.randomBetween(random, 0.08D, PARTICLE_SPREAD);
@@ -123,10 +130,8 @@ public final class NetherGateBlock extends HorizontalDirectionalBlock implements
             double velocityX = VoxelShapeUtil.randomBetween(random, -PARTICLE_SPEED, PARTICLE_SPEED);
             double velocityY = VoxelShapeUtil.randomBetween(random, 0.003D, 0.018D);
             double velocityZ = VoxelShapeUtil.randomBetween(random, -PARTICLE_SPEED, PARTICLE_SPEED);
-            level.addParticle(
-                random.nextFloat() < 0.3F ? ParticleTypes.SOUL_FIRE_FLAME : ParticleTypes.FLAME,
-                spawnX, centerY, spawnZ, velocityX, velocityY, velocityZ
-            );
+            ParticleSpawner spawner = ParticleSpawner.of(clientLevel, random.nextFloat() < 0.3F ? ParticleTypes.SOUL_FIRE_FLAME : ParticleTypes.FLAME);
+            spawner.spawnParticle(new Vec3(spawnX, centerY, spawnZ), new Vec3(velocityX, velocityY, velocityZ));
         }
     }
 

@@ -7,6 +7,8 @@ import dev.matthiesen.custom_gateways.common.item.PortalLinkingDevice;
 import dev.matthiesen.custom_gateways.common.registry.BlockEntityRegistry;
 import dev.matthiesen.custom_gateways.common.util.Cleanup;
 import dev.matthiesen.custom_gateways.common.util.VoxelShapeUtil;
+import dev.matthiesen.matthiesen_core.common.api.client.particle.ParticleSpawner;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -31,6 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -176,13 +179,18 @@ public final class PortalStoneBlock extends HorizontalDirectionalBlock implement
             return;
         }
 
+        if (!level.isClientSide || !(level instanceof ClientLevel clientLevel)) {
+            return;
+        }
+
         if (random.nextFloat() < 0.385F) {
             double spawnX = centerX + VoxelShapeUtil.randomBetween(random, -PARTICLE_SPREAD, PARTICLE_SPREAD);
             double spawnZ = centerZ + VoxelShapeUtil.randomBetween(random, -PARTICLE_SPREAD, PARTICLE_SPREAD);
             double velocityX = VoxelShapeUtil.randomBetween(random, -PARTICLE_SPEED, PARTICLE_SPEED);
             double velocityY = VoxelShapeUtil.randomBetween(random, 0.006D, 0.018D);
             double velocityZ = VoxelShapeUtil.randomBetween(random, -PARTICLE_SPEED, PARTICLE_SPEED);
-            level.addParticle(ParticleTypes.PORTAL, spawnX, centerY, spawnZ, velocityX, velocityY, velocityZ);
+            ParticleSpawner spawner = ParticleSpawner.of(clientLevel, ParticleTypes.PORTAL);
+            spawner.spawnParticle(new Vec3(spawnX, centerY, spawnZ), new Vec3(velocityX, velocityY, velocityZ));
         }
     }
 

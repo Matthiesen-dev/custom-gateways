@@ -5,6 +5,7 @@ import dev.matthiesen.custom_gateways.common.block.entity.*;
 import dev.matthiesen.custom_gateways.common.client.geckolib.*;
 import dev.matthiesen.custom_gateways.common.client.screen.RemoteDialerScreen;
 import dev.matthiesen.custom_gateways.common.item.*;
+import dev.matthiesen.custom_gateways.common.network.GatewayEffectHandler;
 import dev.matthiesen.custom_gateways.common.registry.*;
 import dev.matthiesen.matthiesen_core.common.AbstractCommonClientMod;
 import dev.matthiesen.matthiesen_core.common.api.events.PlatformClientEvents;
@@ -38,6 +39,8 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
 
         INSTANCE.getScreenManager().registerMenuScreen(MenuRegistry.REMOTE_DIALER_MENU, RemoteDialerScreen::new);
         PlatformClientEvents.BLOCK_HIGHLIGHT.subscribe(this::onBlockHighlight);
+        PlatformClientEvents.CLIENT_END_TICK.subscribe(this::onClientEndTick);
+        PlatformClientEvents.CLIENT_STOPPING.subscribe(this::onClientStopping);
     }
 
     public InteractionResult onBlockHighlight(ClientEvent.BlockHighlight event) {
@@ -59,6 +62,14 @@ public final class CustomGatewaysCommonClient extends AbstractCommonClientMod {
                 0.0F, 0.0F, 0.0F, 0.4F, false
         );
         return InteractionResult.FAIL;
+    }
+
+    public void onClientEndTick(ClientEvent.EndTick event) {
+        GatewayEffectHandler.tick(event.client());
+    }
+
+    public void onClientStopping(ClientEvent.Stopping event) {
+        GatewayEffectHandler.clear();
     }
 
     public void registerRenderers() {
