@@ -1,37 +1,31 @@
 {
-  "parent": "custom_gateways:recipes/root",
+  "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ender_pearl": {
+    "has_amethyst_shard": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:ender_pearl"
-            ]
+            "items": "minecraft:amethyst_shard"
           }
         ]
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_chorus_fruit": {
+    "has_cobbled_deepslate": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:chorus_fruit"
-            ]
+            "items": "minecraft:cobbled_deepslate"
           }
         ]
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_pressure_plate": {
+    "has_portal_pad": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:heavy_weighted_pressure_plate"
-            ]
+            "items": "custom_gateways:portal_pad"
           }
         ]
       },
@@ -39,22 +33,22 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "custom_gateways:portal_pad"
+        "recipe": "custom_gateways:portal_stone"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_ender_pearl",
-      "has_chorus_fruit",
-      "has_pressure_plate",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_cobbled_deepslate",
+      "has_portal_pad",
+      "has_amethyst_shard"
     ]
   ],
   "rewards": {
     "recipes": [
-      "custom_gateways:portal_pad"
+      "custom_gateways:portal_stone"
     ]
   }
 }

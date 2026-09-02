@@ -1,28 +1,28 @@
 {
   "type": "minecraft:crafting_shaped",
-  "show_notification": true,
   "category": "misc",
-  "pattern": [
-    "r r",
-    "epe",
-    "pip"
-  ],
+  "group": "custom_gateways",
   "key": {
-    "p": {
-      "item": "minecraft:iron_bars"
-    },
     "e": {
       "item": "minecraft:ender_eye"
     },
     "i": {
       "item": "custom_gateways:portal_pad"
     },
+    "p": {
+      "item": "minecraft:cobbled_deepslate"
+    },
     "r": {
       "item": "minecraft:redstone_lamp"
     }
   },
+  "pattern": [
+    "r r",
+    "pep",
+    "pip"
+  ],
   "result": {
-    "id": "custom_gateways:portal_frame",
-    "count": 1
+    "count": 1,
+    "id": "custom_gateways:ancient_portal"
   }
 }

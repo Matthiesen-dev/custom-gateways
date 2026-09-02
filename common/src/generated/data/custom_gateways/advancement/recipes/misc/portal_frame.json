@@ -1,49 +1,41 @@
 {
-  "parent": "custom_gateways:recipes/root",
+  "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_paper": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "minecraft:paper"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "has_redstone": {
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "minecraft:redstone"
-            ]
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
     "has_ender_eye": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:ender_eye"
-            ]
+            "items": "minecraft:ender_eye"
           }
         ]
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_iron_nugget": {
+    "has_iron_bars": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:iron_nugget"
-            ]
+            "items": "minecraft:iron_bars"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_portal_pad": {
+      "conditions": {
+        "items": [
+          {
+            "items": "custom_gateways:portal_pad"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_redstone_lamp": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:redstone_lamp"
           }
         ]
       },
@@ -51,23 +43,23 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "custom_gateways:portal_linking_device"
+        "recipe": "custom_gateways:portal_frame"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_paper",
-      "has_redstone",
+      "has_the_recipe",
+      "has_redstone_lamp",
       "has_ender_eye",
-      "has_iron_nugget",
-      "has_the_recipe"
+      "has_iron_bars",
+      "has_portal_pad"
     ]
   ],
   "rewards": {
     "recipes": [
-      "custom_gateways:portal_linking_device"
+      "custom_gateways:portal_frame"
     ]
   }
 }

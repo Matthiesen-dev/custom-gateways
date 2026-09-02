@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "custom_gateways",
+  "key": {
+    "i": {
+      "item": "custom_gateways:portal_pad"
+    },
+    "p": {
+      "item": "minecraft:nether_brick"
+    }
+  },
+  "pattern": [
+    " p ",
+    "pip"
+  ],
+  "result": {
+    "count": 1,
+    "id": "custom_gateways:nether_gate"
+  }
+}

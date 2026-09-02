@@ -1,25 +1,21 @@
 {
-  "parent": "custom_gateways:recipes/root",
+  "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ender_eye": {
+    "has_cobbled_deepslate": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:ender_eye"
-            ]
+            "items": "minecraft:cobbled_deepslate"
           }
         ]
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_iron_bars": {
+    "has_ender_eye": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:iron_bars"
-            ]
+            "items": "minecraft:ender_eye"
           }
         ]
       },
@@ -29,9 +25,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "custom_gateways:portal_pad"
-            ]
+            "items": "custom_gateways:portal_pad"
           }
         ]
       },
@@ -41,9 +35,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:redstone_lamp"
-            ]
+            "items": "minecraft:redstone_lamp"
           }
         ]
       },
@@ -51,23 +43,23 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "custom_gateways:portal_frame"
+        "recipe": "custom_gateways:ancient_portal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
+      "has_the_recipe",
+      "has_cobbled_deepslate",
       "has_ender_eye",
-      "has_iron_bars",
       "has_portal_pad",
-      "has_redstone_lamp",
-      "has_the_recipe"
+      "has_redstone_lamp"
     ]
   ],
   "rewards": {
     "recipes": [
-      "custom_gateways:portal_frame"
+      "custom_gateways:ancient_portal"
     ]
   }
 }
