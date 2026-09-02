@@ -35,7 +35,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
 
-public final class AncientPortalEntity extends BlockEntity implements GeoBlockEntity, DimensionalGate {
+public final class AncientPortalEntity extends BlockEntity implements GeoBlockEntity, DimensionalGate, DimensionalLink {
     private static final long NEARBY_PLAYER_CHECK_INTERVAL_TICKS = 20L;
     private static final PortalWarmupTracker WARMUP_TRACKER = new PortalWarmupTracker();
     private static final RawAnimation IDLE_ANIM = RawAnimation.begin()
@@ -58,6 +58,7 @@ public final class AncientPortalEntity extends BlockEntity implements GeoBlockEn
         super(BlockEntityRegistry.ANCIENT_PORTAL_BE.get(), pos, state);
     }
 
+    @Override
     public void setLinkedTarget(ResourceLocation dimension, BlockPos targetPos, boolean triggerLinkAnimation) {
         AncientPortalEntity masterEntity = getMasterEntity();
         if (masterEntity != this && masterEntity != null) {
@@ -86,6 +87,7 @@ public final class AncientPortalEntity extends BlockEntity implements GeoBlockEn
         }
     }
 
+    @Override
     public void clearLinkedTarget() {
         AncientPortalEntity masterEntity = getMasterEntity();
         if (masterEntity != this && masterEntity != null) {
@@ -114,6 +116,7 @@ public final class AncientPortalEntity extends BlockEntity implements GeoBlockEn
         this.level.sendBlockUpdated(this.worldPosition, state, state, Block.UPDATE_CLIENTS);
     }
 
+    @Override
     public boolean isLinked() {
         AncientPortalEntity masterEntity = getMasterEntity();
         return masterEntity == null || masterEntity == this ? this.isLinked : masterEntity.isLinked;

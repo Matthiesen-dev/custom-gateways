@@ -102,14 +102,6 @@ public final class PortalStoneBlock extends HorizontalDirectionalBlock implement
         return state.getValue(IS_TOP) ? pos.below() : pos;
     }
 
-    public Block getParentBlock(Level level, BlockPos pos) {
-        BlockState state = level.getBlockState(pos);
-        if (!(state.getBlock() instanceof PortalStoneBlock)) {
-            return null;
-        }
-        return level.getBlockState(getMasterPos(pos, state)).getBlock();
-    }
-
     public BlockState getParentBlockState(Level level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
         if (!(state.getBlock() instanceof PortalStoneBlock)) {

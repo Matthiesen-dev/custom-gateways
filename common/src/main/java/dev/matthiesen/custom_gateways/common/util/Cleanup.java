@@ -36,16 +36,11 @@ public final class Cleanup {
             }
 
             BlockEntity linkedEntity = linkedLevel.getBlockEntity(linkedLocation.getBlockPos());
-            if (linkedEntity instanceof AncientPortalEntity linkedAncientPortalEntity) {
-                linkedAncientPortalEntity.clearLinkedTarget();
-            } else if (linkedEntity instanceof PortalStoneEntity linkedPortalStoneEntity) {
-                linkedPortalStoneEntity.setLinked(false);
-            } else if (linkedEntity instanceof PortalFrameEntity linkedPortalEntity) {
-                linkedPortalEntity.clearLinkedTarget();
-            } else if (linkedEntity instanceof PortalPadEntity linkedPortalPadEntity) {
-                linkedPortalPadEntity.setLinked(false);
-            } else if (linkedEntity instanceof NetherGateEntity linkedNetherGateEntity) {
-                linkedNetherGateEntity.clearLinkedTarget();
+
+            if (linkedEntity instanceof AbstractLinkedBlockEntity linkedBlockEntity) {
+                linkedBlockEntity.setLinked(false);
+            } else if (linkedEntity instanceof DimensionalLink dimensionalLinkEntity) {
+                dimensionalLinkEntity.clearLinkedTarget();
             }
         }
 

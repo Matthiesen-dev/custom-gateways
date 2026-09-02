@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public final class NetherGateEntity extends BlockEntity implements GeoBlockEntity, DimensionalGate {
+public final class NetherGateEntity extends BlockEntity implements GeoBlockEntity, DimensionalGate, DimensionalLink {
     private static final PortalWarmupTracker WARMUP_TRACKER = new PortalWarmupTracker();
     private static final GatewayWarmupEffectTracker WARMUP_EFFECT_TRACKER = new GatewayWarmupEffectTracker(
         GatewayEffectPayload.EFFECT_NETHER_GATE_WARMUP,
@@ -66,10 +66,12 @@ public final class NetherGateEntity extends BlockEntity implements GeoBlockEntit
 
     // ------------------------------------------------------------------ state
 
+    @Override
     public boolean isLinked() {
         return isLinked;
     }
 
+    @Override
     public void setLinkedTarget(ResourceLocation dimension, BlockPos targetPos, boolean triggerLinkAnimation) {
         boolean changed = !this.isLinked
             || !this.dimension.equals(dimension.toString())
@@ -92,6 +94,7 @@ public final class NetherGateEntity extends BlockEntity implements GeoBlockEntit
         }
     }
 
+    @Override
     public void clearLinkedTarget() {
         if (!this.isLinked) {
             return;
@@ -177,6 +180,7 @@ public final class NetherGateEntity extends BlockEntity implements GeoBlockEntit
 
     // ------------------------------------------------------------------ tick
 
+    @SuppressWarnings("unused")
     public static <T extends BlockEntity> void tick(Level level, BlockPos blockPos, BlockState blockState, T t) {
         if (!(t instanceof NetherGateEntity entity)) return;
         if (level.isClientSide) return;

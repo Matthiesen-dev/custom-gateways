@@ -24,6 +24,7 @@ public final class PortalPadEntity extends AbstractLinkedBlockEntity {
         controllers.add(new AnimationController<>(this, "idle", 0, state -> state.setAndContinue(IDLE_ANIM)));
     }
 
+    @SuppressWarnings("unused")
     public static <T extends BlockEntity> void tick(Level level, BlockPos blockPos, BlockState blockState, T t) {
         if (!(t instanceof PortalPadEntity portalPadEntity)) {
             return;

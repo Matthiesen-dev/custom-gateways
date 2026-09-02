@@ -32,7 +32,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
 
-public final class PortalFrameEntity extends BlockEntity implements GeoBlockEntity, DimensionalGate {
+public final class PortalFrameEntity extends BlockEntity implements GeoBlockEntity, DimensionalGate, DimensionalLink {
     private static final long NEARBY_PLAYER_CHECK_INTERVAL_TICKS = 20L;
     private static final PortalWarmupTracker WARMUP_TRACKER = new PortalWarmupTracker();
     private static final RawAnimation IDLE_ANIM = RawAnimation.begin()
@@ -55,6 +55,7 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
         super(BlockEntityRegistry.PORTAL_FRAME_BE.get(), pos, state);
     }
 
+    @Override
     public void setLinkedTarget(ResourceLocation dimension, BlockPos targetPos, boolean triggerLinkAnimation) {
         boolean changed = !this.IS_LINKED
             || !this.DIMENSION.equals(dimension.toString())
@@ -77,6 +78,7 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
         }
     }
 
+    @Override
     public void clearLinkedTarget() {
         if (!this.IS_LINKED) {
             return;
@@ -99,6 +101,7 @@ public final class PortalFrameEntity extends BlockEntity implements GeoBlockEnti
         this.level.sendBlockUpdated(this.worldPosition, state, state, Block.UPDATE_CLIENTS);
     }
 
+    @Override
     public boolean isLinked() {
         return IS_LINKED;
     }
