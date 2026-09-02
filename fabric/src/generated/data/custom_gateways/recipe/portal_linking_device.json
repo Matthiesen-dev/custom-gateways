@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "custom_gateways",
+  "key": {
+    "e": {
+      "item": "minecraft:ender_eye"
+    },
+    "i": {
+      "item": "minecraft:iron_nugget"
+    },
+    "p": {
+      "item": "minecraft:paper"
+    },
+    "r": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    "rir",
+    "pep",
+    "rir"
+  ],
+  "result": {
+    "count": 1,
+    "id": "custom_gateways:portal_linking_device"
+  }
+}

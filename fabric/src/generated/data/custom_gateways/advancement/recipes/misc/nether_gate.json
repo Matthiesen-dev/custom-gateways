@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_nether_brick": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:nether_brick"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_portal_pad": {
+      "conditions": {
+        "items": [
+          {
+            "items": "custom_gateways:portal_pad"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "custom_gateways:nether_gate"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_nether_brick",
+      "has_portal_pad"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "custom_gateways:nether_gate"
+    ]
+  }
+}

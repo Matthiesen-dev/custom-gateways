@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "custom_gateways",
+  "key": {
+    "b": {
+      "item": "minecraft:blaze_rod"
+    },
+    "e": {
+      "item": "custom_gateways:portal_linking_device"
+    },
+    "i": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "p": {
+      "item": "minecraft:ender_eye"
+    },
+    "r": {
+      "item": "minecraft:chorus_fruit"
+    }
+  },
+  "pattern": [
+    "rbr",
+    "pep",
+    "rir"
+  ],
+  "result": {
+    "count": 1,
+    "id": "custom_gateways:remote_dialer"
+  }
+}
