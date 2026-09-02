@@ -13,6 +13,7 @@ val generatedResources = file("src/generated")
 sourceSets {
     main {
         resources.srcDir(generatedResources)
+        resources.exclude { it.file.absolutePath.contains(".cache") }
     }
 }
 

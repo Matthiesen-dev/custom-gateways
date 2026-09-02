@@ -59,6 +59,9 @@ tasks {
         filesMatching("fabric.mod.json") {
             expand(project.properties)
         }
+        exclude {
+            it.file.absolutePath.contains(".cache")
+        }
     }
 
     shadowJar {
