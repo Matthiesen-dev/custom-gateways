@@ -42,6 +42,13 @@ public final class EnUsTranslations {
         item("portal_linking_device", "Portal Linking Device");
         item("remote_dialer", "Remote Dialer");
 
+        itemTag("tools", "Custom Gateways Tools");
+
+        blockTag("all_portals", "All Custom Gateways Portals");
+        blockTag("mineable_portals", "Mineable Custom Gateways Portals");
+        blockTag("portal_link_destinations", "Custom Gateways Portal Link Destinations");
+        blockTag("portal_link_sources", "Custom Gateways Portal Link Sources");
+
         itemGroup("portal_frame_tab", "Custom Gateways");
         itemGroup("portal_frame_tab.portal_frames_section", "Portal Frames");
         itemGroup("portal_frame_tab.portal_tools_section", "Portal Tools");
@@ -174,6 +181,15 @@ public final class EnUsTranslations {
 
     private static void configuration(String key, String value) {
         TRANSLATIONS.addTranslation("custom_gateways.configuration." + key, value);
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static void itemTag(String key, String value) {
+        TRANSLATIONS.addTranslation("tag.item.custom_gateways." + key, value);
+    }
+
+    private static void blockTag(String key, String value) {
+        TRANSLATIONS.addTranslation("tag.block.custom_gateways." + key, value);
     }
 
     public static void registerTranslations() {

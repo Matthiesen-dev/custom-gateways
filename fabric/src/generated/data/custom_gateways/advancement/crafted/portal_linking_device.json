@@ -16,6 +16,7 @@
     "description": {
       "translate": "advancements.custom_gateways.crafted.portal_linking_device.description"
     },
+    "frame": "goal",
     "icon": {
       "count": 1,
       "id": "custom_gateways:portal_linking_device"
