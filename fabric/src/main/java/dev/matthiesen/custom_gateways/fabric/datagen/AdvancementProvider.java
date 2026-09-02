@@ -1,5 +1,6 @@
 package dev.matthiesen.custom_gateways.fabric.datagen;
 
+import dev.matthiesen.custom_gateways.common.datagen.AdvancementGeneration;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
 import net.minecraft.advancements.AdvancementHolder;
@@ -15,6 +16,6 @@ public final class AdvancementProvider extends FabricAdvancementProvider {
 
     @Override
     public void generateAdvancement(HolderLookup.Provider registryLookup, Consumer<AdvancementHolder> consumer) {
-//        AdvancementRegistry.generateAdvancement(registryLookup, consumer);
+        AdvancementGeneration.generateAdvancement(registryLookup, consumer);
     }
 }

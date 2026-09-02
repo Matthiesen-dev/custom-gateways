@@ -4,24 +4,25 @@
       "trigger": "minecraft:tick"
     }
   },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
+    "description": {
+      "translate": "advancements.custom_gateways.root.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "custom_gateways:portal_frame"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancements.custom_gateways.root.title"
+    }
+  },
   "requirements": [
     [
       "tick"
     ]
   ],
-  "display": {
-    "announce_to_chat": false,
-    "show_toast": false,
-    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
-    "title": {
-      "translate": "advancements.custom_gateways.root.title"
-    },
-    "description": {
-      "translate": "advancements.custom_gateways.root.description"
-    },
-    "icon": {
-      "id": "custom_gateways:portal_frame"
-    }
-  },
   "sends_telemetry_event": true
 }
