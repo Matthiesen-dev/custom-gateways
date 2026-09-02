@@ -8,6 +8,15 @@ architectury {
     common("neoforge", "fabric")
 }
 
+val generatedResources = file("src/generated")
+
+sourceSets {
+    main {
+        resources.srcDir(generatedResources)
+        resources.exclude { it.file.absolutePath.contains(".cache") }
+    }
+}
+
 dependencies {
     minecraft(libs.minecraft)
     mappings(loom.officialMojangMappings())

@@ -1,0 +1,26 @@
+{
+  "parent": "custom_gateways:root",
+  "criteria": {
+    "used_remote_dialer": {
+      "trigger": "custom_gateways:use_remote_dialer"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.custom_gateways.portals.used_remote_dialer.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "custom_gateways:remote_dialer"
+    },
+    "title": {
+      "translate": "advancements.custom_gateways.portals.used_remote_dialer.title"
+    }
+  },
+  "requirements": [
+    [
+      "used_remote_dialer"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

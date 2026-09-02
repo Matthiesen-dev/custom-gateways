@@ -1,6 +1,7 @@
 package dev.matthiesen.custom_gateways.common.advancements;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,6 +31,10 @@ public final class SimpleTriggerCriterion extends SimpleCriterionTrigger<SimpleT
 
         public boolean requirementsMet() {
             return true;
+        }
+
+        public static Criterion<Conditions> create(SimpleTriggerCriterion trigger) {
+            return trigger.createCriterion(new Conditions(Optional.empty()));
         }
     }
 }

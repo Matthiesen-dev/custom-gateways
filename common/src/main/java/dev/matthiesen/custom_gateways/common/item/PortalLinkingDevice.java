@@ -3,9 +3,9 @@ package dev.matthiesen.custom_gateways.common.item;
 import dev.matthiesen.custom_gateways.common.block.*;
 import dev.matthiesen.custom_gateways.common.block.entity.*;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
+import dev.matthiesen.custom_gateways.common.datagen.TagsGeneration;
 import dev.matthiesen.custom_gateways.common.registry.CriterionRegistry;
 import dev.matthiesen.custom_gateways.common.registry.SoundRegistry;
-import dev.matthiesen.custom_gateways.common.util.PortalLinkTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -311,11 +311,11 @@ public final class PortalLinkingDevice extends Item {
     }
 
     private static boolean isPortalLinkSource(BlockState state) {
-        return state.is(PortalLinkTags.PORTAL_LINK_SOURCES);
+        return state.is(TagsGeneration.BlockTags.CUSTOM_GATEWAYS_PORTAL_LINK_SOURCES);
     }
 
     private static boolean isPortalLinkDestination(BlockState state) {
-        return state.is(PortalLinkTags.PORTAL_LINK_DESTINATIONS);
+        return state.is(TagsGeneration.BlockTags.CUSTOM_GATEWAYS_PORTAL_LINK_DESTINATIONS);
     }
 
     private static Level resolveLevel(ServerLevel currentLevel, ResourceLocation dimension) {

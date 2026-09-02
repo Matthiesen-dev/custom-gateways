@@ -1,0 +1,6 @@
+// 1.21.1	2026-09-01T23:52:40.111024399	Custom Gateways/Block Loot Tables
+3f482f9c31e99062011b2a45f21079a22385706e data/custom_gateways/loot_table/blocks/nether_gate.json
+42edd4f06777858718fb493a4c6006ed61b5f91d data/custom_gateways/loot_table/blocks/ancient_portal.json
+9039c46ce6d5eeaf785733b3555437f002170e77 data/custom_gateways/loot_table/blocks/portal_pad.json
+e164fddef9e1539226b816bfb73c8d2d489af182 data/custom_gateways/loot_table/blocks/portal_frame.json
+1bf880b0b8621aeb44b0d2bf8667d5e27915f129 data/custom_gateways/loot_table/blocks/portal_stone.json

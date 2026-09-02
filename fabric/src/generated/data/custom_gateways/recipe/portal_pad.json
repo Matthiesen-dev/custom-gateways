@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "custom_gateways",
+  "key": {
+    "e": {
+      "item": "minecraft:ender_pearl"
+    },
+    "i": {
+      "item": "minecraft:chorus_fruit"
+    },
+    "p": {
+      "item": "minecraft:heavy_weighted_pressure_plate"
+    }
+  },
+  "pattern": [
+    "epe",
+    "pip"
+  ],
+  "result": {
+    "count": 1,
+    "id": "custom_gateways:portal_pad"
+  }
+}

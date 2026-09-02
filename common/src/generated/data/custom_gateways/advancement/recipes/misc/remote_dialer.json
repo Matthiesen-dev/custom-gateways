@@ -1,0 +1,76 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_blaze_rod": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:blaze_rod"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_chorus_fruit": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:chorus_fruit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_ender_eye": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:ender_eye"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_netherite_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:netherite_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_portal_linking_card": {
+      "conditions": {
+        "items": [
+          {
+            "items": "custom_gateways:portal_linking_device"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "custom_gateways:remote_dialer"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ender_eye",
+      "has_portal_linking_card",
+      "has_chorus_fruit",
+      "has_netherite_ingot",
+      "has_blaze_rod"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "custom_gateways:remote_dialer"
+    ]
+  }
+}

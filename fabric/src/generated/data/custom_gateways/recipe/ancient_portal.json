@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "custom_gateways",
+  "key": {
+    "e": {
+      "item": "minecraft:ender_eye"
+    },
+    "i": {
+      "item": "custom_gateways:portal_pad"
+    },
+    "p": {
+      "item": "minecraft:cobbled_deepslate"
+    },
+    "r": {
+      "item": "minecraft:redstone_lamp"
+    }
+  },
+  "pattern": [
+    "r r",
+    "pep",
+    "pip"
+  ],
+  "result": {
+    "count": 1,
+    "id": "custom_gateways:ancient_portal"
+  }
+}

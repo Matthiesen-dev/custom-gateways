@@ -1,0 +1,27 @@
+{
+  "parent": "custom_gateways:portals/linked",
+  "criteria": {
+    "linked_cross_dimension_portal": {
+      "trigger": "custom_gateways:link_cross_dimension_portals"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.custom_gateways.portals.linked_cross_dimension.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "custom_gateways:portal_frame"
+    },
+    "title": {
+      "translate": "advancements.custom_gateways.portals.linked_cross_dimension.title"
+    }
+  },
+  "requirements": [
+    [
+      "linked_cross_dimension_portal"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

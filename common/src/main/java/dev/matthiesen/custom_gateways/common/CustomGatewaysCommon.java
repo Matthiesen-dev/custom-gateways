@@ -17,6 +17,10 @@ public final class CustomGatewaysCommon extends AbstractCommonMod {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 
+    public static String modResourceFile(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path).toString();
+    }
+
     public static final CustomGatewaysCommon INSTANCE = new CustomGatewaysCommon();
 
     public CustomGatewaysCommon() {

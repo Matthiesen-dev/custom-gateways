@@ -1,0 +1,33 @@
+{
+  "parent": "custom_gateways:crafted/portal_pad",
+  "criteria": {
+    "requirement": {
+      "conditions": {
+        "items": [
+          {
+            "items": "custom_gateways:nether_gate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.custom_gateways.crafted.nether_gate.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "custom_gateways:nether_gate"
+    },
+    "title": {
+      "translate": "advancements.custom_gateways.crafted.nether_gate.title"
+    }
+  },
+  "requirements": [
+    [
+      "requirement"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

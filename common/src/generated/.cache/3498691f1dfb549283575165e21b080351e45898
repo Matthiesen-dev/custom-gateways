@@ -1,0 +1,8 @@
+// 1.21.1	2026-09-01T23:52:40.110780102	Custom Gateways/Tags for minecraft:block
+c40336a04d109f771bfc1b352e53d53de3af7930 data/custom_gateways/tags/block/all_portals.json
+6e758da422befdab7a71521986a6ab9ffdff1d46 data/c/tags/block/relocation_not_supported.json
+201b50fc13888b81cbac2b22f84105987f5e0a7f data/minecraft/tags/block/needs_iron_tool.json
+87e51e0bab590a6c226d7c163f37352ea4ed06f6 data/custom_gateways/tags/block/mineable_portals.json
+cdb4627e42adbd9ef43ce0fa353d3664a3db3742 data/custom_gateways/tags/block/portal_link_sources.json
+201b50fc13888b81cbac2b22f84105987f5e0a7f data/minecraft/tags/block/mineable/pickaxe.json
+87e51e0bab590a6c226d7c163f37352ea4ed06f6 data/custom_gateways/tags/block/portal_link_destinations.json
