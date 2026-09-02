@@ -9,7 +9,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
 @Mod(value = CustomGatewaysCommon.MOD_ID, dist = Dist.CLIENT)
-public class CustomGatewaysNeoForgeClient {
+public final class CustomGatewaysNeoForgeClient {
     private final CustomGatewaysCommonClient INSTANCE;
 
     public CustomGatewaysNeoForgeClient(IEventBus modBus) {
