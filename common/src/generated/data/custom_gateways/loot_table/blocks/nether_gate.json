@@ -2,7 +2,6 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
       "conditions": [
         {
@@ -12,10 +11,10 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "custom_gateways:portal_stone"
+          "name": "custom_gateways:nether_gate"
         }
-      ]
+      ],
+      "rolls": 1.0
     }
   ]
 }
-

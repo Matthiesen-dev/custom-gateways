@@ -1,5 +1,6 @@
 package dev.matthiesen.custom_gateways.fabric.datagen;
 
+import dev.matthiesen.custom_gateways.common.datagen.LootTableGeneration;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.core.HolderLookup;
@@ -13,5 +14,6 @@ public final class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
     @Override
     public void generate() {
+        LootTableGeneration.BLOCKS_SELF_DROP.forEach(this::dropSelf);
     }
 }
