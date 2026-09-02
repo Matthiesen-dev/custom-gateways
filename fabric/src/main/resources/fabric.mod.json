@@ -26,6 +26,9 @@
     ],
     "jade": [
       "dev.matthiesen.custom_gateways.common.client.jade.CustomGatewaysJadePlugin"
+    ],
+    "fabric-datagen": [
+      "dev.matthiesen.custom_gateways.fabric.datagen.CustomGatewaysDataGenerator"
     ]
   },
   "depends": {

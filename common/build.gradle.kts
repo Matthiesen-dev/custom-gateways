@@ -8,6 +8,14 @@ architectury {
     common("neoforge", "fabric")
 }
 
+val generatedResources = file("src/generated")
+
+sourceSets {
+    main {
+        resources.srcDir(generatedResources)
+    }
+}
+
 dependencies {
     minecraft(libs.minecraft)
     mappings(loom.officialMojangMappings())
