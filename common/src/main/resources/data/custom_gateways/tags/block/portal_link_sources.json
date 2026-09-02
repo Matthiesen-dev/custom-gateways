@@ -1,9 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "custom_gateways:portal_frame",
-    "custom_gateways:ancient_portal",
-    "custom_gateways:nether_gate"
-  ]
-}
-

@@ -10,8 +10,10 @@ import dev.matthiesen.custom_gateways.common.item.PortalFrameItem;
 import dev.matthiesen.custom_gateways.common.item.PortalLinkingDevice;
 import dev.matthiesen.custom_gateways.common.item.PortalPadItem;
 import dev.matthiesen.custom_gateways.common.item.PortalStoneItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public final class ItemRegistry extends AbstractItemRegistry {
@@ -31,6 +33,8 @@ public final class ItemRegistry extends AbstractItemRegistry {
     public static final Supplier<RemoteDialerItem> REMOTE_DIALER;
     public static final Supplier<NetherGateItem> NETHER_GATE;
 
+    public static final List<Supplier<? extends Item>> ALL_TOOLS;
+
     static {
         ANCIENT_PORTAL = INSTANCE.register("ancient_portal", AncientPortalItem::new);
         PORTAL_FRAME = INSTANCE.register("portal_frame", PortalFrameItem::new);
@@ -39,6 +43,8 @@ public final class ItemRegistry extends AbstractItemRegistry {
         PORTAL_LINKING_CARD = INSTANCE.register("portal_linking_device", PortalLinkingDevice::new);
         REMOTE_DIALER = INSTANCE.register("remote_dialer", RemoteDialerItem::new);
         NETHER_GATE = INSTANCE.register("nether_gate", NetherGateItem::new);
+
+        ALL_TOOLS = List.of(PORTAL_LINKING_CARD);
     }
 
     public static Supplier<ItemStack> getCreativeModeTabIcon() {

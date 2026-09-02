@@ -1,11 +1,10 @@
 {
-  "replace": false,
   "values": [
     "custom_gateways:portal_frame",
-    "custom_gateways:portal_pad",
     "custom_gateways:ancient_portal",
+    "custom_gateways:nether_gate",
+    "custom_gateways:portal_pad",
     "custom_gateways:portal_stone",
-    "custom_gateways:nether_gate"
+    "custom_gateways:remote_gateway"
   ]
 }
-
