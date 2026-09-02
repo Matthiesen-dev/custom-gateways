@@ -4,9 +4,9 @@ import dev.matthiesen.custom_gateways.common.block.*;
 import dev.matthiesen.custom_gateways.common.block.entity.RemoteGatewayBlockEntity;
 import dev.matthiesen.custom_gateways.common.config.GatewaysConfig;
 import dev.matthiesen.custom_gateways.common.data.PortalRegistry;
+import dev.matthiesen.custom_gateways.common.datagen.TagsGeneration;
 import dev.matthiesen.custom_gateways.common.menu.RemoteDialerMenu;
 import dev.matthiesen.custom_gateways.common.registry.CriterionRegistry;
-import dev.matthiesen.custom_gateways.common.util.PortalLinkTags;
 import dev.matthiesen.custom_gateways.common.util.PortalValidation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -66,7 +66,7 @@ public final class RemoteDialerItem extends Item {
 
         BlockPos clickedPos = context.getClickedPos();
         BlockState clickedState = level.getBlockState(clickedPos);
-        if (!clickedState.is(PortalLinkTags.PORTAL_LINK_DESTINATIONS)) {
+        if (!clickedState.is(TagsGeneration.BlockTags.CUSTOM_GATEWAYS_PORTAL_LINK_DESTINATIONS)) {
             return InteractionResult.PASS;
         }
 
@@ -235,7 +235,7 @@ public final class RemoteDialerItem extends Item {
         }
 
         BlockState state = destinationLevel.getBlockState(location.getBlockPos());
-        return state.is(PortalLinkTags.PORTAL_LINK_DESTINATIONS);
+        return state.is(TagsGeneration.BlockTags.CUSTOM_GATEWAYS_PORTAL_LINK_DESTINATIONS);
     }
 
     private static @Nullable ServerLevel resolveLevel(ServerLevel currentLevel, ResourceLocation dimension) {
