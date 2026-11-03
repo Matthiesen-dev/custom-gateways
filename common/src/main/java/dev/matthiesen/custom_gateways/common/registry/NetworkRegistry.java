@@ -5,14 +5,14 @@ import dev.matthiesen.custom_gateways.common.network.GatewayEffectHandler;
 import dev.matthiesen.custom_gateways.common.network.GatewayEffectPayload;
 import dev.matthiesen.custom_gateways.common.network.RemoteDialerActionHandler;
 import dev.matthiesen.custom_gateways.common.network.RemoteDialerActionPayload;
-import dev.matthiesen.matthiesen_core.common.core.network.NetworkingManager;
+import dev.matthiesen.matthiesen_core.common.core.registry.NetworkingRegistryManager;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 
 public final class NetworkRegistry {
-    private static NetworkingManager INSTANCE;
+    private static NetworkingRegistryManager INSTANCE;
 
     public static void init(CustomGatewaysCommon modInstance) {
         INSTANCE = modInstance.getNetworkingManager();

@@ -1,8 +1,8 @@
 package dev.matthiesen.custom_gateways.common;
 
+import dev.faststats.Token;
 import dev.matthiesen.custom_gateways.common.config.GatewaysConfig;
 import dev.matthiesen.custom_gateways.common.registry.*;
-import dev.matthiesen.libs.faststats.Token;
 import dev.matthiesen.matthiesen_core.common.AbstractCommonMod;
 import dev.matthiesen.matthiesen_core.common.api.platform.loader.ModConfigType;
 import net.minecraft.resources.ResourceLocation;
